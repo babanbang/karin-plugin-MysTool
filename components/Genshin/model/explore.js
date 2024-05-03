@@ -1,4 +1,4 @@
-import { Base, Cfg } from '#Mys.tool'
+import { Base, Cfg, Data } from '#Mys.tool'
 import { MysInfo } from '#Mys.api'
 import { Player } from '#Mys.rank'
 import _ from 'lodash'
@@ -143,6 +143,7 @@ export default class Explore extends Base {
     }
     exploreInfo.homes = _.sample(res.data.homes)
 
+    Data.writeJSON(`data/html/${this.model}/gs/data.json`, { ...exploreInfo, uid: this.e.MysUid })
     return await this.renderImg({ ...exploreInfo, uid: this.e.MysUid })
   }
 }

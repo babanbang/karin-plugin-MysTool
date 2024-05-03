@@ -30,11 +30,15 @@
           {{/each}}
         </div>
         <div class="explore">
-          {{each explores.other v}}
+          {{each explores.other v idx}}
           <div class="item2">
             <p>{{v.num}}{{if v.extra}}<span>/{{v.extra}}</span>{{/if}}</p>
             <p>{{v.lable}}</p>
           </div>
+          {{if (idx+1)%5===0}}
+        </div>
+        <div class="explore">
+          {{/if}}
           {{/each}}
         </div>
       </div>
@@ -58,7 +62,7 @@
         <span>世界探索</span>
       </div>
       <div class="world">
-        {{each world val}}
+        {{each world val idx}}
         <div class="item">
           <img class="icon" src="{{pluResPath}}imgs/other/{{val.name}}.png" />
           <div class="content">
@@ -67,6 +71,10 @@
             {{/each}}
           </div>
         </div>
+        {{if (idx+1)%2===0}}
+      </div>
+      <div class="world">
+        {{/if}}
         {{/each}}
       </div>
       {{if homes?.icon}}
@@ -75,7 +83,7 @@
         <span>尘歌壶</span>
       </div>
       <div class="homes" style="background-image: url('{{homes.icon}}');">
-        <div style="display: flex;">
+        <div class="homes-top">
           <div class="comfort-image" style="background-image: url('{{homes.comfort_level_icon}}')">
           </div>
           <div class="homes-text">

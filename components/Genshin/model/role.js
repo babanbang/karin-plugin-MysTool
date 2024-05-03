@@ -47,7 +47,7 @@ export default class Role extends Base {
       },
       uid: this.e.MysUid,
       version: this.lable.version
-    }, { width: 400 })
+    })
   }
 
   /** @param {Player} player */

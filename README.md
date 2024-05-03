@@ -84,6 +84,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 <details><summary><b>其他</b></summary>
 
+- [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)
 - [ ] 1034、10035(额外安装插件提供功能)
 </details>
 

@@ -4,6 +4,7 @@
 <head>
   <meta http-equiv="content-type" content="text/html;charset=utf-8" />
   <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" type="text/css" href="{{res_Path}}common/common.css" />
   <link rel="stylesheet" type="text/css" href="{{pluResPath}}html/role/rolelist.css" />
   <link rel="preload" href="{{fontsPath}}tttgbnumber.ttf" as="font">
 </head>
@@ -22,7 +23,7 @@
       </div>
       <div class="line-avatars"></div>
       <div class="avatars">
-        {{each avatars avatar}}
+        {{each avatars avatar idx}}
         <div class="avatar-box">
           <div class="left">
             <div class="avatar bg{{avatar.rarity}}">
@@ -85,6 +86,10 @@
             {{/if}}
           </div>
         </div>
+        {{if (idx+1)%5===0}}
+      </div>
+      <div class="avatars">
+        {{/if}}
         {{/each}}
       </div>
       <div class="plugin">{{PluginName}}</div>

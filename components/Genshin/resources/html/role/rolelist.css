@@ -139,9 +139,7 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-  padding: 0 0 10px;
   background-color: rgb(39, 38, 36, 0.8);
-  border-radius: 15px;
   padding: 10px;
   font-size: 10px;
 }
@@ -157,7 +155,7 @@ body {
   display: flex;
   min-height: 100px;
   min-width: 100px;
-  background-color: rgba(243, 229, 201);
+  background-color: rgba(243, 229, 201, 0.97);
   border-radius: 10px;
 }
 
@@ -213,49 +211,6 @@ body {
   right: -2px;
   width: 20px;
   height: 20px;
-  display: inline-block;
-  background: url('../../imgs/other/fetter.png');
-  background-size: auto 100%;
-}
-
-.fetter.fetter1 {
-  background-position: 0% 0;
-}
-
-.fetter.fetter2 {
-  background-position: 11.11111111% 0;
-}
-
-.fetter.fetter3 {
-  background-position: 22.22222222% 0;
-}
-
-.fetter.fetter4 {
-  background-position: 33.33333333% 0;
-}
-
-.fetter.fetter5 {
-  background-position: 44.44444444% 0;
-}
-
-.fetter.fetter6 {
-  background-position: 55.55555556% 0;
-}
-
-.fetter.fetter7 {
-  background-position: 66.66666667% 0;
-}
-
-.fetter.fetter8 {
-  background-position: 77.77777778% 0;
-}
-
-.fetter.fetter9 {
-  background-position: 88.88888889% 0;
-}
-
-.fetter.fetter10 {
-  background-position: 100% 0;
 }
 
 .avatar-element {
@@ -308,6 +263,7 @@ body {
 .weapon-name {
   position: absolute;
   left: 28px;
+  top: 0;
   line-height: 12px;
 }
 
@@ -360,42 +316,6 @@ body {
   padding: 0 5px 0 5px;
   line-height: 10px;
 }
-
-.cons-0 {
-  background: #666;
-  color: #fff;
-}
-
-.cons-1 {
-  background: #5cbac2;
-  color: #fff;
-}
-
-.cons-2 {
-  background: #339d61;
-  color: #fff;
-}
-
-.cons-3 {
-  background: #3e95b9;
-  color: #fff;
-}
-
-.cons-4 {
-  background: #3955b7;
-  color: #fff;
-}
-
-.cons-5 {
-  background: #531ba9cf;
-  color: #fff;
-}
-
-.cons-6 {
-  background: #ff5722;
-  color: #fff;
-}
-
 
 .talent-artifact {
   position: relative;
