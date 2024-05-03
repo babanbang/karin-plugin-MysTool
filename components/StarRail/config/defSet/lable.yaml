@@ -1,0 +1,16 @@
+#版本
+version: 2.1
+#角色数
+avatar: 47
+#成就
+achievement: 731
+#战利品
+chest: 654
+#梦境护照贴纸
+dream_paster: 104
+#模拟宇宙技能树激活
+unlocked_skill: 42
+#模拟宇宙解锁奇物
+unlocked_miracle: 60
+#模拟宇宙解锁祝福
+unlocked_buff: 232

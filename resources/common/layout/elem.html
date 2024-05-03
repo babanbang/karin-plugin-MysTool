@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="shortcut icon" href="#"/>
+  <link rel="preload" href="{{fontsPath}}HYWH-65W.woff" as="font" type="font/woff">
+  <link rel="preload" href="{{fontsPath}}NZBZ.woff" as="font" type="font/woff">
+  <link rel="preload" href="{{fontsPath}}tttgbnumber.woff" as="font" type="font/woff">
+  <link rel="stylesheet" type="text/css" href="{{pluResPath}}common/common.css"/>
+  <title>{{PluginName}}</title>
+  {{block 'css'}}
+  {{/block}}
+</head>
+{{set elemCls = {火:'pyro',冰:'cryo',风:'anemo',雷:'electro',量子:'quantum',虚数:'geo',物理:'sr', }[element||elem] || element || elem || 'hydro' }}
+<body class="elem-{{elemCls}} {{displayMode || mode || `default`}}-mode {{bodyClass}}" {{sys.scale}}>
+<div class="container elem-bg" id="container">
+  {{block 'main'}}{{/block}}
+  <div class="copyright">{{@copyright || sys?.copyright || PluginName}}</div>
+</div>
+</body>
+</html>

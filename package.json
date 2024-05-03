@@ -1,0 +1,22 @@
+{
+  "name": "karin-plugin-MysTool",
+  "version": "0.0.1",
+  "author": "",
+  "type": "module",
+  "dependencies": {
+    "https-proxy-agent": "^7.0.4",
+    "sequelize": "^6.37.1",
+    "sqlite3": "5.1.6",
+    "node-fetch": "^2.6.7",
+    "md5": "^2.3.0",
+    "qrcode": "^1.5.3",
+    "image-size": "^1.1.1"
+  },
+  "imports": {
+    "#Karin": "./lib/index.js",
+    "#Mys.tool": "./lib/tool/index.js",
+    "#Mys.api": "./lib/mys/index.js",
+    "#Mys.user": "./lib/user/index.js",
+    "#Mys.rank": "./lib/rank/index.js"
+  }
+}

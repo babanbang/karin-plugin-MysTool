@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" type="text/css" href="{{pluResPath}}html/explore/explore.css" />
+  <link rel="preload" href="{{fontsPath}}tttgbnumber.ttf" as="font">
+</head>
+
+<body>
+  <div class="container">
+    <div class="role" style="background-image: url('{{background_url||`${pluResPath}imgs/version/${version}.png`}}');">
+      <div class="logo"></div>
+      <div class="top">
+        <div class="role-image" style="background-image: url('{{game_head_icon}}')">
+        </div>
+        <div class="role-text">
+          <p>{{role.nickname}}<span>Lv.{{role.level}}</span></p>
+          <p>{{role.region}} UID: {{uid}}</p>
+        </div>
+      </div>
+      <div class="explore-box">
+        <div class="explore">
+          {{each explores.line v}}
+          <div class="item1">
+            <p>{{v.num}}{{if v.extra}}<span>/{{v.extra}}</span>{{/if}}</p>
+            <p>{{v.lable}}</p>
+          </div>
+          {{/each}}
+        </div>
+        <div class="explore">
+          {{each explores.other v}}
+          <div class="item2">
+            <p style="font-size: {{if v.lable==='逐光捡金' }}9px{{/if}}">
+              {{v.num}}{{if v.extra}}<span>/{{v.extra}}</span>{{/if}}</p>
+            <p>{{v.lable}}</p>
+          </div>
+          {{/each}}
+        </div>
+      </div>
+
+    </div>
+    <div class="box">
+      <div class="titles">
+        <img src="{{res_Path}}imgs/other/star.png">
+        <span>我的角色</span>
+      </div>
+      <div class=" avatars">
+        {{each avatars v}}
+        <div class="avatar-box">
+          <div class="avatar rarity{{v.rarity}}">
+            <div><img class="avatar-img" src="{{v.icon}}" /></div>
+            {{if v.rank>0}}<div class="avatar-rank">{{v.rank}}</div>{{/if}}
+            <div class="avatar-banner">Lv.{{v.level}} </div>
+            <div class="avatar-element" style="border-color: var(--borderColor-{{v.element}});">
+              <img src="{{pluResPath}}imgs/element/{{v.element}}.png" />
+            </div>
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      <div class="titles">
+        <img src="{{res_Path}}imgs/other/star.png">
+        <span>模拟宇宙</span>
+      </div>
+      <div class="rogue">
+        <div class="title">数据总览</div>
+        <div class="rogue-info">
+          {{each rogue.basic_info v}}
+          <div class="item">
+            <p>{{v.num}}{{if v.extra}}<span>/{{v.extra}}</span>{{/if}}</p>
+            <p>{{v.lable}}</p>
+          </div>
+          {{/each}}
+        </div>
+        <div class="rogue line"></div>
+        <div class="time">本期：{{rogue.current.time}}</div>
+        <div class="rogue-box">
+          <span>● 本期积分奖励</span>
+          <span>{{rogue.current.current_rogue_score}}/{{rogue.current.max_rogue_score}}</span>
+        </div>
+        <div class="rogue-box">
+          <span>● 本次通关次数</span>
+          <span>{{rogue.current.finish_cnt}}</span>
+        </div>
+      </div>
+      <div class="titles">
+        <img src="{{res_Path}}imgs/other/star.png">
+        <span>逐光捡金</span>
+      </div>
+      <div class="challenge">
+        <div class="challenge-box">
+          <div class="left">
+            <div class="title">
+              <img src="{{pluResPath}}imgs/challenge/c-1.png">
+              <div class="text">
+                <p>忘却之庭</p>
+                <p>混沌回忆</p>
+              </div>
+            </div>
+            <div class="name">{{challenge.name}}</div>
+            <div class="time">
+              <img src="{{pluResPath}}imgs/challenge/time.png">
+              {{challenge.time}}
+            </div>
+          </div>
+          <div class="info">
+            {{if !challenge.has_data}}
+            <div class="info-empty">
+              <img src="{{pluResPath}}imgs/challenge/empty.png">
+              <p>暂无挑战数据</p>
+            </div>
+            {{else}}
+            <div class="info-title">
+              <img src="{{pluResPath}}imgs/challenge/star.png">
+              <p>×{{challenge.star_num}}<span style="color: #fff;">/36</span></p>
+              <p>最高关卡：<span>{{challenge.max_floor}}</span><br>挑战次数：<span>{{challenge.battle_num}}</span></p>
+            </div>
+            <div class="info-content">节点1 <span>{{challenge.node_1.time}}</span></div>
+            <div class=" avatars">
+              {{each challenge.node_1.avatars v}}
+              <div class="avatar-box">
+                <div class="avatar rarity{{v.rarity}}">
+                  <div><img class="avatar-img" src="{{v.icon}}" /></div>
+                  <div class="avatar-inner"></div>
+                  {{if v.rank>0}}<div class="avatar-rank">{{v.rank}}</div>{{/if}}
+                  <div class="avatar-banner">Lv.{{v.level}} </div>
+                  <div class="avatar-element" style="border-color: var(--borderColor-{{v.element}});">
+                    <img src="{{pluResPath}}imgs/element/{{v.element}}.png" />
+                  </div>
+                </div>
+              </div>
+              {{/each}}
+            </div>
+            <div class="info-content">节点2 <span>{{challenge.node_2.time}}</span></div>
+            <div class=" avatars">
+              {{each challenge.node_2.avatars v}}
+              <div class="avatar-box">
+                <div class="avatar rarity{{v.rarity}}">
+                  <div><img class="avatar-img" src="{{v.icon}}" /></div>
+                  <div class="avatar-inner"></div>
+                  {{if v.rank>0}}<div class="avatar-rank">{{v.rank}}</div>{{/if}}
+                  <div class="avatar-banner">Lv.{{v.level}} </div>
+                  <div class="avatar-element" style="border-color: var(--borderColor-{{v.element}});">
+                    <img src="{{pluResPath}}imgs/element/{{v.element}}.png" />
+                  </div>
+                </div>
+              </div>
+              {{/each}}
+            </div>
+            <div class="challenge-info">
+              <div class="info-use-name">{{challenge.max_floor}}</div>
+              <div class="info-use">使用轮次：<span>{{challenge.round_num}}</span></div>
+              <div class="star-box">
+                <img class="{{if challenge.max_floor_star<1 }}nostar{{/if}}"
+                  src="{{pluResPath}}imgs/challenge/star.png" />
+                <img class="{{if challenge.max_floor_star<2 }}nostar{{/if}}"
+                  src="{{pluResPath}}imgs/challenge/star.png" />
+                <img class="{{if challenge.max_floor_star<3 }}nostar{{/if}}"
+                  src="{{pluResPath}}imgs/challenge/star.png" />
+              </div>
+            </div>
+            {{/if}}
+          </div>
+        </div>
+        <div class="buff">
+          <img src="{{pluResPath}}imgs/challenge/2.png">
+          <div class="text">
+            <p>{{challenge.name}}</p>
+            <p>记忆紊流</p>
+            <p>{{@ challenge.buff}}</p>
+          </div>
+        </div>
+      </div>
+      <div class=" plugin">{{PluginName}}</div>
+    </div>
+  </div>
+</body>
+
+</html>

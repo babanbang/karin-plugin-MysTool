@@ -1,0 +1,4 @@
+onlySelfCk: false #查询时是否只使用自己绑定的CK
+wkhtmltoimage: false #使用wkhtmltoimage渲染图片
+wkhtmltoimagePort:  #使用wkhtmltoimage渲染图片的端口(填写端口时资源使用http路径、重启后生效)
+quality: 100 #渲染精度(0-100)

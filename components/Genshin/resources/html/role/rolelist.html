@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+  <link rel="shortcut icon" href="#" />
+  <link rel="stylesheet" type="text/css" href="{{pluResPath}}html/role/rolelist.css" />
+  <link rel="preload" href="{{fontsPath}}tttgbnumber.ttf" as="font">
+</head>
+
+<body>
+  <div class="container">
+    <div class="role" style="background-image: url('{{pluResPath}}imgs/version/{{version}}.png');">
+      <div class="logo"></div>
+      <div class="top">
+        <div class="role-image"
+          style="background-image: url('{{role.face||`${pluResPath}meta/character/common/imgs/face.png`}}')"></div>
+        <div class="role-text">
+          <p>{{role.nickname}}<span>Lv.{{role.level}}</span></p>
+          <p>{{role.region}} UID: {{uid}}</p>
+        </div>
+      </div>
+      <div class="line-avatars"></div>
+      <div class="avatars">
+        {{each avatars avatar}}
+        <div class="avatar-box">
+          <div class="left">
+            <div class="avatar bg{{avatar.rarity}}">
+              <img src="{{pluResPath}}{{avatar.imgs.face}}">
+              {{if avatar.cons>0}}
+              <span class="avatar-cons cons-{{avatar.cons}}">{{avatar.cons}}</span>
+              {{/if}}
+              <span class="avatar-element"
+                style="background-image:url('{{pluResPath}}imgs/element/{{avatar.elem}}.png')"></span>
+              <div class="avatar-name">LV.{{avatar.level}} {{avatar.name}}</div>
+              <span class="fetter fetter{{avatar.fetter}}"></span>
+            </div>
+            <div class="weapon">
+              <div class="item-icon  star{{avatar.weapon.rarity}}">
+                <span class="img"
+                  style="background-image:url('{{pluResPath}}meta/weapon/{{avatar.weaponType}}/{{avatar.weapon.name}}/{{avatar.weapon.affix_level===5?`awaken`:`icon`}}.png')"></span>
+              </div>
+              <div class="weapon-name">
+                <p>LV.{{avatar.weapon.level}}
+                  <span
+                    class="weapon-cons cons-{{avatar.weapon.affix_level > 4 ? avatar.weapon.affix_level + 1 : avatar.weapon.affix_level}}">{{avatar.weapon.affix_level}}</span>
+                </p>
+                <p>{{avatar.weapon.name}}</p>
+              </div>
+            </div>
+          </div>
+          <div class="talent-artifact">
+            {{if avatar.talent}}
+            <div class="talents">
+              <div class="name">{{avatar.talent.a.name}}</div>
+              <div class="talents {{avatar.elem}}">
+                <img src="{{pluResPath}}{{avatar.imgs.a}}">
+                <span>LV. {{avatar.talent.a.level}}</span>
+              </div>
+              <div class="name">{{avatar.talent.e.name}}</div>
+              <div class="talents {{avatar.elem}}">
+                <img src="{{pluResPath}}{{avatar.imgs.e}}">
+                <span>LV. {{avatar.talent.e.level}}</span>
+              </div>
+              <div class="name">{{avatar.talent.q.name}}</div>
+              <div class="talents {{avatar.elem}}">
+                <img src="{{pluResPath}}{{avatar.imgs.q}}">
+                <span>LV. {{avatar.talent.q.level}}</span>
+              </div>
+            </div>
+            {{else}}
+            <div class="no-talents"></div>
+            {{/if}}
+            <div class="line-talents"></div>
+            {{if avatar.reliquaries.length>0}}
+            <div class="artifacts">
+              {{each avatar.reliquaries artifact}}
+              <div class="artifact"
+                style="background-image: url('{{pluResPath}}meta/artifact/imgs/{{artifact.set.name}}/{{artifact.pos}}.png');">
+              </div>
+              {{/each}}
+            </div>
+            {{else}}
+            <div class="no-artifacts">暂无圣遗物数据</div>
+            {{/if}}
+          </div>
+        </div>
+        {{/each}}
+      </div>
+      <div class="plugin">{{PluginName}}</div>
+    </div>
+  </div>
+</body>
+
+</html>
