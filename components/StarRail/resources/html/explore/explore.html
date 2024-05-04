@@ -32,7 +32,7 @@
         <div class="explore">
           {{each explores.other v}}
           <div class="item2">
-            <p style="font-size: {{if v.lable==='逐光捡金' }}9px{{/if}}">
+            <p style="font-size: '{{if v.lable==='逐光捡金' }}9px{{/if}}'">
               {{v.num}}{{if v.extra}}<span>/{{v.extra}}</span>{{/if}}</p>
             <p>{{v.lable}}</p>
           </div>
@@ -53,7 +53,7 @@
             <div><img class="avatar-img" src="{{v.icon}}" /></div>
             {{if v.rank>0}}<div class="avatar-rank">{{v.rank}}</div>{{/if}}
             <div class="avatar-banner">Lv.{{v.level}} </div>
-            <div class="avatar-element" style="border-color: var(--borderColor-{{v.element}});">
+            <div class="avatar-element" style="border-color: var('--borderColor-{{v.element}}');">
               <img src="{{pluResPath}}imgs/element/{{v.element}}.png" />
             </div>
           </div>
@@ -126,7 +126,7 @@
                   <div class="avatar-inner"></div>
                   {{if v.rank>0}}<div class="avatar-rank">{{v.rank}}</div>{{/if}}
                   <div class="avatar-banner">Lv.{{v.level}} </div>
-                  <div class="avatar-element" style="border-color: var(--borderColor-{{v.element}});">
+                  <div class="avatar-element" style="border-color: var('--borderColor-{{v.element}}');">
                     <img src="{{pluResPath}}imgs/element/{{v.element}}.png" />
                   </div>
                 </div>
@@ -142,7 +142,7 @@
                   <div class="avatar-inner"></div>
                   {{if v.rank>0}}<div class="avatar-rank">{{v.rank}}</div>{{/if}}
                   <div class="avatar-banner">Lv.{{v.level}} </div>
-                  <div class="avatar-element" style="border-color: var(--borderColor-{{v.element}});">
+                  <div class="avatar-element" style="border-color: var('--borderColor-{{v.element}}');">
                     <img src="{{pluResPath}}imgs/element/{{v.element}}.png" />
                   </div>
                 </div>

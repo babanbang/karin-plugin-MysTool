@@ -1,5 +1,7 @@
 body {
   width: 450px;
+  -webkit-transform: scale(2);
+  transform: scale(2);
 }
 
 .container {
