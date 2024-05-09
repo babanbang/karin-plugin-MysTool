@@ -74,7 +74,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 - [ ] 前瞻兑换码
 - [x] 探索查询
-- [ ] 角色列表查询
+- [x] 角色列表查询
 - [ ] 混沌回忆查询
 - [ ] 模拟宇宙、寰宇蝗灾、黄金与机械查询
 - [ ] 体力查询
@@ -84,7 +84,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 <details><summary><b>其他</b></summary>
 
-- [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)
+- [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
 - [ ] 1034、10035(额外安装插件提供功能)
 </details>
 

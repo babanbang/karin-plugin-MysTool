@@ -29,15 +29,15 @@
             <div class="avatar bg{{avatar.rarity}}">
               <img src="{{pluResPath}}{{avatar.imgs.face}}">
               {{if avatar.cons>0}}
-              <span class="avatar-cons cons-{{avatar.cons}}">{{avatar.cons}}</span>
+              <span class="avatar-cons cons3-{{avatar.cons}}">{{avatar.cons}}</span>
               {{/if}}
               <span class="avatar-element"
                 style="background-image:url('{{pluResPath}}imgs/element/{{avatar.elem}}.png')"></span>
-              <div class="avatar-name">LV.{{avatar.level}} {{avatar.name}}</div>
+              <div class="avatar-name{{useBrowser}}">LV.{{avatar.level}} {{avatar.name}}</div>
               <span class="fetter fetter{{avatar.fetter}}"></span>
             </div>
             <div class="weapon">
-              <div class="item-icon  star{{avatar.weapon.rarity}}">
+              <div class="item-icon star{{avatar.weapon.rarity}}">
                 <span class="img"
                   style="background-image:url('{{pluResPath}}meta/weapon/{{avatar.weaponType}}/{{avatar.weapon.name}}/{{avatar.weapon.affix_level===5?`awaken`:`icon`}}.png')"></span>
               </div>
@@ -53,21 +53,14 @@
           <div class="talent-artifact">
             {{if avatar.talent}}
             <div class="talents">
-              <div class="name">{{avatar.talent.a.name}}</div>
-              <div class="talents {{avatar.elem}}">
-                <img src="{{pluResPath}}{{avatar.imgs.a}}">
-                <span>LV. {{avatar.talent.a.level}}</span>
+              {{set talentlist = ['a','e','q']}}
+              {{each talentlist t}}
+              <div class="name">{{avatar.talent[t].name}}</div>
+              <div class="talents bg-{{avatar.elem}}">
+                <img src="{{pluResPath}}{{avatar.imgs[t]}}">
+                <span>LV. {{avatar.talent[t].level}}</span>
               </div>
-              <div class="name">{{avatar.talent.e.name}}</div>
-              <div class="talents {{avatar.elem}}">
-                <img src="{{pluResPath}}{{avatar.imgs.e}}">
-                <span>LV. {{avatar.talent.e.level}}</span>
-              </div>
-              <div class="name">{{avatar.talent.q.name}}</div>
-              <div class="talents {{avatar.elem}}">
-                <img src="{{pluResPath}}{{avatar.imgs.q}}">
-                <span>LV. {{avatar.talent.q.level}}</span>
-              </div>
+              {{/each}}
             </div>
             {{else}}
             <div class="no-talents"></div>
@@ -86,7 +79,7 @@
             {{/if}}
           </div>
         </div>
-        {{if (idx+1)%5===0}}
+        {{if useBrowser==='-wk'&&(idx+1)%5===0}}
       </div>
       <div class="avatars">
         {{/if}}

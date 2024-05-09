@@ -35,7 +35,7 @@
             <p>{{v.num}}{{if v.extra}}<span>/{{v.extra}}</span>{{/if}}</p>
             <p>{{v.lable}}</p>
           </div>
-          {{if (idx+1)%5===0}}
+          {{if useBrowser==='-wk'&&(idx+1)%5===0}}
         </div>
         <div class="explore">
           {{/if}}
@@ -71,7 +71,7 @@
             {{/each}}
           </div>
         </div>
-        {{if (idx+1)%2===0}}
+        {{if useBrowser==='-wk'&&(idx+1)%2===0}}
       </div>
       <div class="world">
         {{/if}}

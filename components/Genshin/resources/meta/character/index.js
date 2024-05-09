@@ -10,6 +10,7 @@ meta.addData(Data.readJSON('data.json', import.meta.url))
 meta.addAlias(alias)
 
 // 添加自定义角色
+// eslint-disable-next-line no-unused-vars
 _.forEach(extraChars, (alias, char) => {
   meta.addDataItem(char, {
     id: char,

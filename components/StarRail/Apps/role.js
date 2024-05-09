@@ -3,7 +3,7 @@ import { MysUtil } from '#Mys.api'
 import Role from '../model/role.js'
 
 const reg = MysUtil.reg.sr
-export class gs_role extends plugin {
+export class sr_role extends plugin {
   constructor () {
     super({
       name: '崩坏：星穹铁道角色查询',
@@ -21,9 +21,9 @@ export class gs_role extends plugin {
 
   /** 角色列表 */
   async roleList () {
-    // const img = await new Role(this.e).roleList()
-    // if (!img) return
+    const img = await new Role(this.e).roleList()
+    if (!img) return
 
-    // this.reply(img)
+    this.reply(img)
   }
 }

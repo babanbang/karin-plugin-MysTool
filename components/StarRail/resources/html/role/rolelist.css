@@ -1,0 +1,543 @@
+@font-face {
+  font-family: "tttgbnumber";
+  src: url("../../../../../resources/fonts/tttgbnumber.woff");
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+body {
+  font-size: 14px;
+  color: #fff;
+  font-family: PingFangSC-Medium, PingFang SC, sans-serif;
+  width: 880px;
+  -webkit-transform: scale(1.5);
+  transform: scale(2);
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+}
+
+.container {
+  background-color: rgba(0, 0, 0, 0.803);
+  padding: 1px;
+  font-family: "tttgbnumber";
+}
+
+.top {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  margin-top: 30px;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+
+.line {
+  width: 100%;
+  height: 2px;
+  background-color: rgba(252, 252, 252, 0.8);
+}
+
+.line-avatars {
+  width: 100%;
+  height: 2px;
+  background-color: rgba(252, 252, 252, 0.8);
+  margin: 5px 0px 5px;
+}
+
+.line-artifact {
+  width: 100%;
+  height: 1px;
+  background-color: rgba(5, 5, 5, 0.8);
+  position: absolute;
+  bottom: 32px;
+  right: 0;
+}
+
+.logo {
+  width: 180px;
+  height: 100px;
+  background-image: url('../../imgs/other/logo.png');
+  background-size: cover;
+  background-position: center;
+  position: absolute;
+  top: -10px;
+  right: 10px;
+}
+
+.role {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-size: cover;
+  padding: 0 0 20px;
+}
+
+.role-image {
+  width: 65px;
+  height: 65px;
+  border-radius: 50%;
+  margin-left: 20px;
+  background-size: cover;
+  background-position: center;
+  border: 2px solid white;
+}
+
+.role-text {
+  margin-left: 10px;
+}
+
+.role-text p {
+  margin: 5px 0;
+}
+
+.role-text span {
+  font-size: 10px;
+  background-color: rgb(234, 182, 26);
+  padding: 3px;
+  border-radius: 3px;
+  margin-left: 5px;
+}
+
+.left {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+}
+
+.avatar-top {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+.avatars {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-justify-content: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background-color: rgba(10, 10, 10, 0.782);
+  font-size: 10px;
+}
+
+.avatars>* {
+  margin: 8px 7px;
+}
+
+.avatar-box {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  height: -webkit-fit-content;
+  height: -moz-fit-content;
+  height: fit-content;
+  background-color: rgba(243, 229, 201, 0.97);
+  border-radius: 10px 10px 10px 3px;
+  overflow: hidden;
+}
+
+.avatar {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+  width: 100px;
+  height: 100px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 10px 0 15px 0;
+}
+
+.avatar-cons {
+  height: 24%;
+  width: 18%;
+  font-size: 10px;
+}
+
+.avatar-cons p {
+  top: 14%;
+  right: 30%;
+}
+
+.avatar img {
+  overflow: hidden;
+  width: 100px;
+  height: 100px;
+  background-position: center;
+  border-radius: 10px 10px 15px 10px;
+}
+
+.avatar-talent {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  margin-top: 1px;
+  width: 100px;
+  padding-top: 6px;
+}
+
+.avatar-talent-3 {
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: 25px;
+  height: 25px;
+
+}
+
+.avatar-talent img {
+  width: 60%;
+  height: 60%;
+}
+
+.avatar-talent p {
+  position: absolute;
+  color: black;
+  font-size: 7px;
+  font-weight: bold;
+  top: -7px;
+}
+
+.avatar-talent span {
+  background-color: rgba(26, 25, 25, 0.851);
+  border-radius: 3px;
+  border: 1px solid #d3bc8d;
+  width: 15px;
+  font-size: 9px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: absolute;
+  bottom: -5px;
+}
+
+.avatar-name {
+  position: absolute;
+  bottom: 0;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  white-space: nowrap;
+  font-size: 9px;
+}
+
+.avatar-name.-wk {
+  padding: 1px 3px;
+  background-color: rgba(8, 8, 8, 0.65);
+  border-radius: 4px;
+}
+
+.avatar-name.-pu {
+  padding-right: 7px;
+  -webkit-clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 88% 50%);
+  clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 88% 50%);
+  background: #FF6B6B padding-box;
+}
+
+.fetter {
+  position: absolute;
+  bottom: -3px;
+  right: -2px;
+  width: 20px;
+  height: 20px;
+}
+
+.avatar-element {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 18px;
+  height: 18px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.weapon {
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  position: relative;
+  color: rgb(255, 255, 255);
+  background-color: rgba(10, 9, 9, 0.558);
+}
+
+.weapon img {
+  overflow: hidden;
+  width: 25px;
+  height: 25px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 10px 10px 20px 10px;
+
+}
+
+.weapon-name {
+  position: absolute;
+  left: 40px;
+  top: 0;
+}
+
+.weapon-img {
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, .6);
+  overflow: hidden;
+  margin-left: 4px;
+}
+
+.item-icon {
+  width: 26px;
+  height: 26px;
+  background-size: 100%;
+  background-repeat: no-repeat;
+  border: 1px solid #d3bc8d;
+}
+
+.weapon-cons {
+  display: inline-block;
+  border-radius: 2px;
+  font-size: 8px;
+  padding: 0 5px 0 5px;
+  line-height: 9px;
+}
+
+.weapon-attr {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  position: absolute;
+  left: 40px;
+  bottom: 2px;
+}
+
+.weapon-attr .item {
+  padding: 1px 3px 1px 3px;
+  border-radius: 3px;
+  margin-right: 5px;
+  background-color: rgba(0, 0, 0, 0.82);
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.weapon-attr .item span {
+  margin-top: -1px;
+  margin-right: 2px;
+  background-size: cover;
+  width: 12px;
+  height: 12px;
+}
+
+.i-hp {
+  background-position: -12px 0;
+}
+
+.i-atk {
+  background-position: -24px 0;
+}
+
+.i-def {
+  background-position: -36px 0;
+}
+
+.talent-artifact {
+  position: relative;
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-align-items: flex-start;
+  -webkit-box-align: start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  background-color: rgba(8, 8, 8, 0.65);
+  border-radius: 0 10px 10px 0;
+}
+
+.no-talents {
+  position: absolute;
+  left: 10%;
+  top: 10%;
+  background-image: url('../../imgs/other/empty.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 80%;
+  width: 80%;
+  font-size: 12px;
+  font-weight: bold;
+  padding-top: 80%;
+  color: rgb(242, 189, 108);
+}
+
+.no-talents::after {
+  content: '暂无天赋数据';
+  display: block;
+  text-align: center;
+}
+
+.talents {
+  width: 170px;
+  height: 170px;
+}
+
+.talent-box {
+  border-radius: 0px 10px 0px 0px;
+}
+
+.talent-artifact .name {
+  margin-top: 1px;
+  font-size: 6px;
+  -webkit-justify-content: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.artifacts {
+  position: absolute;
+  left: 2px;
+  bottom: 15px;
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-justify-content: flex-start;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  justify-content: flex-start;
+}
+
+.artifact {
+  position: relative;
+  background-color: rgba(32, 31, 31, 0.851);
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 15px;
+  width: 15px;
+  margin-left: 1px;
+  border-radius: 2px;
+}
+
+.no-artifacts {
+  position: absolute;
+  bottom: 7px;
+  left: 10px;
+  font-size: 10px;
+  font-weight: bold;
+  display: -webkit-flex;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  color: #000;
+  -webkit-justify-content: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+.plugin {
+  padding: 10px 0;
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.798);
+  text-align: center;
+  font-weight: bold;
+}

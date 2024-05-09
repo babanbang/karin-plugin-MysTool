@@ -1,6 +1,6 @@
 @font-face {
   font-family: "tttgbnumber";
-  src: url("../../../../../resources//fonts/tttgbnumber.woff");
+  src: url("../../../../../resources/fonts/tttgbnumber.woff");
   font-weight: normal;
   font-style: normal;
 }
@@ -21,8 +21,6 @@ body {
   color: #fff;
   font-family: PingFangSC-Medium, PingFang SC, sans-serif;
   width: 960px;
-  -webkit-transform: scale(2.0);
-  transform: scale(2.0);
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
 }
@@ -62,7 +60,6 @@ body {
   position: absolute;
   bottom: 25px;
   right: 0;
-  height: 1px;
 }
 
 .logo {
@@ -86,8 +83,6 @@ body {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
-  width: 960px;
-  height: auto;
   background-size: cover;
   padding: 0 0 20px;
 }
@@ -188,15 +183,7 @@ body {
   border-radius: 10px 10px 15px 10px;
 }
 
-.bg5 {
-  background-image: url('../../imgs/other/bg5.png');
-}
-
-.bg4 {
-  background-image: url('../../imgs/other/bg4.png');
-}
-
-.avatar-name {
+.avatar-name-wk {
   position: absolute;
   bottom: 0;
   -webkit-align-self: flex-start;
@@ -206,6 +193,22 @@ body {
   padding: 1px 3px;
   background-color: rgba(8, 8, 8, 0.65);
   border-radius: 4px;
+}
+
+.avatar-name-pu {
+  position: absolute;
+  bottom: 0;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  white-space: nowrap;
+  font-size: 7px;
+  color: #fff;
+  padding-right: 7px;
+  -webkit-clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 88% 50%);
+  clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 88% 50%);
+  background: #FF6B6B padding-box;
+  width: fit-content;
 }
 
 .fetter {
@@ -225,18 +228,6 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-}
-
-.avatar-cons {
-  position: absolute;
-  top: 0;
-  right: 0;
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: 2px;
-  font-size: 10px;
-  padding: 0 5px 0 5px;
-  line-height: 15px;
 }
 
 .weapon {
@@ -417,41 +408,6 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
-}
-
-.talents .anemo {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-anemo.png');
-}
-
-.talents .cryo {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-cryo.png');
-}
-
-.talents .dendro {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-dendro.png');
-}
-
-.talents .electro {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-electro.png');
-}
-
-.talents .geo {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-geo.png');
-}
-
-.talents .hydro {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-hydro.png');
-}
-
-.talents .pyro {
-  margin-left: 5px;
-  background-image: url('../../imgs/talent/talent-pyro.png');
 }
 
 .artifacts {

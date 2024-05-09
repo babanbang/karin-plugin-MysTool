@@ -271,9 +271,18 @@ export class UserBing extends plugin {
   async delCk_Sk () {
     const user = await this.user()
     const isCK = MysUtil.isCk(this.e.msg)
-    await user.setUidType(MysUtil.getGameByMsg(this.e.msg).key, isCK)
+    const uid = user.mainUid()
+    if (!uid) {
+      this.reply('暂未绑定UID', { at: true })
+      return
+    }
+    if (!(user.getUidData())[isCK ? 'ck' : 'sk']) {
+      this.reply(`UID:${uid}暂未绑定${isCK ? 'CK' : 'SK'}`, { at: true })
+      return
+    }
+    user.setUidType(MysUtil.getGameByMsg(this.e.msg).key, isCK)
 
-    this.reply(`已删除UID:${user.mainUid()}绑定的${isCK ? 'CK' : 'SK'}`, { at: true })
+    this.reply(`已删除UID:${uid}绑定的${isCK ? 'CK' : 'SK'}`, { at: true })
   }
 
   /** 查询当前UID的CK或SK */

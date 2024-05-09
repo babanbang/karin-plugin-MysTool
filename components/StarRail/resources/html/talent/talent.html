@@ -1,0 +1,27 @@
+{{set talent = _avatar.talent}}
+<div class="talent-box {{_avatar.weaponType}}">
+  {{each talentlist t}}
+  <div class="talent-1 bg-{{_avatar.elem}} {{_avatar.weaponType}}{{t}} {{hasTalent? '' : 'noact'}}">
+    <img class="{{useBrowser}}" src="{{pluResPath}}{{_avatar.imgs[t]}}">
+    <span class="level {{talent?.[t]?.level>talent?.[t]?.original?'up':''}}">{{talent?.[t]?.level||0}}/{{talent?.[t]?.max||6}}</span>
+  </div>
+  {{/each}}
+  <div class="talent-1 bg-{{_avatar.elem}} {{_avatar.weaponType}}z {{hasTalent? '' : 'noact'}}">
+    <img class="{{useBrowser}}" src="{{pluResPath}}{{_avatar.imgs.z}}">
+    <span class="level">1/1</span>
+  </div>
+  <div class="talent-2 bg-{{_avatar.elem}} {{_avatar.weaponType}}tree-1 {{hasTalent&&_avatar.act_tree?.[101] ? '' : 'noact'}}">
+    <img class="{{useBrowser}}" src="{{pluResPath}}{{_avatar.imgs.tree1}}">
+  </div>
+  <div class="talent-2 bg-{{_avatar.elem}} {{_avatar.weaponType}}tree-2 {{hasTalent&&_avatar.act_tree?.[102] ? '' : 'noact'}}">
+    <img class="{{useBrowser}}" src="{{pluResPath}}{{_avatar.imgs.tree2}}">
+  </div>
+  <div class="talent-2 bg-{{_avatar.elem}} {{_avatar.weaponType}}tree-3 {{hasTalent&&_avatar.act_tree?.[103] ? '' : 'noact'}}">
+    <img class="{{useBrowser}}" src="{{pluResPath}}{{_avatar.imgs.tree3}}">
+  </div>
+  {{each _avatar.talent_trees tree}}
+  <div class="talent-3 bg-{{_avatar.elem}} {{_avatar.weaponType}}-{{tree.id}} {{hasTalent&&tree.active? '' : 'noact'}}">
+    <img class="{{useBrowser}}" src="{{pluResPath}}meta/public/icons/attr-{{tree.key}}.png">
+  </div>
+  {{/each}}
+</div>
