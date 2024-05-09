@@ -11,7 +11,6 @@ export default class Role extends Base {
   }
 
   async roleList () {
-    // return await this.renderImg('', { test: true })
     const res = await MysInfo.get(this.e, 'character')
     if (res?.retcode !== 0) return false
 
@@ -35,6 +34,6 @@ export default class Role extends Base {
       },
       uid: this.e.MysUid,
       version: this.lable.version
-    }, { test: true })
+    })
   }
 }
