@@ -83,7 +83,7 @@ export default class Explore extends Base {
     exploreInfo.background_url = index.data.phone_background_image_url
     exploreInfo.game_head_icon = index.data.cur_head_icon_url
 
-    return await this.renderImg({ ...exploreInfo, uid: this.e.MysUid }, { width: 400 })
+    return await this.renderImg({ ...exploreInfo, uid: this.e.MysUid })
   }
 
   dealTime (basic, type) {
