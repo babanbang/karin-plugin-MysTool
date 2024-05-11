@@ -183,32 +183,27 @@ body {
   border-radius: 10px 10px 15px 10px;
 }
 
-.avatar-name-wk {
+.avatar-name {
   position: absolute;
   bottom: 0;
   -webkit-align-self: flex-start;
   -ms-flex-item-align: start;
   align-self: flex-start;
   white-space: nowrap;
+  font-size: 8px;
+}
+
+.avatar-name.-wk {
   padding: 1px 3px;
   background-color: rgba(8, 8, 8, 0.65);
   border-radius: 4px;
 }
 
-.avatar-name-pu {
-  position: absolute;
-  bottom: 0;
-  -webkit-align-self: flex-start;
-  -ms-flex-item-align: start;
-  align-self: flex-start;
-  white-space: nowrap;
-  font-size: 7px;
-  color: #fff;
-  padding-right: 7px;
+.avatar-name.-pu {
+  padding-right: 8px;
   -webkit-clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 88% 50%);
-  clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 88% 50%);
-  background: #FF6B6B padding-box;
-  width: fit-content;
+  clip-path: polygon(100% 0, 0 0, 0 100%, 100% 100%, 100% 99%, 92% 50%);
+  background: #ff6b6bdd padding-box;
 }
 
 .fetter {
@@ -225,6 +220,8 @@ body {
   left: 5px;
   width: 18px;
   height: 18px;
+  background: rgb(0 0 0 / 25%);
+  border-radius: 50%;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -429,6 +426,7 @@ body {
 
 .artifact {
   position: relative;
+  border: #eecb83 1px solid;
   background-color: rgba(32, 31, 31, 0.851);
   background-repeat: no-repeat;
   background-size: cover;
@@ -437,6 +435,21 @@ body {
   margin-left: 1px;
   margin-top: 1px;
   border-radius: 2px;
+}
+
+.artifacts img {
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 95%;
+  width: 95%;
+}
+
+.artifact-level {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  font-size: 3px;
+  color: rgb(255, 255, 255);
 }
 
 .no-artifacts {
@@ -453,6 +466,10 @@ body {
   -webkit-box-pack: center;
   -ms-flex-pack: center;
   justify-content: center;
+}
+
+.up {
+  color: rgb(50, 189, 239);
 }
 
 .plugin {

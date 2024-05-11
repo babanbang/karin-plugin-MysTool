@@ -33,7 +33,7 @@
               {{/if}}
               <span class="avatar-element"
                 style="background-image:url('{{pluResPath}}imgs/element/{{avatar.elem}}.png')"></span>
-              <div class="avatar-name{{useBrowser}}">LV.{{avatar.level}} {{avatar.name}}</div>
+              <div class="avatar-name {{useBrowser}}">LV.{{avatar.level}} {{avatar.name}}</div>
               <span class="fetter fetter{{avatar.fetter}}"></span>
             </div>
             <div class="weapon">
@@ -58,7 +58,9 @@
               <div class="name">{{avatar.talent[t].name}}</div>
               <div class="talents bg-{{avatar.elem}}">
                 <img src="{{pluResPath}}{{avatar.imgs[t]}}">
-                <span>LV. {{avatar.talent[t].level}}</span>
+                <span class="{{avatar.talent?.[t]?.level>avatar.talent?.[t]?.original?'up':''}}">
+                  LV. {{avatar.talent[t].level}}
+                </span>
               </div>
               {{/each}}
             </div>
@@ -69,8 +71,10 @@
             {{if avatar.reliquaries.length>0}}
             <div class="artifacts">
               {{each avatar.reliquaries artifact}}
-              <div class="artifact"
-                style="background-image: url('{{pluResPath}}meta/artifact/imgs/{{artifact.set.name}}/{{artifact.pos}}.png');">
+              <div class="artifact item-icon star{{artifact.star}}">
+                <img src="{{pluResPath}}meta/artifact/imgs/{{artifact.set.name}}/{{artifact.pos}}.png">
+                {{if artifact.level>0}}<span class="artifact-level"
+                  style="color: {{artifact.level===20 ? 'rgb(219 25 25)':''}};">+{{artifact.level}}</span>{{/if}}
               </div>
               {{/each}}
             </div>

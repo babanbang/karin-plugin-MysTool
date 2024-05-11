@@ -46,7 +46,7 @@
                 {{each talentlist t}}
                 <div class="avatar-talent-3 bg-{{avatar.elem}} {{hasTalent? '' : 'noact'}}">
                   <p>{{Tname[t]}}</p>
-                  <img class="{{useBrowser}}" src="{{pluResPath}}{{avatar.imgs[t]}}">
+                  <img src="{{pluResPath}}{{avatar.imgs[t]}}">
                   <span class="{{avatar.talent?.[t]?.level>avatar.talent?.[t]?.original?'up':''}}">
                     {{avatar.talent?.[t]?.level||'-'}}
                   </span>
@@ -58,8 +58,10 @@
               <div class="artifacts">
                 {{each avatar.artifact artifact}}
                 {{if artifact.set}}
-                <div class="artifact"
-                  style="background-image: url('{{pluResPath}}meta/artifact/imgs/{{artifact.set}}/arti-{{artifact.artiskey}}.png');">
+                <div class="artifact item-icon star{{artifact.star}}">
+                  <img src="{{pluResPath}}meta/artifact/imgs/{{artifact.set}}/arti-{{artifact.artiskey}}.png">
+                  {{if artifact.level>0}}<span class="artifact-level"
+                    style="color: {{artifact.level===15 ? 'rgb(219 25 25)':''}};">+{{artifact.level}}</span>{{/if}}
                 </div>
                 {{/if}}
                 {{/each}}

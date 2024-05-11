@@ -1,7 +1,7 @@
 .talent-box {
   width: 100%;
   height: 100%;
-  font-size: 35%;
+  font-size: 45%;
   font-weight: bold;
   color: #ffffff;
   font-family: "tttgbnumber";
@@ -56,12 +56,23 @@
 }
 
 .level {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
   position: absolute;
   bottom: -25%;
   left: 15%;
   width: 70%;
   height: 25%;
-  text-align: center;
   background: -webkit-gradient(linear, left top, right top, from(#00000000), color-stop(#000000), to(#00000000));
   background: -webkit-linear-gradient(left, #00000000, #000000, #00000000);
   background: linear-gradient(to right, #00000000, #000000, #00000000);
