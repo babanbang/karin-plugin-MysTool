@@ -21,7 +21,7 @@ body {
   color: #fff;
   font-family: PingFangSC-Medium, PingFang SC, sans-serif;
   width: 880px;
-  -webkit-transform: scale(1.5);
+  -webkit-transform: scale(2);
   transform: scale(2);
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
@@ -245,12 +245,12 @@ body {
   align-items: center;
   width: 25px;
   height: 25px;
-
 }
 
 .avatar-talent-3 img {
   position: absolute;
   top: 27%;
+  left: 20%;
 }
 
 .avatar-talent img {
@@ -264,6 +264,7 @@ body {
   font-size: 7px;
   font-weight: bold;
   top: -7px;
+  left: 6px;
 }
 
 .avatar-talent span {
@@ -286,6 +287,7 @@ body {
   align-items: center;
   position: absolute;
   bottom: -5px;
+  left: 5px;
 }
 
 .avatar-name {

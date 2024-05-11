@@ -34,6 +34,6 @@ export default class Role extends Base {
       },
       uid: this.e.MysUid,
       version: this.lable.version
-    })
+    }, { Scale: true })
   }
 }

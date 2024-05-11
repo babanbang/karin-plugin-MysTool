@@ -1,7 +1,7 @@
 .talent-box {
   width: 100%;
   height: 100%;
-  font-size: 45%;
+  font-size: 48%;
   font-weight: bold;
   color: #ffffff;
   font-family: "tttgbnumber";
@@ -10,6 +10,7 @@
   background-position: center center, top left;
   background-size: contain, cover;
   background-repeat: no-repeat;
+  background-position: 100% 0;
 }
 
 .talent-box img {

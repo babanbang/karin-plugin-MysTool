@@ -27,7 +27,7 @@
       <div class="avatars">
         {{each avatars avatar idx}}
         {{set hasTalent = avatar.talent?.a&&avatar.talent?.e&&avatar.talent?.q&&avatar.talent?.t}}
-        <div class="avatar-box" style="height: '{{avatar.weapon?.promote>0? '':'150px'}}';">
+        <div class="avatar-box" style="height: {{avatar.weapon?.promote>0? '':'170px'}};">
           <div class="avatar-top">
             <div class="left">
               <div class="avatar bg{{avatar.star}}">
