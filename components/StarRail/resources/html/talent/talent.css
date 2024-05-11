@@ -82,34 +82,6 @@
   color: rgb(50, 189, 239);
 }
 
-.存护 {
-  background-image: url('./imgs/存护.png'), url('./imgs/bg.png');
-}
-
-.丰饶 {
-  background-image: url('./imgs/丰饶.png'), url('./imgs/bg.png');
-}
-
-.毁灭 {
-  background-image: url('./imgs/毁灭.png'), url('./imgs/bg.png');
-}
-
-.同谐 {
-  background-image: url('./imgs/同谐.png'), url('./imgs/bg.png');
-}
-
-.虚无 {
-  background-image: url('./imgs/虚无.png'), url('./imgs/bg.png');
-}
-
-.巡猎 {
-  background-image: url('./imgs/巡猎.png'), url('./imgs/bg.png');
-}
-
-.智识 {
-  background-image: url('./imgs/智识.png'), url('./imgs/bg.png');
-}
-
 .存护a {
   top: 48.8%;
   left: 26.5%;

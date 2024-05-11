@@ -391,7 +391,7 @@ body {
 
 /********  ELEM  ********/
 .elem-hydro .talent-icon {
-  background-image: url("./bg/talent-hydro.png");
+  background-image: url("./talent/talent-hydro.png");
 }
 
 .elem-hydro .elem-bg,
@@ -400,7 +400,7 @@ body {
 }
 
 .elem-anemo .talent-icon {
-  background-image: url("./bg/talent-anemo.png");
+  background-image: url("./talent/talent-anemo.png");
 }
 
 .elem-anemo .elem-bg,
@@ -409,7 +409,7 @@ body {
 }
 
 .elem-cryo .talent-icon {
-  background-image: url("./bg/talent-cryo.png");
+  background-image: url("./talent/talent-cryo.png");
 }
 
 .elem-cryo .elem-bg,
@@ -418,7 +418,7 @@ body {
 }
 
 .elem-electro .talent-icon {
-  background-image: url("./bg/talent-electro.png");
+  background-image: url("./talent/talent-electro.png");
 }
 
 .elem-electro .elem-bg,
@@ -427,7 +427,7 @@ body {
 }
 
 .elem-geo .talent-icon {
-  background-image: url("./bg/talent-geo.png");
+  background-image: url("./talent/talent-geo.png");
 }
 
 .elem-geo .elem-bg,
@@ -436,7 +436,7 @@ body {
 }
 
 .elem-pyro .talent-icon {
-  background-image: url("./bg/talent-pyro.png");
+  background-image: url("./talent/talent-pyro.png");
 }
 
 .elem-pyro .elem-bg,
@@ -445,7 +445,7 @@ body {
 }
 
 .elem-dendro .talent-icon {
-  background-image: url("./bg/talent-dendro.png");
+  background-image: url("./talent/talent-dendro.png");
 }
 
 .elem-dendro .elem-bg,
@@ -454,7 +454,7 @@ body {
 }
 
 .elem-quantum .talent-icon {
-  background-image: url("./bg/talent-quantum.png");
+  background-image: url("./talent/talent-quantum.png");
 }
 
 .elem-quantum .elem-bg,
@@ -463,7 +463,7 @@ body {
 }
 
 .elem-sr .talent-icon {
-  background-image: url("./bg/talent-sr.png");
+  background-image: url("./talent/talent-sr.png");
 }
 
 .elem-sr .elem-bg,
@@ -594,4 +594,60 @@ body {
 
 .bg4 {
   background-image: url('./item/bg4.png');
+}
+
+.存护-s {
+  background-image: url('./talent/存护-s.png');
+}
+
+.存护 {
+  background-image: url('./talent/存护.png'), url('./talent/bg.png');
+}
+
+.丰饶-s {
+  background-image: url('./talent/丰饶-s.png');
+}
+
+.丰饶 {
+  background-image: url('./talent/丰饶.png'), url('./talent/bg.png');
+}
+
+.毁灭-s {
+  background-image: url('./talent/毁灭-s.png');
+}
+
+.毁灭 {
+  background-image: url('./talent/毁灭.png'), url('./talent/bg.png');
+}
+
+.同谐-s {
+  background-image: url('./talent/同谐-s.png');
+}
+
+.同谐 {
+  background-image: url('./talent/同谐.png'), url('./talent/bg.png');
+}
+
+.虚无-s {
+  background-image: url('./talent/虚无-s.png');
+}
+
+.虚无 {
+  background-image: url('./talent/虚无.png'), url('./talent/bg.png');
+}
+
+.巡猎-s {
+  background-image: url('./talent/巡猎-s.png');
+}
+
+.巡猎 {
+  background-image: url('./talent/巡猎.png'), url('./talent/bg.png');
+}
+
+.智识-s {
+  background-image: url('./talent/智识-s.png');
+}
+
+.智识 {
+  background-image: url('./talent/智识.png'), url('./talent/bg.png');
 }
