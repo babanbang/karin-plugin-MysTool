@@ -1,2 +1,2 @@
-export * from '../components/Genshin/index.js'
-export * from '../components/StarRail/index.js'
+// eslint-disable-next-line import/no-unresolved
+export * from '../components/index.js'

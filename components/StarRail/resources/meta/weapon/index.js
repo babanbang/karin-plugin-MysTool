@@ -14,7 +14,7 @@ meta.addAbbr(abbr)
 const weaponBuffs = {}
 let loadBuffs = async function () {
   for (const type of types) {
-    let calc = await Data.importDefault(`${type}/calc.js`, Path)
+    let calc = (await Data.importDefault(`${type}/calc.js`, Path)).module
     if (_.isFunction(calc)) {
       calc = calc((idx, key) => {
         return {

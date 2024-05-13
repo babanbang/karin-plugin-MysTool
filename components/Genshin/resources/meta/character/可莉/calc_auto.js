@@ -67,7 +67,7 @@ export const buffs = [{
     atkPlus: 1202.35
   }
 }, {
-  check: ({ params , artis }) => params.team === true && artis.昔日宗室之仪 !== 4 ,
+  check: ({ params, artis }) => params.team === true && artis.昔日宗室之仪 !== 4,
   title: '班尼特-昔日宗室之仪：增加攻击[atkPct]%',
   data: {
     atkPct: 20

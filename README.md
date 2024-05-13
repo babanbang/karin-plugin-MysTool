@@ -45,8 +45,6 @@ git clone https://github.com/babanbang/karin-plugin-MysTool.git ./plugins/karin-
 pnpm install --filter=karin-plugin-MysTool
 ```
 
-
-
 ---
 ### 待完成功能
 - [ ] 可选安装原神、崩坏：星穹铁道相关功能
@@ -85,7 +83,7 @@ pnpm install --filter=karin-plugin-MysTool
 <details><summary><b>其他</b></summary>
 
 - [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
-- [ ] 1034、10035(额外安装插件提供功能)
+- [x] 1034、10035、签到(额外安装[插件](https://github.com/babanbang/mys)提供功能)
 </details>
 
 ---

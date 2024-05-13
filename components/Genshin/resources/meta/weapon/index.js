@@ -31,7 +31,7 @@ const attr = function (key, start, _step) {
 
 for (const type in weaponType) {
   // calc
-  const typeCalc = await Data.importDefault(`${type}/calc.js`, Path)
+  const typeCalc = (await Data.importDefault(`${type}/calc.js`, Path)).module
   _.assign(weaponBuffs, typeCalc(step, attr))
 
   // data

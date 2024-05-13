@@ -11,7 +11,7 @@ export default class Role extends Base {
     this.lable = Cfg.getdefSet('lable', 'gs')
   }
 
-  async roleList () {
+  async roleList (refreshTalent = false) {
     const res = await MysInfo.get(this.e, 'character')
     if (res?.retcode !== 0) return false
 
@@ -22,8 +22,12 @@ export default class Role extends Base {
       avatars: res.data.avatars
     }
 
-    if (this.e.HasMysCk) {
+    if (this.e.HasMysCk && refreshTalent) {
+      this.e.reply('正在刷新天赋数据，请稍等...')
       await this.skillData(list.avatars, player)
+    } else if (!this.e.HasMysCk && refreshTalent) {
+      this.e.reply('未绑定Cookie，无法刷新天赋数据')
+      return false
     }
 
     // todo 圣遗物使用面板数据
@@ -37,6 +41,7 @@ export default class Role extends Base {
       list.avatars[idx].imgs = avatar.char.getImgs(v.costumes?.[0]?.id)
       list.avatars[idx].weaponType = avatar.char.weaponType
       list.avatars[idx].elem = avatar.char.elem
+      list.avatars[idx].talent = avatar.talent
     })
 
     return await this.renderImg({
@@ -84,28 +89,20 @@ export default class Role extends Base {
         if (max_level < 10) continue
         if (name.includes('普通攻击')) {
           talent.a = level_current
-          talent.a_name = name
           continue
         }
         if (!talent.q) {
           talent.q = level_current
-          talent.q_name = name
           continue
         }
         if (!talent.e) {
           talent.e = level_current
-          talent.e_name = name
         }
         if (talent.a && talent.e && talent.q) break
       }
+      avatars[idx].talent = talent
       avatars[idx].cons = v.actived_constellation_num
       avatar.setAvatar(avatars[idx], 'mys')
-
-      avatars[idx].talent = avatar.talent
-      // eslint-disable-next-line no-unused-vars
-      _.forEach(avatars[idx].talent, (v, k) => {
-        avatars[idx].talent[k].name = talent[k + '_name']
-      })
     })
     player.save()
   }

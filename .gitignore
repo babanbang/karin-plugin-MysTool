@@ -1,3 +1,5 @@
 /node_modules/
+/components/MysSign/
+/components/index.js
 /data/
 /temp/

@@ -14,16 +14,24 @@ export class gs_role extends plugin {
         {
           reg: new RegExp(`^${reg}?(角色|查询|查询角色|角色查询)[ |0-9]*$|^${reg}?uid(\\+|\\s)*(18|[1-9])[0-9]{8}$|^#(18|[1-9])[0-9]{8}`, 'i'),
           fnc: 'roleList'
+        },
+        {
+          reg: new RegExp(`^${reg}?(刷新|更新)(角色)?天赋(数据)?[ |0-9]*$`, 'i'),
+          fnc: 'refreshTalent'
         }
       ]
     })
   }
 
   /** 角色列表 */
-  async roleList () {
-    const img = await new Role(this.e).roleList()
+  async roleList ({ refreshTalent = false }) {
+    const img = await new Role(this.e).roleList(refreshTalent)
     if (!img) return
 
     this.reply(img)
+  }
+
+  async refreshTalent () {
+    await this.roleList({ refreshTalent: true })
   }
 }
