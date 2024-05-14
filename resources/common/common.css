@@ -596,58 +596,86 @@ body {
   background-image: url('./item/bg4.png');
 }
 
+.存护 {
+  background-image: url('./talent/存护.png');
+}
+
 .存护-s {
   background-image: url('./talent/存护-s.png');
 }
 
-.存护 {
+.存护-bg {
   background-image: url('./talent/存护.png'), url('./talent/bg.png');
+}
+
+.丰饶 {
+  background-image: url('./talent/丰饶.png');
 }
 
 .丰饶-s {
   background-image: url('./talent/丰饶-s.png');
 }
 
-.丰饶 {
+.丰饶-bg {
   background-image: url('./talent/丰饶.png'), url('./talent/bg.png');
+}
+
+.毁灭 {
+  background-image: url('./talent/毁灭.png');
 }
 
 .毁灭-s {
   background-image: url('./talent/毁灭-s.png');
 }
 
-.毁灭 {
+.毁灭-bg {
   background-image: url('./talent/毁灭.png'), url('./talent/bg.png');
+}
+
+.同谐 {
+  background-image: url('./talent/同谐.png');
 }
 
 .同谐-s {
   background-image: url('./talent/同谐-s.png');
 }
 
-.同谐 {
+.同谐-bg {
   background-image: url('./talent/同谐.png'), url('./talent/bg.png');
+}
+
+.虚无 {
+  background-image: url('./talent/虚无.png');
 }
 
 .虚无-s {
   background-image: url('./talent/虚无-s.png');
 }
 
-.虚无 {
+.虚无-bg {
   background-image: url('./talent/虚无.png'), url('./talent/bg.png');
+}
+
+.巡猎 {
+  background-image: url('./talent/巡猎.png');
 }
 
 .巡猎-s {
   background-image: url('./talent/巡猎-s.png');
 }
 
-.巡猎 {
+.巡猎-bg {
   background-image: url('./talent/巡猎.png'), url('./talent/bg.png');
+}
+
+.智识 {
+  background-image: url('./talent/智识.png');
 }
 
 .智识-s {
   background-image: url('./talent/智识-s.png');
 }
 
-.智识 {
+.智识-bg {
   background-image: url('./talent/智识.png'), url('./talent/bg.png');
 }

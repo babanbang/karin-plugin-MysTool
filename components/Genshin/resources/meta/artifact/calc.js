@@ -357,7 +357,7 @@ const buffs = {
       title: '触发提高普攻[aPlus]伤害',
       sort: 9,
       data: {
-        aPlus: ({ attr }) => (attr.atk.base + attr.atk.plus + attr.atk.pct * attr.atk.base / 100) * 0.35
+        aPlus: ({ attr }) => attr.atk * 0.35
       }
     }
   },
@@ -484,7 +484,28 @@ const buffs = {
         dmg: 50
       }
     }
+  },
+
+  谐律异想断章: {
+    2: attr('atkPct', 18),
+    4: {
+      title: '生命之契的数值提升或降低时，角色造成的伤害提升[dmg]%',
+      data: {
+        dmg: 18 * 3
+      }
+    }
+  },
+
+  未竟的遐思: {
+    2: attr('atkPct', 18),
+    4: {
+      title: '存在处于燃烧状态下的敌人时，伤害提升[dmg]%',
+      data: {
+        dmg: 10 * 5
+      }
+    }
   }
+
 }
 
 export default buffs

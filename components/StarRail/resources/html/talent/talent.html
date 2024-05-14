@@ -1,5 +1,5 @@
 {{set talent = _avatar.talent}}
-<div class="talent-box {{_avatar.weaponType}}">
+<div class="talent-box {{_avatar.weaponType}}-bg">
   {{each talentlist t}}
   <div class="talent-1 bg-{{_avatar.elem}} {{_avatar.weaponType}}{{t}} {{hasTalent? '' : 'noact'}}">
     <img class="{{useBrowser}}" src="{{pluResPath}}{{_avatar.imgs[t]}}">
