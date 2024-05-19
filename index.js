@@ -1,15 +1,20 @@
 import fs from 'fs'
 import path from 'path'
 
-export const getDirPath = (PATH) => {
-  return path.dirname(
+export const getDir = (PATH) => {
+  const _path = path.dirname(
     path.resolve('/', decodeURI(PATH.replace(/^file:\/\/(?:\/)?/, '')))
   ).replace(/\\/g, '/')
+
+  return {
+    path: _path,
+    name: path.basename(_path)
+  }
 }
 
-export const dirPath = getDirPath(import.meta.url)
+export const getDirName = (PATH) => path.basename(PATH)
 
-export const PluginName = path.basename(dirPath)
+export const { path: dirPath, name: PluginName } = getDir(import.meta.url)
 
 const compath = dirPath + '/components/'
 if (!fs.existsSync(compath)) {
