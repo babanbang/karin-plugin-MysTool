@@ -1,5 +1,4 @@
 /node_modules/
-/components/*
-!/components/index_default.js
+/components/
 /data/
 /temp/

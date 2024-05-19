@@ -11,16 +11,22 @@ export const dirPath = getDirPath(import.meta.url)
 
 export const PluginName = path.basename(dirPath)
 
-const jsPath = dirPath + '/components/index.js'
+const compath = dirPath + '/components/'
+if (!fs.existsSync(compath)) {
+  fs.mkdirSync(compath)
+}
+
+const jsPath = compath + 'index.js'
 if (!fs.existsSync(jsPath)) {
   const txt = []
-  const filesAndFolders = fs.readdirSync(dirPath + '/components')
+  const filesAndFolders = fs.readdirSync(compath)
   const folders = filesAndFolders.filter(item => {
-    return fs.statSync(dirPath + '/components/' + item).isDirectory()
+    return fs.statSync(compath + item).isDirectory()
   })
   folders.forEach(f => {
     txt.unshift(`export * from './${f}/index.js'`)
   })
-  fs.writeFileSync(jsPath, (txt.join('\n') || 'export {}') + '\n', 'utf8')
+  fs.writeFileSync(jsPath, (txt.join('\n') || 'export const a = 1') + '\n', 'utf8')
 }
+
 logger.info(`${PluginName} 插件初始化~`)
