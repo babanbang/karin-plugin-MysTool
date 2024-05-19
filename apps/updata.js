@@ -1,5 +1,5 @@
-import { plugin, Update, common, segment } from '#Karin'
-import { dirPath, PluginName } from '#Mys.tool'
+import { Update, common, plugin, segment } from '#Karin'
+import { PluginName, dirPath } from '#Mys.tool'
 import fs from 'fs'
 import _ from 'lodash'
 
@@ -15,6 +15,7 @@ export class MysToolUpdata extends plugin {
       rule: [
         {
           reg: '^#?(强制)?更新MysTool',
+          permission: 'master',
           fnc: 'Updata'
         }
       ]
@@ -22,11 +23,12 @@ export class MysToolUpdata extends plugin {
   }
 
   async Updata () {
-    uping = true
     if (uping) {
       this.reply('正在更新MysTool，请稍后...')
       return false
     }
+    uping = true
+    setTimeout(() => { uping = false }, 300 * 1000)
 
     const filesAndFolders = fs.readdirSync(compath)
     const folders = filesAndFolders.filter(item => {
@@ -38,13 +40,15 @@ export class MysToolUpdata extends plugin {
       cm = 'git reset --hard master&& git pull --rebase'
     }
 
-    const msgs = []
+    let msgs = []
     const pname = PluginName.replace(/^karin-plugin-/, '')
     const paths = [pname, ...folders.map(f => pname + '/components/' + f)]
 
     const updata = new Update()
     for (const name of paths) {
-      const msg = [`开始更新${name}...`]
+      logger.info(`开始更新${name}`)
+
+      const msg = [`更新${name}...`]
       const { data } = await updata.update(name, cm)
       if (_.isObject(data)) {
         msg.push(data.message + data.stderr)
@@ -57,7 +61,11 @@ export class MysToolUpdata extends plugin {
       msgs.push(common.makeForward(msg.map(m => segment.text(m))))
     }
 
-    await this.reply(common.makeForward(msgs))
+    if (msgs.length > 1) {
+      msgs = common.makeForward(msgs)
+    }
+
+    await this.reply(msgs)
     if (this.isUp) {
       this.reply('MysTool更新成功，请重启应用更新！')
     }
