@@ -1,6 +1,6 @@
 import { common, plugin, segment } from '#Karin'
 import { MysApi, MysUtil } from '#Mys.api'
-import { Player } from '#Mys.rank'
+import { Player } from '#Mys.profile'
 import { Base } from '#Mys.tool'
 import { MysUser, User } from '#Mys.user'
 import _ from 'lodash'
@@ -41,7 +41,7 @@ export class UserBing extends plugin {
           fnc: 'myCk_Sk'
         },
         {
-          reg: new RegExp(`^#?(${reg})?删除(c(oo)?k(ie)?|s(to)?k(en)?)$`, 'i'),
+          reg: new RegExp(`^#?(${reg})?删除(c(oo)?k(ie)?|s(to)?k(en)?)(\\s|\\+)*([0-9]{1,2})?$`, 'i'),
           fnc: 'delCk_Sk'
         },
         {
@@ -66,7 +66,7 @@ export class UserBing extends plugin {
 
   /** 获取当前user实例 */
   async user () {
-    return await User.create(this.e)
+    return await User.create(this.e, MysUtil.getGameByMsg(this.e.msg).key)
   }
 
   async bing () {
@@ -173,31 +173,33 @@ export class UserBing extends plugin {
   /** 绑定uid */
   async bingUid (game) {
     const uid = MysUtil.matchUid(this.e.msg)
-    if (typeof game !== 'string') game = MysUtil.getGameByMsg(this.e.msg)
-    else game = MysUtil.getGame(game)
+    if (typeof game !== 'string') {
+      game = MysUtil.getGameByMsg(this.e.msg)
+    } else {
+      game = MysUtil.getGame(game)
+    }
     if (!uid) {
       this.reply(`${game.name}UID输入错误`, { at: true })
       return
     }
 
     const user = await this.user()
-    await user.addRegUid(uid, game.key)
+    user.addRegUid(uid, game.key)
     return await this.showUid()
   }
 
   /** 解绑uid */
   async delUid () {
     const idx = this.e.msg.match(/[0-9]{1,2}/g)
-    const game = MysUtil.getGameByMsg(this.e.msg)
     if (idx && idx[0]) {
       const user = await this.user()
 
-      const uidList = user.getUidList(game.key)
+      const uidList = user.getUidList()
       if (idx[0] > uidList.length) {
         return this.reply('uid序号输入错误')
       }
 
-      await user.delRegUid(uidList[Number(idx[0]) - 1], game.key)
+      user.delRegUid(uidList[Number(idx[0]) - 1])
       return await this.showUid()
     } else {
       this.reply('删除uid请带上序号\n例如：#删除uid1\n发送【#uid】可查看绑定的uid以及对应的序号')
@@ -269,18 +271,29 @@ export class UserBing extends plugin {
 
   /** 删除UID与CK或SK的绑定 */
   async delCk_Sk () {
+    const idx = this.e.msg.match(/[0-9]{1,2}/g)
+
     const user = await this.user()
+    let uid = user.mainUid()
+
+    if (idx && idx[0]) {
+      const uidList = user.getUidList()
+      if (idx[0] > uidList.length) {
+        return this.reply('序号输入错误')
+      }
+      uid = uidList[Number(idx[0]) - 1]
+    }
+
     const isCK = MysUtil.isCk(this.e.msg)
-    const uid = user.mainUid()
     if (!uid) {
       this.reply('暂未绑定UID', { at: true })
       return
     }
-    if (!(user.getUidData())[isCK ? 'ck' : 'sk']) {
+    if (!(user.getUidData({ uid }))[isCK ? 'ck' : 'sk']) {
       this.reply(`UID:${uid}暂未绑定${isCK ? 'CK' : 'SK'}`, { at: true })
       return
     }
-    user.setUidType(MysUtil.getGameByMsg(this.e.msg).key, isCK)
+    user.setUidType({ deluid: uid, delck: isCK })
 
     this.reply(`已删除UID:${uid}绑定的${isCK ? 'CK' : 'SK'}`, { at: true })
   }
@@ -291,9 +304,8 @@ export class UserBing extends plugin {
       return this.reply('请私聊查看', { at: true })
     }
     const user = await this.user()
-    const game = MysUtil.getGameByMsg(this.e.msg)
-    const data = user.getUidData(game.key)
-    const msg = [`${game.name}UID: ${data?.uid || user.mainUid(game.key)}`]
+    const data = user.getUidData()
+    const msg = [`${MysUtil.getGameByMsg(this.e.msg).name}UID: ${data?.uid || user.mainUid()}`]
     if (!data) {
       return this.reply(msg[0] + '，未绑定CK及SK')
     }

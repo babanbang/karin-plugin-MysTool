@@ -404,6 +404,7 @@ body {
 }
 
 .elem-anemo .elem-bg,
+.elem-wind .elem-bg,
 .anemo-bg {
   background-image: url("./bg/bg-anemo.png");
 }
@@ -413,6 +414,7 @@ body {
 }
 
 .elem-cryo .elem-bg,
+.elem-ice .elem-bg,
 .cryo-bg {
   background-image: url("./bg/bg-cryo.png");
 }
@@ -422,6 +424,8 @@ body {
 }
 
 .elem-electro .elem-bg,
+.elem-thunder .elem-bg,
+.elem-lightning .elem-bg,
 .electro-bg {
   background-image: url("./bg/bg-electro.png");
 }
@@ -431,6 +435,7 @@ body {
 }
 
 .elem-geo .elem-bg,
+.elem-imaginary .elem-bg,
 .geo-bg {
   background-image: url("./bg/bg-geo.png");
 }
@@ -440,6 +445,7 @@ body {
 }
 
 .elem-pyro .elem-bg,
+.elem-fire .elem-bg,
 .pyro-bg {
   background-image: url("./bg/bg-pyro.png");
 }
@@ -467,6 +473,7 @@ body {
 }
 
 .elem-sr .elem-bg,
+.elem-physical .elem-bg,
 .sr-bg {
   background-image: url("./bg/bg-sr.png");
 }
@@ -678,4 +685,23 @@ body {
 
 .智识-bg {
   background-image: url('./talent/智识.png'), url('./talent/bg.png');
+}
+
+/** profile**/
+.mark-ACE,
+.mark-MAX {
+  color: #e85656;
+  font-weight: bold;
+}
+
+.mark-SSS,
+.mark-SS {
+  color: #ffe699;
+  font-weight: bold;
+}
+
+.mark-S,
+.mark-A {
+  color: #d699ff;
+  font-weight: bold;
 }

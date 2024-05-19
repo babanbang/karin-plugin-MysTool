@@ -16,8 +16,8 @@
       "#Mys.user": [
         "./lib/user/index.js"
       ],
-      "#Mys.rank": [
-        "./lib/rank/index.js"
+      "#Mys.profile": [
+        "./lib/profile/index.js"
       ],
     }
   }
