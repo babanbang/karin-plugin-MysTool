@@ -2,7 +2,7 @@ import { plugin } from '#Karin'
 import { MysInfo, MysUtil } from '#Mys.api'
 import { Character } from '#Mys.profile'
 
-const reg = `(${Object.values(MysUtil.reg).join('|')})`
+const reg = `(${Object.values(MysUtil.reg).join('|')}?)`
 export class profileReplace extends plugin {
   constructor () {
     super({
@@ -12,7 +12,7 @@ export class profileReplace extends plugin {
       priority: 0,
       rule: [
         {
-          reg: /^#*([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*(\d{9,10})*(.*[换变改].*)?$/,
+          reg: /^#*([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*((18|[1-9])[0-9]{8})*(.*[换变改].*)?$/i,
           fnc: 'Replace',
           log: false
         }
@@ -21,11 +21,8 @@ export class profileReplace extends plugin {
   }
 
   async Replace () {
-    this.e.MysUid = await new MysInfo(this.e).getUid()
-    if (!this.e.MysUid) return true
-
     const name = (this.e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+)\\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\\d*)?)\\s*(\\d{9,10})*(.*[换变改].*)?$`))?.[1])?.trim()
-    if (!name) return false
+    if (!name || /更新/g.test(this.e.msg)) return false
 
     const char = Character.get(name)
     if (!char) {
@@ -33,7 +30,10 @@ export class profileReplace extends plugin {
       return true
     }
 
-    this.e.msg = this.e.msg?.replace(new RegExp(reg, 'g'), '#' + char.game)
+    this.e.msg = this.e.msg?.replace(new RegExp('^' + reg, 'i'), '#' + char.game)
+    this.e.MysUid = await new MysInfo(this.e).getUid()
+    if (!this.e.MysUid) return true
+
     this.e._profile = {
       name: char.name,
       dmgIdx: ((/伤害(\d*)$/.exec(this.e.msg))?.[1] || 0) * 1

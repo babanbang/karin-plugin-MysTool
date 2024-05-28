@@ -33,11 +33,11 @@ karin根目录执行以下命令克隆仓库到本地
 >根据你的网络选择使用GitHub或Gitee
 1. 使用GitHub
 ```bash
-git clone https://github.com/babanbang/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
+git clone --depth=1 https://github.com/babanbang/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
 ```
 1. 使用Gitee
 ```bash
-git clone https://gitee.com/bbaban/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
+git clone --depth=1 https://gitee.com/bbaban/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
 ```
 
 #### 安装依赖
@@ -67,7 +67,7 @@ pnpm install --filter=karin-plugin-MysTool
 - [ ] 深渊查询
 - [ ] 七圣召唤查询
 - [ ] 体力查询
-- [ ] 角色面板查询
+- [x] 角色面板更新、查询
 - [ ] 祈愿记录更新、查询
 </details>
 
@@ -79,13 +79,13 @@ pnpm install --filter=karin-plugin-MysTool
 - [ ] 混沌回忆查询
 - [ ] 模拟宇宙、寰宇蝗灾、黄金与机械查询
 - [ ] 体力查询
-- [x] 角色面板查询
+- [x] 角色面板更新、查询
 - [ ] 祈愿记录更新、查询(使用链接或文件更新)
 </details>
 
 <details><summary><b>其他</b></summary>
 
-- [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
+- [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(由于坤术原因部分图片不支持使用，暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
 - [x] 1034、10035、签到(额外安装[插件](../../../mys)提供功能)
 </details>
 

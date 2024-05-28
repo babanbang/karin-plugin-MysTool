@@ -5,16 +5,11 @@
 {{/block}}
 
 {{block 'main'}}
-{{ set gameMap = {
-gs:{mark:'#'},
-sr:{mark:'*'},
-zzz:{mark:'%'}
-}; }}
-
+{{ set gameMap = {gs:'#gs',sr:'#sr',zzz:'#zzz'} }}
 
 <div class="uid-list">
   {{each uids game}}
-  {{set mark = game.key==='gs'? '#':'*'}}
+  {{set mark = gameMap[game.key]}}
   <div class="game-cont">
     <div class="game-title">
       <strong>{{mark}}{{game.name}}</strong>
@@ -71,20 +66,20 @@ zzz:{mark:'%'}
 </div>
 
 <ul class="tips">
-  <li>原神及通用命令以#开头，星铁命令以*开头。发送CK可绑定CK对应uid</li>
+  <li>原神及通用命令以#gs开头，星铁命令以#sr开头，绝区零命令以#zzz开头。发送CK可绑定CK对应uid</li>
   <li>游戏信息来自面板数据，如无信息或不准确请更新面板</li>
   <li>
-    <nobr>#删除uid1</nobr>
+    <nobr>{{mark}}删除uid1</nobr>
     删除指定序号uid
 
-    <nobr>#绑定123456789</nobr>
+    <nobr>{{mark}}绑定123456789</nobr>
     绑定对应uid
   </li>
   <li>
-    <nobr>#我的ck</nobr>
+    <nobr>{{mark}}我的ck</nobr>
     查看ck信息
 
-    <nobr>#删除ck</nobr>
+    <nobr>{{mark}}删除ck</nobr>
     删除当前ck
   </li>
 </ul>

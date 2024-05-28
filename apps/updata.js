@@ -1,5 +1,5 @@
-import { Update, common, plugin, segment } from '#Karin'
-import { PluginName, dirPath } from '#Mys.tool'
+import { Update, plugin } from '#Karin'
+import { PluginName, common, dirPath } from '#Mys.tool'
 import fs from 'fs'
 import _ from 'lodash'
 
@@ -58,7 +58,7 @@ export class MysToolUpdata extends plugin {
           this.isUp = true
         }
       }
-      msgs.push(common.makeForward(msg.map(m => segment.text(m))))
+      msgs.push([msg])
     }
 
     if (msgs.length > 1) {

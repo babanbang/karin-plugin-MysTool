@@ -36,8 +36,6 @@ body {
   font-size: 18px;
   color: #1e1f20;
   font-family: Number, "汉仪文黑-65W", YS, PingFangSC-Medium, "PingFang SC", sans-serif;
-  -webkit-transform: scale(1.4);
-  transform: scale(1.4);
   -webkit-transform-origin: 0 0;
   transform-origin: 0 0;
   width: 600px;
@@ -314,7 +312,6 @@ body {
   background-image: url('./talent/talent-geo.png');
 }
 
-.bg-physical,
 .bg-hydro {
   background-image: url('./talent/talent-hydro.png');
 }
@@ -328,13 +325,22 @@ body {
   background-image: url('./talent/talent-quantum.png');
 }
 
+.bg-physical {
+  background-image: url('./talent/talent-sr.png');
+}
+
 .noact {
   background-image: url('./talent/talent-sr.png');
+  opacity: 0.4;
 }
 
 /* attr */
 .attr-icon {
   background-image: url('./item/icon-sr.png');
+}
+
+.attr-icon-gs {
+  background-image: url('./item/icon.png');
 }
 
 .i-hp {
@@ -374,6 +380,7 @@ body {
 }
 
 .i-heal {
+  background-image: url('./item/icon-sr.png');
   background-position: -144px 0;
 }
 
