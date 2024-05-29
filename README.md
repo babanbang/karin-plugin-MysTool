@@ -24,7 +24,7 @@
 </p>
 
 <h1 align="center">karin-plugin-MysTool</h1>
-<p align="center">米游社、原神、星穹铁道</p>
+<p align="center">米游社、原神、星穹铁道、绝区零</p>
 
 ---
 #### 克隆仓库
@@ -46,7 +46,7 @@ git clone --depth=1 https://gitee.com/bbaban/karin-plugin-MysTool.git ./plugins/
 pnpm install --filter=karin-plugin-MysTool
 ```
 
-#### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)
+#### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../Zenless)
 
 ---
 ### 待完成功能
@@ -81,6 +81,10 @@ pnpm install --filter=karin-plugin-MysTool
 - [ ] 体力查询
 - [x] 角色面板更新、查询
 - [ ] 祈愿记录更新、查询(使用链接或文件更新)
+</details>
+
+<details><summary><b>绝区零相关</b></summary>
+- [ ] 这没公测也写不了啊
 </details>
 
 <details><summary><b>其他</b></summary>

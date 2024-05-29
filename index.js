@@ -34,4 +34,29 @@ if (!fs.existsSync(jsPath)) {
   fs.writeFileSync(jsPath, (txt.join('\n') || 'export const a = 1') + '\n', 'utf8')
 }
 
+const old_dataPath = dirPath + '/data/'
+const new_dataPath = './data/' + PluginName + '/'
+const copyFolderContents = (src, dest) => {
+  const entries = fs.readdirSync(src, { withFileTypes: true })
+
+  entries.forEach(entry => {
+    const srcPath = path.join(src, entry.name)
+    const destPath = path.join(dest, entry.name)
+
+    if (entry.isDirectory()) {
+      if (!fs.existsSync(destPath)) {
+        fs.mkdirSync(destPath, { recursive: true })
+      }
+      copyFolderContents(srcPath, destPath)
+    } else {
+      fs.renameSync(srcPath, destPath)
+    }
+  })
+}
+if (fs.existsSync(old_dataPath)) {
+  logger.info(`${PluginName} 转移数据至 ${new_dataPath}`)
+  copyFolderContents(old_dataPath, new_dataPath)
+  fs.rmSync(old_dataPath, { recursive: true, force: true })
+}
+
 logger.info(`${PluginName} 插件初始化~`)
