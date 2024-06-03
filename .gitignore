@@ -3,3 +3,4 @@
 /data/
 /temp/
 .gitmodules
+/config/PluginConfigView.yaml
