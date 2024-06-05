@@ -1,4 +1,11 @@
 @font-face {
+  font-family: "HYWenHei-55W";
+  src: url("../fonts/HYWenHei-55W.ttf");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
   font-family: 'Number';
   src: url("../fonts/tttgbnumber.woff") format('woff'), url("../fonts/tttgbnumber.ttf") format('truetype');
 }

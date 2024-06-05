@@ -232,7 +232,7 @@ export class UserBing extends plugin {
     const uids = [...MysUtil.games]
 
     _.forEach(uids, (ds) => {
-      const uidList = user.getUidList(ds.key, true)
+      const uidList = user.getUidList(ds.key, { needType: true })
       ds.uidList = uidList.list
       ds.banList = uidList.ban
       _.forEach(ds.uidList, (uidDs) => {
