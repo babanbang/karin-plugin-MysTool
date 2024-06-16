@@ -82,7 +82,7 @@ export class calculator extends plugin {
       _.pull(weapons, ...useWeapon)
       _.compact(weapons)
 
-      calculator.roles = calculator.roles
+      calculator.roles = calculator.roles.slice(0, 8)
       for (const i in calculator.roles) {
         let [role, weapon] = calculator.roles[i]
         if (!weapon && weapons.length > 0) {
@@ -93,7 +93,7 @@ export class calculator extends plugin {
       }
     } else if (weapons.length > 0) {
       game = weapons[0]?.game
-      calculator.weapons = (weapons.filter(w => w.game === game).map(w => ['', w]))
+      calculator.weapons = (weapons.filter(w => w.game === game).map(w => ['', w])).slice(0, 8)
       calculator.weapons.forEach(([role, weapon]) => {
         useNames.push(weapon.name)
       })
