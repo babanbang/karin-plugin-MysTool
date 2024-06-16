@@ -1,2 +1,3 @@
-// eslint-disable-next-line import/no-unresolved
-export * from '../components/index.js'
+export * from '../components/StarRail/index.js'
+export * from '../components/MysSign/index.js'
+export * from '../components/Genshin/index.js'

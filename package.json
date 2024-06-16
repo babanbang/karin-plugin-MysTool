@@ -12,9 +12,9 @@
   },
   "imports": {
     "#Karin": "./lib/index.js",
-    "#Mys.tool": "./lib/tool/index.js",
-    "#Mys.api": "./lib/mys/index.js",
-    "#Mys.user": "./lib/user/index.js",
-    "#Mys.profile": "./lib/profile/index.js"
+    "#MysTool/utils": "./lib/utils/index.js",
+    "#MysTool/mys": "./lib/mys/index.js",
+    "#MysTool/user": "./lib/user/index.js",
+    "#MysTool/profile": "./lib/profile/index.js"
   }
 }

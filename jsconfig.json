@@ -7,16 +7,16 @@
       "#Karin": [
         "./lib/index.js"
       ],
-      "#Mys.tool": [
-        "./lib/tool/index.js"
+      "#MysTool/utils": [
+        "./lib/utils/index.js"
       ],
-      "#Mys.api": [
+      "#MysTool/mys": [
         "./lib/mys/index.js"
       ],
-      "#Mys.user": [
+      "#MysTool/user": [
         "./lib/user/index.js"
       ],
-      "#Mys.profile": [
+      "#MysTool/profile": [
         "./lib/profile/index.js"
       ],
     }

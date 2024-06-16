@@ -1,6 +1,6 @@
-import { plugin } from '#Karin'
-import { MysInfo, MysUtil } from '#Mys.api'
-import { Character } from '#Mys.profile'
+import { plugin, handler } from '#Karin'
+import { MysInfo, MysUtil } from '#MysTool/mys'
+import { Character } from '#MysTool/profile'
 
 const reg = `(${Object.values(MysUtil.reg).join('|')}?)`
 export class profileReplace extends plugin {
@@ -34,9 +34,14 @@ export class profileReplace extends plugin {
     this.e.MysUid = await new MysInfo(this.e).getUid()
     if (!this.e.MysUid) return true
 
-    this.e._profile = {
-      name: char.name,
-      dmgIdx: ((/伤害(\d*)$/.exec(this.e.msg))?.[1] || 0) * 1
+    const key = `mys.${char.game}.profile`
+    if (handler.has(key)) {
+      return await handler.call(key, {
+        e: this.e, profile: {
+          name: char.name,
+          dmgIdx: ((/伤害(\d*)$/.exec(this.e.msg))?.[1] || 0) * 1
+        }
+      })
     }
     return false
   }

@@ -6,18 +6,6 @@
       comment: 查询米游社数据时是否只使用自己绑定的CK
       path: onlySelfCk
       type: boolean
-    - key: wkhtmltoimage渲染
-      comment: 使用wkhtmltoimage渲染图片(建议优先使用puppeteer渲染)
-      path: wkhtmltoimage
-      type: boolean
-    - key: wkhtmltoimage渲染图片的资源端口
-      comment: 使用wkhtmltoimage渲染图片的端口(填写端口时资源使用http路径、重启后生效)
-      path: wkhtmltoimagePort
-      type: boolean
-    - key: 图片渲染精度(0-100)
-      comment: 大部分图片渲染时的精度
-      path: quality
-      type: number
     - key: 国际服代理
       comment: 米游社国际服、Enka面板代理
       path: proxy
@@ -31,3 +19,19 @@
           comment: 代理地址端口(1-65535)
           path: proxy.port
           type: text
+    - key: 额外功能
+      comment: 填写components中的文件夹名
+      path: plugins
+      type: group
+    - key: wkhtmltoimage渲染
+      comment: 使用wkhtmltoimage渲染图片(建议优先使用puppeteer渲染)
+      path: wkhtmltoimage
+      type: boolean
+    - key: wkhtmltoimage渲染图片的资源端口
+      comment: 使用wkhtmltoimage渲染图片的端口(填写端口时资源使用http路径、重启后生效)
+      path: wkhtmltoimagePort
+      type: boolean
+    - key: 图片渲染精度(0-100)
+      comment: 大部分图片渲染时的精度
+      path: quality
+      type: number

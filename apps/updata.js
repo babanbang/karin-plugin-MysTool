@@ -1,5 +1,5 @@
 import { Update, plugin } from '#Karin'
-import { PluginName, common, dirPath } from '#Mys.tool'
+import { PluginName, common, dirPath } from '#MysTool/utils'
 import fs from 'fs'
 import _ from 'lodash'
 

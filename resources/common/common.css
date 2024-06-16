@@ -104,13 +104,14 @@ body {
 }
 
 .copyright {
+  width: 100%;
   font-size: 14px;
   text-align: center;
   color: #fff;
-  position: relative;
-  padding-left: 10px;
+  position: absolute;
+  left: 0;
+  bottom: 10px;
   text-shadow: 1px 1px 1px #000;
-  margin: 10px 0;
 }
 
 .copyright .version {

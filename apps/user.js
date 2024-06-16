@@ -1,8 +1,8 @@
 import { common, plugin, segment } from '#Karin'
-import { MysApi, MysUtil } from '#Mys.api'
-import { Player } from '#Mys.profile'
-import { Base } from '#Mys.tool'
-import { MysUser, User } from '#Mys.user'
+import { MysApi, MysUtil } from '#MysTool/mys'
+import { Player } from '#MysTool/profile'
+import { Base } from '#MysTool/utils'
+import { MysUser, User } from '#MysTool/user'
 import _ from 'lodash'
 import QR from 'qrcode'
 

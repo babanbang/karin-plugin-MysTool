@@ -30,7 +30,7 @@
 #### 克隆仓库
 
 karin根目录执行以下命令克隆仓库到本地
->根据你的网络选择使用GitHub或Gitee
+>根据你的网络选择使用`GitHub`或`Gitee`
 1. 使用GitHub
 ```bash
 git clone --depth=1 https://github.com/babanbang/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
@@ -67,7 +67,8 @@ pnpm install --filter=karin-plugin-MysTool
 - [ ] 深渊查询
 - [ ] 七圣召唤查询
 - [ ] 体力查询
-- [ ] 旅行者札记查询
+- [x] 游戏背包素材查询
+- [x] 旅行者札记查询
 - [x] 角色养成计算查询
 - [x] 角色面板更新、查询
 - [ ] 祈愿记录更新、查询
@@ -99,6 +100,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 ---
 ## 致谢
+* QQ群 825716431
 
 |Nickname|Contribution|
 |:------:|------------|

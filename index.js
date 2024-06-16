@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import YAML from 'yaml'
 
 export const getDir = (PATH) => {
   const _path = path.dirname(
@@ -21,19 +22,24 @@ if (!fs.existsSync(compath)) {
   fs.mkdirSync(compath)
 }
 
-const jsPath = compath + 'index.js'
-if (!fs.existsSync(jsPath)) {
-  const txt = []
-  const filesAndFolders = fs.readdirSync(compath)
-  const folders = filesAndFolders.filter(item => {
-    return fs.statSync(compath + item).isDirectory()
-  })
-  folders.forEach(f => {
-    txt.unshift(`export * from './${f}/index.js'`)
-  })
-  fs.writeFileSync(jsPath, (txt.join('\n') || 'export const a = 1') + '\n', 'utf8')
+/** 创建 appss/index.js */
+const txt = []
+let plugins = []
+const filesAndFolders = fs.readdirSync(compath)
+const folders = filesAndFolders.filter(item => {
+  return fs.statSync(compath + item).isDirectory()
+})
+if (fs.existsSync(dirPath + '/config/config/set.yaml')) {
+  plugins = (YAML.parse(fs.readFileSync(dirPath + '/config/config/set.yaml', 'utf8'))).plugins || {}
 }
+for (const folder of folders) {
+  if (plugins.length > 0 && !plugins.includes(folder)) continue
+  txt.unshift(`export * from '../components/${folder}/index.js'`)
+}
+fs.writeFileSync(dirPath + '/apps/index.js', (txt.join('\n') || 'export const a = 1') + '\n', 'utf8')
 
+
+/** 迁移旧数据 */
 const old_dataPath = dirPath + '/data/'
 const new_dataPath = './data/' + PluginName + '/'
 const copyFolderContents = (src, dest) => {
