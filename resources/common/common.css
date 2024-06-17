@@ -322,8 +322,7 @@ body {
   background-image: url('./talent/talent-dendro.png');
 }
 
-.bg-thunder,
-.bg-lightning,
+.bg-elec,
 .bg-electro {
   background-image: url('./talent/talent-electro.png');
 }
@@ -346,7 +345,7 @@ body {
   background-image: url('./talent/talent-quantum.png');
 }
 
-.bg-physical {
+.bg-phy {
   background-image: url('./talent/talent-sr.png');
 }
 
@@ -452,8 +451,7 @@ body {
 }
 
 .elem-electro .elem-bg,
-.elem-thunder .elem-bg,
-.elem-lightning .elem-bg,
+.elem-elec .elem-bg,
 .electro-bg {
   background-image: url("./bg/bg-electro.png");
 }
@@ -501,7 +499,7 @@ body {
 }
 
 .elem-sr .elem-bg,
-.elem-physical .elem-bg,
+.elem-phy .elem-bg,
 .sr-bg {
   background-image: url("./bg/bg-sr.png");
 }
