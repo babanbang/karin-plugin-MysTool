@@ -17,3 +17,14 @@ wkhtmltoimagePort: false
 
 # 渲染精度(0-100)
 quality: 100
+
+# 数据库（可选sqlite、postgres）一般使用sqlite就足够满足需求
+dialect: sqlite
+
+# PostgreSQL 数据库默认配置
+postgres:
+  host: localhost
+  prot: 5432
+  database: mystool
+  username: postgres
+  password: 123456

@@ -51,6 +51,49 @@ export default [{
       comment: '大部分图片渲染时的精度',
       path: 'quality',
       type: 'number'
+    }, {
+      key: '数据库',
+      comment: '存储数据的数据库（默认使用sqlite，一般使用sqlite就足够满足需求）',
+      path: 'dialect',
+      type: 'select',
+      multiple: false,
+      item: [
+        { name: 'sqlite', value: 'sqlite' },
+        { name: 'PostgreSQL', value: 'postgres' }
+      ]
+    }, {
+      key: 'PostgreSQL数据库配置',
+      comment: '数据库选择PostgreSQL(postgres)时才需要配置',
+      path: 'postgres',
+      type: 'group',
+      part: [
+        {
+          key: '数据库地址',
+          comment: '默认 localhost',
+          path: 'postgres.host',
+          type: 'text',
+        }, {
+          key: '数据库端口',
+          comment: '默认 5432',
+          path: 'postgres.prot',
+          type: 'text',
+        }, {
+          key: '创建的数据库名',
+          comment: '默认 mystool',
+          path: 'postgres.database',
+          type: 'text',
+        }, {
+          key: '用户名',
+          comment: '默认 postgres',
+          path: 'postgres.username',
+          type: 'text',
+        }, {
+          key: '密码',
+          comment: '默认 123456（建议修改、可为空）',
+          path: 'postgres.password',
+          type: 'text',
+        }
+      ]
     }
   ]
 }]

@@ -1,4 +1,4 @@
-import { MysUser } from "#MysTool/user"
+import { MysUser, BaseModel } from "#MysTool/user"
 import { Cfg, Data } from "#MysTool/utils"
 
 let cache = false
@@ -15,7 +15,8 @@ export default async function (fastify, options) {
       ck_mys: 0,
       sk_mys: 0,
       ck_hoyolab: 0,
-      sk_hoyolab: 0
+      sk_hoyolab: 0,
+      dialect: BaseModel.DIALECT
     }
     /**@param {MysUser} mys */
     const dealData = (mys) => {
