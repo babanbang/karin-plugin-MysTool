@@ -1,5 +1,5 @@
 import { Data } from "#MysTool/utils"
-const plugins = (Data.readdir('components')).map(p => { return { name: p, value: p } })
+const plugins = (Data.readdir('lib/components')).map(p => { return { name: p, value: p } })
 
 export default [{
   name: 'MysTool通用配置',
@@ -31,8 +31,8 @@ export default [{
         }
       ]
     }, {
-      key: '额外功能',
-      comment: '填写components中的文件夹名',
+      key: '额外组件',
+      comment: '自行选择需要启用的插件组件',
       path: 'plugins',
       type: 'select',
       multiple: true,

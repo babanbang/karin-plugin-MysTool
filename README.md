@@ -95,7 +95,7 @@ pnpm install --filter=karin-plugin-MysTool
 <details><summary><b>其他</b></summary>
 
 - [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(由于坤术原因部分图片不支持使用，暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
-- [x] 1034、10035、签到(额外安装[插件](../../../mys)提供功能)
+- [x] 1034、10035、签到(额外安装[插件](../../../MysSign)提供功能)
 </details>
 
 ---

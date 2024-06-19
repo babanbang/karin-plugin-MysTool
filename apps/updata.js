@@ -4,7 +4,7 @@ import fs from 'fs'
 import _ from 'lodash'
 
 let uping = false
-const compath = dirPath + '/components/'
+const compath = dirPath + '/lib/components/'
 export class MysToolUpdata extends plugin {
   constructor () {
     super({
@@ -34,22 +34,20 @@ export class MysToolUpdata extends plugin {
     const folders = filesAndFolders.filter(item => {
       return fs.statSync(compath + item).isDirectory()
     })
-    let cm = ''
+    let cm = 'git pull'
     if (this.e.msg.includes('强制')) {
       this.isUp = true
-      cm = 'git reset --hard master&& git pull --rebase'
+      cm = 'git reset --hard && git pull --allow-unrelated-histories'
     }
 
     let msgs = []
-    const pname = PluginName.replace(/^karin-plugin-/, '')
-    const paths = [pname, ...folders.map(f => pname + '/components/' + f)]
+    const paths = [PluginName, ...folders.map(f => '/lib/components/' + f)]
 
-    const updata = new Update()
     for (const name of paths) {
       logger.info(`开始更新${name}`)
 
       const msg = [`更新${name}...`]
-      const { data } = await updata.update(name, cm)
+      const { data } = await Update.update(process.cwd().replace(/\\/g, '/') + `/plugins/${name}`, cm)
       if (_.isObject(data)) {
         msg.push(data.message + data.stderr)
       } else {
