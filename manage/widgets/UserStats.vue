@@ -97,40 +97,8 @@ onMounted(() => {
   <v-card elevation="0">
     <v-card variant="outlined">
       <v-card-text>
-        <div class="d-flex align-center">
-          <h4 class="d-flex align-center text-h4 mr-auto">
-            数据库：<h4 class="text-success">{{ apiData.dialect }}</h4>
-          </h4>
-          <div class="d-flex align-start">
-            <div class="ml-auto z-1">
-              <v-menu :close-on-content-click="false">
-                <template v-slot:activator="{ props }">
-                  <v-btn color="#D3D3D3" variant="flat" v-bind="props"
-                    class="text-link text-h4 text-info">MysTool</v-btn>
-                </template>
-                <v-sheet rounded="md" width="200" class="elevation-10 ml-auto">
-                  <v-list density="compact">
-                    <v-list-item @click="pull">
-                      <template v-slot:prepend>
-                        <v-icon icon="mdi-source-pull" stroke-width="1.5" size="20" />
-                      </template>
-                      <v-list-item-title class="ml-2">全部更新</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item @click="pullForce">
-                      <template v-slot:prepend>
-                        <v-icon icon="mdi-source-merge" stroke-width="1.5" size="20" />
-                      </template>
-                      <v-list-item-title class="ml-2">强制更新</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
-                </v-sheet>
-              </v-menu>
-            </div>
-          </div>
-        </div>
-
         <div class="d-flex">
-          <div>
+          <div class="w-50">
             <div class="d-flex align-center">
               <v-btn @click="setUser" variant="flat" text class="text-h4 text-link">
                 用户统计
@@ -139,6 +107,10 @@ onMounted(() => {
               <v-btn @click="fetchUserStats" icon rounded="sm" color="darkteal" variant="flat" size="21" v-bind="props">
                 <v-icon icon="mdi-refresh" stroke-width="1.5" size="18" />
               </v-btn>
+              <h4 class="d-flex align-center text-h4 ml-auto">
+                <v-icon icon="mdi-database-check" stroke-width="1.5" size="28" />
+                <h4 class="text-success">{{ apiData.dialect }}</h4>
+              </h4>
             </div>
             <v-expand v-model="User">
               <v-expand-transition>
@@ -167,7 +139,31 @@ onMounted(() => {
             </v-expand>
           </div>
 
-          <div>
+          <div class="w-50">
+            <div class="d-flex align-start">
+              <v-menu :close-on-content-click="false" class="">
+                <template v-slot:activator="{ props }">
+                  <v-btn color="#D3D3D3" variant="flat" v-bind="props"
+                    class="text-link text-h4 text-info ml-auto z-1">MysTool</v-btn>
+                </template>
+                <v-sheet rounded="md" width="200" class="elevation-10 ml-auto">
+                  <v-list density="compact">
+                    <v-list-item @click="pull">
+                      <template v-slot:prepend>
+                        <v-icon icon="mdi-source-pull" stroke-width="1.5" size="20" />
+                      </template>
+                      <v-list-item-title class="ml-2">全部更新</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item @click="pullForce">
+                      <template v-slot:prepend>
+                        <v-icon icon="mdi-source-merge" stroke-width="1.5" size="20" />
+                      </template>
+                      <v-list-item-title class="ml-2">强制更新</v-list-item-title>
+                    </v-list-item>
+                  </v-list>
+                </v-sheet>
+              </v-menu>
+            </div>
             <div class="d-flex align-center">
               <v-btn @click="setPlugin" variant="flat" text class="text-h4 text-link">
                 更新记录<h4 class="text-h6">(只显示已启用的组件)</h4>
@@ -185,8 +181,11 @@ onMounted(() => {
                       <div class="d-flex align-center justify-space-between w-100">
                         <h4 :class="['text-h5', 'text-' + (value.err ? 'error' : (value.up ? 'warning' : 'success'))]">
                           {{ name }}
+                          <v-icon icon="mdi-check-circle-outline" stroke-width="1.5" size="20"
+                            v-if="!value.err && !value.up" />
+                          <v-icon icon="mdi-alert-outline" stroke-width="1.5" size="20" v-if="value.err" />
+                          <v-icon icon="mdi-source-pull" stroke-width="1.5" size="20" v-if="value.up" />
                         </h4>
-                        <v-icon icon="mdi-source-pull" stroke-width="1.5" size="20" v-if="value.up" />
                         <h4 class="text-h5 ml-auto">
                           <li class="text-primary">最后更新：</li>{{ value.time }}
                         </h4>

@@ -54,13 +54,19 @@ export default async function (fastify, options) {
     });
   });
 
+  let incheck = false
   fastify.get('/checkUpdate', async (request, reply) => {
-    if (!_.isEmpty(updatePlugins)) {
+    if (incheck || !_.isEmpty(updatePlugins)) {
       return reply.send({
         status: 'success',
         data: updatePlugins
       })
     }
+    incheck = true
+    setTimeout(() => {
+      incheck = false
+    }, 60000)
+
     const reg = new RegExp(`^(${PluginName}\/lib\/components\/|karin\-plugin\-)`)
 
     const promises = MysTools.map(async plugin => {
@@ -85,6 +91,7 @@ export default async function (fastify, options) {
       }
     })
     await Promise.all(promises)
+    incheck = false
 
     /** 缓存一分钟 */
     setTimeout(() => {
@@ -97,8 +104,19 @@ export default async function (fastify, options) {
     })
   })
 
+  let inupdate = false
   fastify.post('/update', async (request, reply) => {
     updatePlugins = {}
+    if (inupdate) {
+      return reply.send({
+        status: 'success',
+        data: ['正在更新中，请稍后再试！']
+      })
+    }
+    inupdate = true
+    setTimeout(() => {
+      inupdate = false
+    }, 60000)
 
     const { force } = request.body
     const msg = []
@@ -120,7 +138,9 @@ export default async function (fastify, options) {
       }
     })
     await Promise.all(promises)
-    reply.send({
+    inupdate = false
+
+    return reply.send({
       status: 'success',
       data: msg
     })

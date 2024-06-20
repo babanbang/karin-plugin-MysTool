@@ -1,3 +1,3 @@
 export default async () => {
-  return { col: 8 }
+  return { col: 7 }
 }
