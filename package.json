@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "sequelize": "^6.37.3",
-    "sqlite3": "^5.1.6",
+    "sqlite3": "5.1.6",
     "pg": "^8.12.0",
     "md5": "^2.3.0",
     "qrcode": "^1.5.3",

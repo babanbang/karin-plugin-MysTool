@@ -5,7 +5,7 @@ const props = defineProps({
   apiUrl: String,
   data: Object
 })
-const plugin = 'karin-plugin-MysTool'
+const plugin = 'system/plugins/karin-plugin-MysTool'
 const request = props.request
 
 const MysTools = ref([])
@@ -36,7 +36,7 @@ const setPlugin = () => {
 
 const upPlugin = () => {
   plugins.value = {}
-  request.post(`${props.apiUrl}/system/plugins/${plugin}/checkUpdate`, { force: true })
+  request.post(`${props.apiUrl}/${plugin}/checkUpdate`, { force: true })
     .then((response) => {
       if (response.data.status === 'success') {
         plugins.value = response.data.data
@@ -50,7 +50,7 @@ const upPlugin = () => {
 }
 
 const checkUpdate = () => {
-  request.post(`${props.apiUrl}/system/plugins/${plugin}/checkUpdate`, { force: false })
+  request.post(`${props.apiUrl}/${plugin}/checkUpdate`, { force: false })
     .then((response) => {
       if (response.data.status === 'success') {
         plugins.value = response.data.data
@@ -64,7 +64,7 @@ const checkUpdate = () => {
 }
 
 const pull = () => {
-  request.post(`${props.apiUrl}/system/plugins/${plugin}/update`, { force: false })
+  request.post(`${props.apiUrl}/${plugin}/update`, { force: false })
     .then((response) => {
       if (response.data.status === 'success') {
         checkUpdate()
@@ -79,7 +79,7 @@ const pull = () => {
 }
 
 const pullForce = () => {
-  request.post(`${props.apiUrl}/system/plugins/${plugin}/update`, { force: true })
+  request.post(`${props.apiUrl}/${plugin}/update`, { force: true })
     .then((response) => {
       if (response.data.status === 'success') {
         checkUpdate()
@@ -99,7 +99,7 @@ const refreshUserStats = () => {
 }
 
 const fetchUserStats = () => {
-  request.get(`${props.apiUrl}/system/plugins/${plugin}/UserStats`)
+  request.get(`${props.apiUrl}/${plugin}/UserStats`)
     .then((response) => {
       if (response.data.status === 'success') {
         apiData.value = response.data.data
@@ -114,7 +114,7 @@ const fetchUserStats = () => {
 }
 
 const getMysTools = () => {
-  request.get(`${props.apiUrl}/system/plugins/${plugin}/MysTools`)
+  request.get(`${props.apiUrl}/${plugin}/MysTools`)
     .then((response) => {
       if (response.data.status === 'success') {
         MysTools.value = response.data.data
