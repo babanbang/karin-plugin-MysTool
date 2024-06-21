@@ -1,13 +1,13 @@
 import { MysUser, BaseModel } from "#MysTool/user"
 import { Cfg, Data, PluginName } from "#MysTool/utils"
-import { Update } from '#Karin'
+import { Update, common } from '#Karin'
 import _ from "lodash"
 
-let cache = false
 let updatePlugins = {}
-const _path = process.cwd().replace(/\\/g, '/')
-
 const set = Cfg.getConfig('set')
+const _path = process.cwd().replace(/\\/g, '/')
+const reg = new RegExp(`^(${PluginName}\/lib\/components\/|karin\-plugin\-)`)
+
 const folders = Data.readdir('lib/components').filter(p => Data.isDirectory(`lib/components/${p}`))
 const plugins = set.plugins?.length > 0
   ? set.plugins.filter(p => folders.includes(p))
@@ -15,65 +15,62 @@ const plugins = set.plugins?.length > 0
 const MysTools = [PluginName, ...plugins.map(p => `${PluginName}/lib/components/${p}`)]
 
 export default async function (fastify, options) {
-  fastify.get('/UserStats', async (request, reply) => {
-    if (cache) {
-      return reply.send({
-        status: 'success',
-        data: cache
-      });
-    }
+  fastify.get('/MysTools', async (request, reply) => {
+    return reply.send({
+      status: 'success',
+      data: MysTools.map(p => p.replace(reg, ''))
+    })
+  })
 
-    cache = {
+  fastify.get('/UserStats', async (request, reply) => {
+    const Stats = {
       ck_sk: {
         ck: { mys: 0, hoyolab: 0, all: 0, type: 'cookie', color: 'secondary', text: 'text-primary' },
         sk: { mys: 0, hoyolab: 0, all: 0, type: 'stoken', color: 'teal', text: 'text-warning' }
       },
-      dialect: BaseModel.DIALECT
+      dialect: BaseModel.DIALECT,
+      MysTools: MysTools.map(p => p.replace(reg, ''))
     }
 
     /**@param {MysUser} mys */
     const dealData = (mys) => {
-      for (let i in cache.ck_sk) {
+      for (let i in Stats.ck_sk) {
         if (mys[i]) {
-          cache.ck_sk[i][mys.type]++
-          cache.ck_sk[i].all++
+          Stats.ck_sk[i][mys.type]++
+          Stats.ck_sk[i].all++
         }
       }
     }
 
     await MysUser.forEach(dealData)
 
-    /** 缓存一分钟 */
-    setTimeout(() => {
-      cache = false
-    }, 60000)
-
     return reply.send({
       status: 'success',
-      data: cache
-    });
-  });
+      data: Stats
+    })
+  })
 
-  let incheck = false
-  fastify.get('/checkUpdate', async (request, reply) => {
-    if (incheck || !_.isEmpty(updatePlugins)) {
+  let updateTimeout = false
+  fastify.post('/checkUpdate', async (request, reply) => {
+    const { force } = request.body
+
+    if (!force && !_.isEmpty(updatePlugins)) {
       return reply.send({
         status: 'success',
         data: updatePlugins
       })
     }
-    incheck = true
-    setTimeout(() => {
-      incheck = false
-    }, 60000)
 
-    const reg = new RegExp(`^(${PluginName}\/lib\/components\/|karin\-plugin\-)`)
+    if (updateTimeout) {
+      clearTimeout(updateTimeout)
+      updateTimeout = false
+    }
 
     const promises = MysTools.map(async plugin => {
       const path = `${_path}/plugins/${plugin}`
       try {
         const time = await Update.getTime(path)
-        const { data } = await Update.checkUpdate(path)
+        const { data } = await Update.checkUpdate(path, 10)
 
         let up = false
         let err = /获取时间失败/g.test(time)
@@ -91,10 +88,9 @@ export default async function (fastify, options) {
       }
     })
     await Promise.all(promises)
-    incheck = false
 
-    /** 缓存一分钟 */
-    setTimeout(() => {
+    /** 缓存十分钟 */
+    updateTimeout = setTimeout(() => {
       updatePlugins = {}
     }, 600000)
 
@@ -104,19 +100,12 @@ export default async function (fastify, options) {
     })
   })
 
-  let inupdate = false
   fastify.post('/update', async (request, reply) => {
-    updatePlugins = {}
-    if (inupdate) {
-      return reply.send({
-        status: 'success',
-        data: ['正在更新中，请稍后再试！']
-      })
+    if (updateTimeout) {
+      clearTimeout(updateTimeout)
+      updateTimeout = false
     }
-    inupdate = true
-    setTimeout(() => {
-      inupdate = false
-    }, 60000)
+    updatePlugins = {}
 
     const { force } = request.body
     const msg = []
@@ -138,7 +127,6 @@ export default async function (fastify, options) {
       }
     })
     await Promise.all(promises)
-    inupdate = false
 
     return reply.send({
       status: 'success',

@@ -8,10 +8,17 @@ const props = defineProps({
 const plugin = 'karin-plugin-MysTool'
 const request = props.request
 
-const plugins = ref({})
-const apiData: any = ref({})
+const MysTools = ref([])
+const plugins = ref({loading: true})
 const Plugin = ref(true)
 const User = ref(true)
+const apiData: any = ref({
+  ck_sk: {
+    ck: { type: 'cookie', color: 'secondary', text: 'text-primary' },
+    sk: { type: 'stoken', color: 'teal', text: 'text-warning' }
+  },
+  loading: true
+})
 
 const setUser = () => {
   User.value = !User.value
@@ -22,14 +29,28 @@ const setUser = () => {
 
 const setPlugin = () => {
   Plugin.value = !Plugin.value
+  if (Plugin.value) {
+    checkUpdate()
+  }
 }
 
 const upPlugin = () => {
-  checkUpdate()
+  plugins.value = {}
+  request.post(`${props.apiUrl}/system/plugins/${plugin}/checkUpdate`, { force: true })
+    .then((response) => {
+      if (response.data.status === 'success') {
+        plugins.value = response.data.data
+      } else {
+        plugins.value = {}
+      }
+    })
+    .catch((error) => {
+      plugins.value = {}
+    })
 }
 
 const checkUpdate = () => {
-  request.get(`${props.apiUrl}/system/plugins/${plugin}/checkUpdate`)
+  request.post(`${props.apiUrl}/system/plugins/${plugin}/checkUpdate`, { force: false })
     .then((response) => {
       if (response.data.status === 'success') {
         plugins.value = response.data.data
@@ -72,11 +93,17 @@ const pullForce = () => {
     })
 }
 
+const refreshUserStats = () => {
+  apiData.value.loading = true
+  fetchUserStats()
+}
+
 const fetchUserStats = () => {
   request.get(`${props.apiUrl}/system/plugins/${plugin}/UserStats`)
     .then((response) => {
       if (response.data.status === 'success') {
         apiData.value = response.data.data
+        apiData.value.loading = false
       } else {
         apiData.value = {}
       }
@@ -86,8 +113,22 @@ const fetchUserStats = () => {
     })
 }
 
+const getMysTools = () => {
+  request.get(`${props.apiUrl}/system/plugins/${plugin}/MysTools`)
+    .then((response) => {
+      if (response.data.status === 'success') {
+        MysTools.value = response.data.data
+      } else {
+        MysTools.value = []
+      }
+    })
+    .catch((error) => {
+      MysTools.value = []
+    })
+}
 
 onMounted(() => {
+  getMysTools()
   fetchUserStats()
   checkUpdate()
 })
@@ -104,12 +145,14 @@ onMounted(() => {
                 用户统计
                 <v-icon>{{ User ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
               </v-btn>
-              <v-btn @click="fetchUserStats" icon rounded="sm" color="darkteal" variant="flat" size="21" v-bind="props">
+              <v-btn @click="refreshUserStats" icon rounded="sm" color="darkteal" variant="flat" size="21" v-bind="props">
                 <v-icon icon="mdi-refresh" stroke-width="1.5" size="18" />
               </v-btn>
               <h4 class="d-flex align-center text-h4 ml-auto">
-                <v-icon icon="mdi-database-check" stroke-width="1.5" size="28" />
-                <h4 class="text-success">{{ apiData.dialect }}</h4>
+                <v-icon icon="mdi-database-refresh" stroke-width="1.5" size="28"  v-if="apiData.loading"/>
+                <v-icon icon="mdi-database-check" stroke-width="1.5" size="28"  v-if="!apiData.loading"/>
+                <h4 class="text-success" v-if="!apiData.loading">{{ apiData.dialect }}</h4>
+                <v-icon icon="mdi mdi-loading mdi-spin text-info ml-auto mr-auto" stroke-width="1.5" size="20" v-if="apiData.loading" />
               </h4>
             </div>
             <v-expand v-model="User">
@@ -120,10 +163,13 @@ onMounted(() => {
                     <v-card-text style="position: relative;">
                       <div class="d-inline-flex align-center justify-space-between w-100">
                         <h2 class="text-h1 font-weight-medium">
+                          <v-icon icon="mdi mdi-loading mdi-spin" stroke-width="1.5" size="20" v-if="apiData.loading" />
                           {{ value.mys }}/{{ value.hoyolab }}
+                          <v-icon icon="mdi mdi-loading mdi-spin" stroke-width="1.5" size="20" v-if="apiData.loading" />
                         </h2>
                         <h2 :class="['text-h1', 'font-weight-medium', value.text, 'ml-auto', 'z-1']">
                           {{ value.all }}
+                          <v-icon icon="mdi mdi-loading mdi-spin" stroke-width="1.5" size="20" v-if="apiData.loading" />
                         </h2>
                       </div>
                       <div class="d-inline-flex align-center justify-space-between w-100">
@@ -177,18 +223,18 @@ onMounted(() => {
               <v-expand-transition>
                 <div v-if="Plugin">
                   <v-list>
-                    <v-list-item v-for="(value, name) in plugins" color="secondary" rounded="sm">
+                    <v-list-item v-for="name in MysTools" color="secondary" rounded="sm">
                       <div class="d-flex align-center justify-space-between w-100">
-                        <h4 :class="['text-h5', 'text-' + (value.err ? 'error' : (value.up ? 'warning' : 'success'))]">
+                        <h4 :class="['text-h5', 'text-' + (plugins[name] ? (plugins[name].err ? 'error' : (plugins[name].up ? 'warning' : 'success')) : 'info')]">
                           {{ name }}
-                          <v-icon icon="mdi-check-circle-outline" stroke-width="1.5" size="20"
-                            v-if="!value.err && !value.up" />
-                          <v-icon icon="mdi-alert-outline" stroke-width="1.5" size="20" v-if="value.err" />
-                          <v-icon icon="mdi-source-pull" stroke-width="1.5" size="20" v-if="value.up" />
+                          <v-icon icon="mdi-check-circle-outline" stroke-width="1.5" size="20" v-if="plugins[name] && !plugins[name]?.err && !plugins[name]?.up" />
+                          <v-icon icon="mdi-alert-outline" stroke-width="1.5" size="20" v-if="plugins[name]?.err" />
+                          <v-icon icon="mdi-source-pull" stroke-width="1.5" size="20" v-if="plugins[name]?.up" />
                         </h4>
-                        <h4 class="text-h5 ml-auto">
-                          <li class="text-primary">最后更新：</li>{{ value.time }}
+                        <h4 class="text-h5 ml-auto" v-if="plugins[name]?.time">
+                          <li class="text-primary">最后更新：</li>{{ plugins[name].time }}
                         </h4>
+                        <v-icon icon="mdi mdi-loading mdi-spin text-info ml-auto mr-auto" stroke-width="1.5" size="20" v-if="!plugins[name]" />
                       </div>
                     </v-list-item>
                   </v-list>
