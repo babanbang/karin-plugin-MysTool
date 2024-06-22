@@ -185,6 +185,7 @@ export class UserBing extends plugin {
 
     const user = await this.user()
     user.addRegUid(uid, game.key)
+
     return await this.showUid()
   }
 
@@ -274,7 +275,7 @@ export class UserBing extends plugin {
     const idx = this.e.msg.match(/[0-9]{1,2}/g)
 
     const user = await this.user()
-    let uid = user.mainUid()
+    let { uid } = user.getUidType()
 
     if (idx && idx[0]) {
       const uidList = user.getUidList()
@@ -305,7 +306,7 @@ export class UserBing extends plugin {
     }
     const user = await this.user()
     const data = user.getUidData()
-    const msg = [`${MysUtil.getGameByMsg(this.e.msg).name}UID: ${data?.uid || user.mainUid()}`]
+    const msg = [`${MysUtil.getGameByMsg(this.e.msg).name}UID: ${data?.uid || user.getUidType()?.uid}`]
     if (!data) {
       return this.reply(msg[0] + '，未绑定CK及SK')
     }

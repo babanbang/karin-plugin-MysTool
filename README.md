@@ -71,7 +71,7 @@ pnpm install --filter=karin-plugin-MysTool
 - [x] 旅行者札记查询
 - [x] 角色养成计算查询
 - [x] 角色面板更新、查询
-- [ ] 祈愿记录更新、查询
+- [x] 祈愿记录更新、查询、导出
 </details>
 
 <details><summary><b>崩坏：星穹铁道相关</b></summary>
@@ -85,10 +85,11 @@ pnpm install --filter=karin-plugin-MysTool
 - [x] 开拓月历查询
 - [ ] 角色养成计算查询
 - [x] 角色面板更新、查询
-- [ ] 祈愿记录更新、查询(使用链接或文件更新)
+- [x] 祈愿记录更新、查询、导出(支持使用链接更新)
 </details>
 
 <details><summary><b>绝区零相关</b></summary>
+
 - [ ] 这没公测也写不了啊
 </details>
 

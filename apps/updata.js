@@ -63,7 +63,7 @@ export class MysToolUpdata extends plugin {
       msgs = common.makeForward(msgs)
     }
 
-    await this.reply(msgs)
+    await this.replyForward(msgs)
     if (this.isUp) {
       this.reply('MysTool更新成功，请重启应用更新！')
     }
