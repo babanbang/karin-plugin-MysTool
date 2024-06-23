@@ -41,7 +41,7 @@ export class MysToolUpdata extends plugin {
     }
 
     let msgs = []
-    const paths = [PluginName, ...folders.map(f => '/lib/components/' + f)]
+    const paths = [PluginName, ...folders.map(f => PluginName + '/lib/components/' + f)]
 
     for (const name of paths) {
       logger.info(`开始更新${name}`)
