@@ -1,10 +1,8 @@
 import { Update, plugin } from '#Karin'
-import { PluginName, common, dirPath } from '#MysTool/utils'
-import fs from 'fs'
+import { PluginName, common, Data } from '#MysTool/utils'
 import _ from 'lodash'
 
 let uping = false
-const compath = dirPath + '/lib/components/'
 export class MysToolUpdata extends plugin {
   constructor () {
     super({
@@ -14,7 +12,7 @@ export class MysToolUpdata extends plugin {
       priority: 0,
       rule: [
         {
-          reg: '^#?(强制)?更新MysTool',
+          reg: new RegExp('^#?(强制)?更新MysTool', 'i'),
           permission: 'master',
           fnc: 'Updata'
         }
@@ -30,9 +28,9 @@ export class MysToolUpdata extends plugin {
     uping = true
     setTimeout(() => { uping = false }, 300 * 1000)
 
-    const filesAndFolders = fs.readdirSync(compath)
+    const filesAndFolders = Data.readdir('/lib/components/')
     const folders = filesAndFolders.filter(item => {
-      return fs.statSync(compath + item).isDirectory()
+      return Data.isDirectory('lib/components/' + item)
     })
     let cm = 'git pull'
     if (this.e.msg.includes('强制')) {
@@ -40,30 +38,26 @@ export class MysToolUpdata extends plugin {
       cm = 'git reset --hard && git pull --allow-unrelated-histories'
     }
 
-    let msgs = []
+    const msgs = []
     const paths = [PluginName, ...folders.map(f => PluginName + '/lib/components/' + f)]
 
     for (const name of paths) {
       logger.info(`开始更新${name}`)
 
       const msg = [`更新${name}...`]
-      const { data } = await Update.update(process.cwd().replace(/\\/g, '/') + `/plugins/${name}`, cm)
+      const { data } = await Update.update(process.cwd().replace(/\\/g, '/') + `/plugins/${name}`, cm, 60)
       if (_.isObject(data)) {
-        msg.push(data.message + data.stderr)
+        msg.push(`${data.message}  ${data.stderr}`)
       } else {
         msg.push(data)
         if (data === '更新成功！') {
           this.isUp = true
         }
       }
-      msgs.push([msg])
+      msgs.push(msg)
     }
 
-    if (msgs.length > 1) {
-      msgs = common.makeForward(msgs)
-    }
-
-    await this.replyForward(msgs)
+    await this.replyForward(common.makeForward(msgs))
     if (this.isUp) {
       this.reply('MysTool更新成功，请重启应用更新！')
     }
