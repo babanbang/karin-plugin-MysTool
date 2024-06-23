@@ -1,5 +1,5 @@
-import { Update, plugin } from '#Karin'
-import { PluginName, common, dirPath } from '#MysTool/utils'
+import { Update, plugin, common } from '#Karin'
+import { PluginName, dirPath } from '#MysTool/utils'
 import fs from 'fs'
 import _ from 'lodash'
 
@@ -48,15 +48,16 @@ export class MysToolUpdata extends plugin {
 
       const msg = [`更新${name}...`]
       const { data } = await Update.update(process.cwd().replace(/\\/g, '/') + `/plugins/${name}`, cm)
+
       if (_.isObject(data)) {
-        msg.push(data.message + data.stderr)
+        msg.push((data.message || '') + (data.stderr || ''))
       } else {
         msg.push(data)
         if (data === '更新成功！') {
           this.isUp = true
         }
       }
-      msgs.push([msg])
+      msgs.push(msg)
     }
 
     if (msgs.length > 1) {
