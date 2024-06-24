@@ -1,7 +1,12 @@
 import { Data } from "#MysTool/utils"
-const plugins = (Data.readdir('lib/components')).map(p => { return { name: p, value: p } })
+const plugins = []
+Data.readdir('lib/components').forEach(p => {
+  if (Data.isDirectory(`lib/components/${p}`)) {
+    plugins.push({ name: p, value: p })
+  }
+})
 
-export default [{
+const config = [{
   name: 'MysTool通用配置',
   file: 'set.yaml',
   priority: 0,
@@ -97,3 +102,5 @@ export default [{
     }
   ]
 }]
+
+export default config
