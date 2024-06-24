@@ -3,8 +3,8 @@ onlySelfCk: false
 
 # 米游社国际服代理
 proxy:
-  host:
-  port:
+  host: null
+  port: null
 
 # components中的额外功能
 plugins: []
@@ -13,7 +13,7 @@ plugins: []
 wkhtmltoimage: false
 
 # 使用wkhtmltoimage渲染图片的端口(填写端口时资源使用http路径、重启后生效)
-wkhtmltoimagePort: false
+wkhtmltoimagePort: null
 
 # 渲染精度(0-100)
 quality: 100
@@ -27,4 +27,4 @@ postgres:
   prot: 5432
   database: mystool
   username: postgres
-  password: 123456
+  password: a123456

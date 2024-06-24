@@ -94,7 +94,7 @@ const config = [{
           type: 'text',
         }, {
           key: '密码',
-          comment: '默认 123456（建议修改、可为空）',
+          comment: '如使用此数据库请修改',
           path: 'postgres.password',
           type: 'text',
         }
