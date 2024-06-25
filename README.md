@@ -30,7 +30,7 @@
 #### 克隆仓库
 
 karin根目录执行以下命令克隆仓库到本地
->根据你的网络选择使用`GitHub`或`Gitee`
+>请根据你的网络选择使用`GitHub`或`Gitee`
 1. 使用GitHub
 ```bash
 git clone --depth=1 https://github.com/babanbang/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
@@ -47,6 +47,7 @@ pnpm install --filter=karin-plugin-MysTool
 ```
 
 #### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../Zenless)
+>请自行选择安装
 
 ---
 ### 待完成功能
@@ -61,7 +62,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 <details><summary><b>原神相关</b></summary>
 
-- [ ] 前瞻兑换码
+- [x] 前瞻兑换码
 - [x] 探索查询
 - [x] 角色列表查询
 - [ ] 深渊查询
@@ -76,7 +77,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 <details><summary><b>崩坏：星穹铁道相关</b></summary>
 
-- [ ] 前瞻兑换码
+- [x] 前瞻兑换码
 - [x] 探索查询
 - [x] 角色列表查询
 - [ ] 混沌回忆查询

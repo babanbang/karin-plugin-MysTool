@@ -231,6 +231,10 @@ export class UserBing extends plugin {
 
     const user = await this.user()
     const uids = [...MysUtil.games]
+    if (uids.length === 0) {
+      this.reply('请查看插件README.md后安装额外组件后再查看！')
+      return true
+    }
 
     _.forEach(uids, (ds) => {
       const uidList = user.getUidList(ds.key, { needType: true })
