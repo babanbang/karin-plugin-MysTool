@@ -17,19 +17,19 @@ export class exchange extends plugin {
       priority: 0,
       rule: [
         {
-          reg: new RegExp(`^${reg}?(直播|前瞻)?兑换码$`, 'i'),
+          reg: new RegExp(`^(${reg})?(直播|前瞻)?兑换码$`, 'i'),
           fnc: 'getCode'
         }
       ]
     })
-    this.game = MysUtil.getGameByMsg(this.e.msg)
-    this.redisKey = `${PluginName}:${this.game}:exchange:`
-    this.mysApi = new MysApi({ uid: uids[this.game], server: 'mys', game: this.game })
   }
 
   async getCode () {
+    this.game = MysUtil.getGameByMsg(this.e?.msg)
     if (!uids[this.game]) return false
     let msg = []
+    this.redisKey = `${PluginName}:${this.game}:exchange:`
+    this.mysApi = new MysApi({ uid: uids[this.game], server: 'mys', game: this.game })
 
     const catchData = await redis.get(this.redisKey + 'codes')
     if (catchData) {
