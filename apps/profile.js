@@ -26,8 +26,11 @@ export class profileReplace extends plugin {
 
     const char = Character.get(name)
     if (!char) {
-      this.reply(`暂不支持查询${name}的角色面板`)
-      return true
+      if (!/暂不支持/g.test(this.e.msg)) {
+        this.reply(`暂不支持查询${name}的角色面板`)
+        return true
+      }
+      return false
     }
 
     this.e.msg = this.e.msg?.replace(new RegExp('^' + reg, 'i'), '#' + char.game)
