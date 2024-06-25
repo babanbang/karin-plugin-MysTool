@@ -48,10 +48,6 @@ const config = [{
       path: 'wkhtmltoimage',
       type: 'boolean'
     }, {
-      key: 'wkhtmltoimage渲染图片的资源端口',
-      comment: '使用wkhtmltoimage渲染图片的端口(填写端口时资源使用http路径、重启后生效)',
-      path: 'wkhtmltoimagePort',
-    }, {
       key: '图片渲染精度(0 - 100)',
       comment: '大部分图片渲染时的精度',
       path: 'quality',

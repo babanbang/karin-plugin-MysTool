@@ -12,25 +12,22 @@ export class profileReplace extends plugin {
       priority: 0,
       rule: [
         {
-          reg: /^#*([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*((18|[1-9])[0-9]{8})*(.*[换变改].*)?$/i,
-          fnc: 'Replace',
+          reg: /^(?!.*(不支持|更新))#*([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*((18|[1-9])[0-9]{8})*(.*[换变改].*)?$/i,
+          fnc: 'profile_detal',
           log: false
         }
       ]
     })
   }
 
-  async Replace () {
+  async profile_detal () {
     const name = (this.e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+)\\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\\d*)?)\\s*(\\d{9,10})*(.*[换变改].*)?$`))?.[1])?.trim()
-    if (!name || /更新/g.test(this.e.msg)) return false
+    if (!name) return false
 
     const char = Character.get(name)
     if (!char) {
-      if (!/暂不支持/g.test(this.e.msg)) {
-        this.reply(`暂不支持查询${name}的角色面板`)
-        return true
-      }
-      return false
+      this.reply(`暂不支持查询${name}的角色面板`)
+      return true
     }
 
     this.e.msg = this.e.msg?.replace(new RegExp('^' + reg, 'i'), '#' + char.game)

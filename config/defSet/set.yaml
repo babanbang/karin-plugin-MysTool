@@ -12,9 +12,6 @@ plugins: []
 # 使用wkhtmltoimage渲染图片
 wkhtmltoimage: false
 
-# 使用wkhtmltoimage渲染图片的端口(填写端口时资源使用http路径、重启后生效)
-wkhtmltoimagePort: null
-
 # 渲染精度(0-100)
 quality: 100
 
