@@ -25,11 +25,12 @@ export class exchange extends plugin {
   }
 
   async getCode () {
-    this.game = MysUtil.getGameByMsg(this.e?.msg)
-    if (!uids[this.game]) return false
+    const game = MysUtil.getGameByMsg(this.e.msg)
+    if (!uids[game]) return false
+
     let msg = []
-    this.redisKey = `${PluginName}:${this.game}:exchange:`
-    this.mysApi = new MysApi({ uid: uids[this.game], server: 'mys', game: this.game })
+    this.redisKey = `${PluginName}:${game}:exchange:`
+    this.mysApi = new MysApi({ uid: uids[game], server: 'mys', game })
 
     const catchData = await redis.get(this.redisKey + 'codes')
     if (catchData) {
