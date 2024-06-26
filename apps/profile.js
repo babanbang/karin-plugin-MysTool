@@ -1,4 +1,4 @@
-import { plugin, handler } from '#Karin'
+import { plugin, handler } from 'node-Karin'
 import { MysInfo, MysUtil } from '#MysTool/mys'
 import { Character } from '#MysTool/profile'
 

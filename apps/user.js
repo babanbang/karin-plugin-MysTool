@@ -1,4 +1,4 @@
-import { common, plugin, segment } from '#Karin'
+import { common, plugin, segment } from 'node-Karin'
 import { MysApi, MysUtil } from '#MysTool/mys'
 import { Player } from '#MysTool/profile'
 import { Base } from '#MysTool/utils'

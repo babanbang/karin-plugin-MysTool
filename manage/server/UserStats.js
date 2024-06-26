@@ -1,6 +1,6 @@
 import { MysUser, BaseModel } from "#MysTool/user"
 import { Cfg, Data, PluginName } from "#MysTool/utils"
-import { Update } from '#Karin'
+import { Update } from 'node-Karin'
 import _ from "lodash"
 
 let updatePlugins = {}

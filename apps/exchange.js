@@ -1,4 +1,4 @@
-import { plugin, redis } from '#Karin'
+import { plugin, redis } from 'node-Karin'
 import { common, PluginName } from '#MysTool/utils'
 import { MysApi, MysUtil } from '#MysTool/mys'
 

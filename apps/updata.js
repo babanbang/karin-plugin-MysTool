@@ -1,4 +1,4 @@
-import { Update, plugin } from '#Karin'
+import { Update, plugin } from 'node-Karin'
 import { PluginName, common, Data } from '#MysTool/utils'
 import _ from 'lodash'
 

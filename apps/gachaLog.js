@@ -1,4 +1,4 @@
-import { plugin, handler } from '#Karin'
+import { plugin, handler } from 'node-Karin'
 import { MysApi } from '#MysTool/mys'
 
 export class dealGachaUrl extends plugin {
