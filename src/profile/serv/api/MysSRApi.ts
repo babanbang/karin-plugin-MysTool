@@ -1,5 +1,5 @@
 import { Meta, Character, Format } from '#MysTool/profile'
-import { MysInfo } from '#MysTool/mys'
+import { MysInfo } from 'src/mys'
 
 const mainIdx = {
   3: { 32: 1, 33: 2, 34: 3, 52: 4, 53: 5, 55: 6, 56: 7 },

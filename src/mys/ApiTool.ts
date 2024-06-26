@@ -1,32 +1,37 @@
-import MysTool from './MysTool.js'
+import { UrlMap, games, mysApis, mysType, reqData } from '#MysTool/types/mys'
+import MysTool from './MysTool'
 
-const MiYouSheUrlMap = {}
-const HoYoLabUrlMap = {}
-const OtherUrlMap = {}
+const MiYouSheUrlMap: UrlMap = {}
+const HoYoLabUrlMap: UrlMap = {}
+const OtherUrlMap: UrlMap = {}
 
 export default class ApiTool {
-  constructor (uid, server, game = 'gs') {
+  uid: string | number
+  server: string
+  game: games
+  game_biz: string
+
+  constructor(uid: string | number, server: string, game: games = 'gs') {
     this.uid = uid
     this.server = server
     this.game = game
     this.game_biz = MysTool.game_biz[game][0]
   }
 
-  get MiYouSheUrlMap () {
+  get MiYouSheUrlMap() {
     if (!MiYouSheUrlMap[this.game]) return function () { return {} }
-    return MiYouSheUrlMap[this.game].bind(this)
+    return MiYouSheUrlMap[this.game]!.bind(this)
   }
-  get HoYoLabUrlMap () {
+  get HoYoLabUrlMap() {
     if (!MiYouSheUrlMap[this.game]) return function () { return {} }
-    return HoYoLabUrlMap[this.game].bind(this)
+    return HoYoLabUrlMap[this.game]!.bind(this)
   }
-  get OtherUrlMap () {
+  get OtherUrlMap() {
     if (!OtherUrlMap[this.game]) return function () { return {} }
-    return OtherUrlMap[this.game].bind(this)
+    return OtherUrlMap[this.game]!.bind(this)
   }
 
-  /**@param {'mys'|'hoyolab'} type  */
-  static setApiMap (game, apiMap, type) {
+  static setApiMap(game: games, apiMap: (data: any) => mysApis, type: mysType) {
     if (type === 'mys') {
       MiYouSheUrlMap[game] = apiMap
     } else if (type === 'hoyolab') {
@@ -36,7 +41,7 @@ export default class ApiTool {
     }
   }
 
-  getUrlMap (data = {}) {
+  getUrlMap(data = {}) {
     if (['cn_gf01', 'cn_qd01', 'prod_gf_cn', 'prod_qd_cn', 'mys'].includes(this.server)) {
       return this.getMiYouSheUrlMap(data)
     } else {
@@ -44,8 +49,8 @@ export default class ApiTool {
     }
   }
 
-  getMiYouSheUrlMap (data) {
-    const otherUrlMap = {
+  getMiYouSheUrlMap(data: reqData): mysApis {
+    const otherUrlMap: mysApis = {
       UserGame: {
         url: `${MysTool.web_api}binding/api/getUserGameRolesByCookie`,
         query: `game_biz=${this.game_biz}`
@@ -70,12 +75,10 @@ export default class ApiTool {
       },
       getUserGameRolesByStoken: {
         url: `${MysTool.new_web_api}binding/api/getUserGameRolesByStoken`,
-        types: 'widget'
       },
       getActionTicket: {
         url: `${MysTool.new_web_api}auth/api/getActionTicketBySToken`,
         query: `uid=${data.ltuid}&action_type=game_role`,
-        types: 'widget'
       },
       changeGameRole: {
         url: `${MysTool.new_web_api}binding/api/changeGameRoleByDefault`,
@@ -86,7 +89,6 @@ export default class ApiTool {
           region: data.region,
           t: Math.round(new Date().getTime() / 1000)
         },
-        trpes: 'role'
       },
       getUserFullInfo: {
         url: `${MysTool.web_api}user/wapi/getUserFullInfo`,
@@ -122,7 +124,7 @@ export default class ApiTool {
       },
       miyolive_code: {
         url: `${MysTool.static_api}event/miyolive/refreshCode`,
-        query: `version=${data.code_ver}&time=${parseInt(Date.now() / 1000)}`,
+        query: `version=${data.code_ver}&time=${Math.floor(Date.now() / 1000)}`,
         HeaderType: 'noHeader',
         header: { 'x-rpc-act_id': data.actId }
       },
@@ -135,8 +137,8 @@ export default class ApiTool {
     return { ...this.MiYouSheUrlMap(data), ...otherUrlMap, ...this.OtherUrlMap(data) }
   }
 
-  getHoYoLabUrlMap (data) {
-    const otherUrlMap = {
+  getHoYoLabUrlMap(data: reqData): mysApis {
+    const otherUrlMap: mysApis = {
       getCookieBySToken: {
         url: `${MysTool.os_web_api}auth/api/getCookieAccountInfoBySToken`,
         query: `game_biz=hk4e_global&${data.cookies}`,
@@ -152,7 +154,7 @@ export default class ApiTool {
           device_id: data.deviceId?.toUpperCase(),
           platform: '5',
           seed_time: new Date().getTime() + '',
-          ext_fields: `{"userAgent":"Mozilla/5.0 (Linux; Android 11; J9110 Build/55.2.A.4.332; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.179 Mobile Safari/537.36 miHoYoBBSOversea/2.55.0","browserScreenSize":"387904","maxTouchPoints":"5","isTouchSupported":"1","browserLanguage":"zh-CN","browserPlat":"Linux aarch64","browserTimeZone":"Asia/Shanghai","webGlRender":"Adreno (TM) 640","webGlVendor":"Qualcomm","numOfPlugins":"0","listOfPlugins":"unknown","screenRatio":"2.625","deviceMemory":"4","hardwareConcurrency":"8","cpuClass":"unknown","ifNotTrack":"unknown","ifAdBlock":"0","hasLiedLanguage":"0","hasLiedResolution":"1","hasLiedOs":"0","hasLiedBrowser":"0","canvas":"${randomRange()}","webDriver":"0","colorDepth":"24","pixelRatio":"2.625","packageName":"unknown","packageVersion":"2.27.0","webgl":"${ApiTool.randomRange()}"}`,
+          ext_fields: `{"userAgent":"Mozilla/5.0 (Linux; Android 11; J9110 Build/55.2.A.4.332; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.6367.179 Mobile Safari/537.36 miHoYoBBSOversea/2.55.0","browserScreenSize":"387904","maxTouchPoints":"5","isTouchSupported":"1","browserLanguage":"zh-CN","browserPlat":"Linux aarch64","browserTimeZone":"Asia/Shanghai","webGlRender":"Adreno (TM) 640","webGlVendor":"Qualcomm","numOfPlugins":"0","listOfPlugins":"unknown","screenRatio":"2.625","deviceMemory":"4","hardwareConcurrency":"8","cpuClass":"unknown","ifNotTrack":"unknown","ifAdBlock":"0","hasLiedLanguage":"0","hasLiedResolution":"1","hasLiedOs":"0","hasLiedBrowser":"0","canvas":"${ApiTool.randomRange()}","webDriver":"0","colorDepth":"24","pixelRatio":"2.625","packageName":"unknown","packageVersion":"2.27.0","webgl":"${ApiTool.randomRange()}"}`,
           app_name: this.game_biz,
           device_fp: '38d7f2364db95'
         }
@@ -162,9 +164,9 @@ export default class ApiTool {
     return { ...this.HoYoLabUrlMap(data), ...otherUrlMap, ...this.OtherUrlMap(data) }
   }
 
-  static randomRange () {
+  static randomRange() {
     let randomStr = ''
-    let charStr = 'abcdef0123456789'
+    const charStr = 'abcdef0123456789'
     for (let i = 0; i < 64; i++) {
       let index = Math.round(Math.random() * (charStr.length - 1))
       randomStr += charStr.substring(index, index + 1)

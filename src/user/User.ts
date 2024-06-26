@@ -1,4 +1,4 @@
-import { MysUtil } from '#MysTool/mys'
+import { MysUtil } from 'src/mys/index.js'
 import { Data } from '#MysTool/utils'
 import _ from 'lodash'
 import { MysUser } from './MysUser.js'

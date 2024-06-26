@@ -11,6 +11,12 @@
     "qrcode": "^1.5.3",
     "image-size": "^1.1.1"
   },
+  "devDependencies": {
+    "@types/md5": "^2.3.5",
+    "tsc-alias": "^1.8.10",
+    "tsx": "^4.15.7",
+    "typescript": "^4.9.5"
+  },
   "imports": {
     "#Karin": "./lib/index.js",
     "#MysTool/utils": "./lib/utils/index.js",

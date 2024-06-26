@@ -1,6 +1,6 @@
 import { plugin, redis } from '#Karin'
 import { common, PluginName } from '#MysTool/utils'
-import { MysApi, MysUtil } from '#MysTool/mys'
+import { MysApi, MysUtil } from 'src/mys'
 
 const uids = {
   gs: '75276550',
@@ -17,19 +17,20 @@ export class exchange extends plugin {
       priority: 0,
       rule: [
         {
-          reg: new RegExp(`^${reg}?(直播|前瞻)?兑换码$`, 'i'),
+          reg: new RegExp(`^(${reg})?(直播|前瞻)?兑换码$`, 'i'),
           fnc: 'getCode'
         }
       ]
     })
-    this.game = MysUtil.getGameByMsg(this.e.msg)
-    this.redisKey = `${PluginName}:${this.game}:exchange:`
-    this.mysApi = new MysApi({ uid: uids[this.game], server: 'mys', game: this.game })
   }
 
   async getCode () {
-    if (!uids[this.game]) return false
+    const game = MysUtil.getGameByMsg(this.e.msg)
+    if (!uids[game]) return false
+
     let msg = []
+    this.redisKey = `${PluginName}:${game}:exchange:`
+    this.mysApi = new MysApi({ uid: uids[game], server: 'mys', game })
 
     const catchData = await redis.get(this.redisKey + 'codes')
     if (catchData) {

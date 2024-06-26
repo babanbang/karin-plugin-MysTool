@@ -1,4 +1,5 @@
 import { redis } from '#Karin'
+import { HeaderType, games, reqData, resData } from '#MysTool/types/mys'
 import { Cfg, PluginName } from '#MysTool/utils'
 import axios from 'axios'
 import _ from 'lodash'
@@ -10,11 +11,41 @@ import MysUtil from './MysUtil.js'
 
 const nofp = ['FullInfo', 'noHeader', 'passport', 'authKey']
 export default class MysApi {
-  /**
-   * @param {{uid, user_id, cookie, ck, sk, game, server, device}} mys
-   * @param {{cacheCd?, log?}} option
-   */
-  constructor (mys = {}, option = {}) {
+  uid: number | string
+  user_id?: string
+  cookie?: string
+  stoken?: string
+  game: games
+  server: string
+  device_id: string
+  hoyolab: boolean
+  ApiTool: ApiTool
+  set: {
+    [key: string]: any
+  }
+  option: {
+    log: boolean,
+    cacheCd?: number
+  }
+  _device?: string
+  _device_fp: { data?: { device_fp: string } } | false
+
+  constructor(
+    mys: {
+      uid?: string | number,
+      user_id?: string,
+      cookie?: string,
+      ck?: string,
+      sk?: string,
+      game?: games,
+      server?: string,
+      device?: string
+    } = {},
+    option: {
+      cacheCd?: number,
+      log?: boolean
+    } = {}
+  ) {
     this.uid = mys.uid || ''
     this.user_id = mys.user_id
     this.cookie = mys.ck || mys.cookie
@@ -31,19 +62,31 @@ export default class MysApi {
       log: true,
       ...option
     }
+
+    this._device_fp = false
   }
-  get UIDTYPE () {
+
+  get UIDTYPE() {
     return this.hoyolab ? 'HoYoLab' : '米游社'
   }
 
-  get device () {
+  get device() {
     if (!this._device) this._device = `Karin-${md5(this.game + this.uid).substring(0, 5)}`
     return this._device
   }
 
-  getUrl (type, data = {}) {
+  getUrl(type: string, data: reqData = {}): {
+    url: string,
+    headers: {
+      [key: string]: any
+    },
+    body: {
+      [key: string]: any
+    } | string,
+    HeaderType: HeaderType
+  } {
     const urlMap = (data.ApiTool || this.ApiTool).getUrlMap({ ...data, deviceId: this.device_id })
-    if (!urlMap[type]) return false
+    if (!urlMap[type]) return { url: '', headers: {}, body: '', HeaderType: '' }
 
     let { url, query = '', body = '', HeaderType = '', header = {} } = urlMap[type]
     if (query) url += `?${query}`
@@ -53,7 +96,7 @@ export default class MysApi {
     return { url, headers, body, HeaderType }
   }
 
-  async getData (type, data = {}) {
+  async getData(type: string, data: reqData = {}): Promise<resData | false> {
     let { url, headers, body, HeaderType } = this.getUrl(type, data)
     if (!url) return false
 
@@ -61,7 +104,7 @@ export default class MysApi {
     const cahce = await redis.get(cacheKey)
     if (cahce) return JSON.parse(cahce)
 
-    if (!nofp.includes(HeaderType) && !this._device_fp && !data?.Getfp && !data?.headers?.['x-rpc-device_fp']) {
+    if (!nofp.includes(HeaderType || '') && !this._device_fp && !data?.Getfp && !data?.headers?.['x-rpc-device_fp']) {
       this._device_fp = await this.getData('getFp', {
         seed_id: MysUtil.getSeed_id(),
         Getfp: true
@@ -73,11 +116,31 @@ export default class MysApi {
       headers = { ...headers, ...data.headers }
     }
 
-    if (!nofp.includes(HeaderType) && !headers['x-rpc-device_fp'] && this._device_fp?.data?.device_fp) {
+    if (
+      !nofp.includes(HeaderType || '') &&
+      !headers['x-rpc-device_fp'] &&
+      this._device_fp &&
+      this._device_fp.data &&
+      this._device_fp.data.device_fp
+    ) {
       headers['x-rpc-device_fp'] = this._device_fp.data.device_fp
     }
 
-    const param = {
+    const param: {
+      url: string,
+      method: 'get' | 'post'
+      headers: {
+        [key: string]: any
+      }
+      timeout: number
+      data?: {
+        [key: string]: any
+      } | string
+      proxy?: {
+        host: string
+        port: number
+      }
+    } = {
       url,
       method: data.method ? data.method : 'get',
       headers,
@@ -92,7 +155,7 @@ export default class MysApi {
     }
 
     // logger.error(`[${this.UIDTYPE}接口][${type}][${this.game}][${this.user_id || this.uid}] ${JSON.stringify(param)}`)
-    let response = {}
+    let response: any = {}
     const start = Date.now()
     try {
       response = await axios(param)
@@ -126,9 +189,9 @@ export default class MysApi {
     return res
   }
 
-  getHeaders (query = '', body = '', HeaderType = '') {
-    const _body = body ? JSON.stringify(body) : ''
-    let header = {
+  getHeaders(query = '', body: string | object = '', HeaderType: HeaderType = '') {
+    const _body = JSON.stringify(body)
+    let header: any = {
       'x-rpc-app_version': app_version.cn,
       'x-rpc-client_type': '5',
       'x-rpc-device_id': this.device_id.toUpperCase(),
@@ -182,7 +245,6 @@ export default class MysApi {
           'x-rpc-sys_version': '12',
           'x-rpc-channel': 'mihoyo',
           'x-rpc-device_name': MysUtil.randomString(16),
-          'x-rpc-device_model': MysUtil.randomString(16),
           'x-rpc-device_model': 'Mi 10',
           Host: 'api-takumi.mihoyo.com',
         }
@@ -197,7 +259,7 @@ export default class MysApi {
     }
   }
 
-  getDS1 ({ q = '', b = '', salt, bq = true } = {}) {
+  getDS1({ q = '', b = '', salt = '', bq = true } = {}) {
     const r = MysUtil.randomString(6)
     const t = Math.floor(Date.now() / 1000)
     let DS = `salt=${salt}&t=${t}&r=${r}`
@@ -206,7 +268,7 @@ export default class MysApi {
     return `${t},${r},${md5(DS)}`
   }
 
-  getDS2 ({ q = '', b = '', salt } = {}) {
+  getDS2({ q = '', b = '', salt = '' }) {
     const r = _.random(100001, 200000)
     const t = Math.floor(Date.now() / 1000)
     let DS = `salt=${salt}&t=${t}&r=${r}&b=${b}&q=${q}`
@@ -214,16 +276,18 @@ export default class MysApi {
     return `${t},${r},${md5(DS)}`
   }
 
-  cacheKey (type, data) {
-    return `${PluginName}:${this.game}:mys:cache:` + md5(this.uid + type + this.game + JSON.stringify(data))
+  cacheKey(type: string, data: reqData) {
+    const cacheData = { ...data }
+    if (cacheData.ApiTool) delete cacheData.ApiTool
+    return `${PluginName}:${this.game}:mys:cache:` + md5(this.uid + type + this.game + JSON.stringify(cacheData))
   }
 
-  async cache (res, cacheKey, cd) {
+  async cache(res: resData, cacheKey: string, cd: number) {
     if (!res || res.retcode !== 0) return
     redis.setEx(cacheKey, cd, JSON.stringify(res))
   }
 
-  checkstatus (err, type) {
+  checkstatus(err: any, type: string) {
     if (err.response) {
       let error = `[${this.UIDTYPE}接口][${type}][${this.game}][${this.uid}] ${err.response.status} ${err.response.statusText}`
       if (err.response.status == 403 && this.hoyolab) {

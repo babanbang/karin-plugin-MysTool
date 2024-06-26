@@ -1,5 +1,5 @@
 import { plugin, handler } from '#Karin'
-import { MysApi } from '#MysTool/mys'
+import { MysApi } from 'src/mys'
 
 export class dealGachaUrl extends plugin {
   constructor () {

@@ -1,5 +1,5 @@
 import { plugin, handler } from '#Karin'
-import { MysUtil } from '#MysTool/mys'
+import { MysUtil } from 'src/mys'
 import { Character, Weapon } from '#MysTool/profile'
 import _ from 'lodash'
 

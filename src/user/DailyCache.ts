@@ -1,7 +1,7 @@
 import { redis } from '#Karin'
 import moment from 'moment'
 import base from './base.js'
-import { MysUtil } from '#MysTool/mys'
+import { MysUtil } from 'src/mys/index.js'
 import MysUserDB from './db/MysUserDB.js'
 
 const CacheLtuid = []

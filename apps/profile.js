@@ -1,5 +1,5 @@
 import { plugin, handler } from '#Karin'
-import { MysInfo, MysUtil } from '#MysTool/mys'
+import { MysInfo, MysUtil } from 'src/mys'
 import { Character } from '#MysTool/profile'
 
 const reg = `(${Object.values(MysUtil.reg).join('|')}?)`

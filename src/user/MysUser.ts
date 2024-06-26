@@ -1,4 +1,4 @@
-import { MysApi, MysUtil } from '#MysTool/mys'
+import { MysApi, MysUtil } from 'src/mys/index.js'
 import { Player } from '#MysTool/profile'
 import { Data } from '#MysTool/utils'
 import base from './base.js'

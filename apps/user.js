@@ -1,5 +1,5 @@
 import { common, plugin, segment } from '#Karin'
-import { MysApi, MysUtil } from '#MysTool/mys'
+import { MysApi, MysUtil } from 'src/mys'
 import { Player } from '#MysTool/profile'
 import { Base } from '#MysTool/utils'
 import { MysUser, User } from '#MysTool/user'

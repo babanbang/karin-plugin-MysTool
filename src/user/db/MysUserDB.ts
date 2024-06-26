@@ -1,4 +1,4 @@
-import { MysUtil } from '#MysTool/mys'
+import { MysUtil } from 'src/mys/index.js'
 import { BaseModel } from './BaseModel.js'
 const { Types, createColumn, Op, DIALECT } = BaseModel
 
