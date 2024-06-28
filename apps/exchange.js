@@ -37,6 +37,14 @@ export class exchange extends plugin {
 
   async getCode () {
     const game = this.getGameByMsg(this.e.msg)
+    if (game?.key == 'zzz' && Date.now() < 1720713599000) {
+      this.replyForward(common.makeForward([
+        '《绝区零》公测前瞻特别节目-直播兑换码',
+        '兑换码过期时间: \n2024-7-11 23:59',
+        'ZZZFREE100'
+      ]))
+      return true
+    }
     if (!game) return false
 
     let msg = []
@@ -63,20 +71,24 @@ export class exchange extends plugin {
       const index_data = index.data.live
       const { title, code_ver, remain } = index_data
       if (remain > 0) {
-        this.reply(`暂无${title}-直播兑换码`)
+        this.reply(`暂无${title || game.name}-直播兑换码`)
         return true
       }
 
       const code = await this.mysApi.getData('miyolive_code', { actid, code_ver })
       if (!code?.data?.code_list) {
         logger.info(game.name + '[兑换码] 未获取到兑换码')
-        this.reply(`当前暂无${title}-直播兑换码`)
+        this.reply(`当前暂无${title || game.name}-直播兑换码`)
         return true
       }
 
       if (!EXTime.EX && code.data.code_list[0].to_get_time) {
         const date = new Date(code.data.code_list[0].to_get_time * 1000)
         date.setDate(date.getDate() + 1)
+        if (date.setHours(23, 59, 59) < Date.now()) {
+          this.reply(`当前暂无${title || game.name}-直播兑换码`)
+          return true
+        }
         EXTime.EX = Math.floor((date.setHours(23, 59, 59) - Date.now()) / 1000)
 
         redis.set(this.redisKey + 'actid', JSON.stringify({
@@ -86,12 +98,12 @@ export class exchange extends plugin {
       }
 
       if (!code?.data?.code_list?.length || !code?.data?.code_list?.[0]?.code) {
-        this.reply(`当前暂无${title}-直播兑换码`)
+        this.reply(`当前暂无${title || game.name}-直播兑换码`)
         return true
       }
 
       const codes = code.data.code_list.map(val => val.code)
-      msg = [`${title}-直播兑换码`, `兑换码过期时间: \n${deadline}`, ...codes]
+      msg = [`${title || game.name}-直播兑换码`, `兑换码过期时间: \n${deadline}`, ...codes]
       if (codes.length === 3) {
         redis.set(this.redisKey + 'codes', JSON.stringify(msg), EXTime)
       }
@@ -119,10 +131,7 @@ export class exchange extends plugin {
 
       const structured_content = post.structured_content
       const result = structured_content.match(/{\"link\":\"https:\/\/webstatic.mihoyo.com\/bbs\/event\/live\/index.html\?act_id=(.*?)\\/)
-      if (result) {
-        const date = new Date(post.created_at * 1000)
-        date.setDate(date.getDate() + 3)
-
+      if (result?.[1]) {
         return {
           actid: result[1],
         }
