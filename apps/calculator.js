@@ -1,12 +1,12 @@
-import karin, { handler, logger } from 'node-Karin'
 import { MysUtil } from '#MysTool/mys'
 import { Character, Weapon } from '#MysTool/profile'
 import _ from 'lodash'
+import karin, { handler } from 'node-Karin'
 
 const reg = `(${Object.values(MysUtil.reg).join('|')}?)`
 
 /** 养成计算前置处理 */
-karin.command(
+export const calculator = karin.command(
   new RegExp(`^${reg}(.*)(养成|计算)+\\s*([0-9a-c,， .\\-|]*)$`, 'i'),
   async (e) => {
     const match = e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+?)\\s*(养成|计算)+\\s*([0-9a-z,， .\\-|]*)$`, 'i'))

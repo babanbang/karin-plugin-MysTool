@@ -5,8 +5,9 @@ import { MysApi, MysUtil } from '#MysTool/mys'
 const uids = {
   gs: '75276550',
   sr: '80823548',
-  zzz: ''
+  zzz: '152039149'
 }
+
 const reg = Object.values(MysUtil.reg).join('|')
 export class exchange extends plugin {
   constructor () {
