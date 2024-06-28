@@ -27,11 +27,11 @@ export class exchange extends plugin {
 
   async getCode () {
     const game = MysUtil.getGameByMsg(this.e.msg)
-    if (!uids[game]) return false
+    if (!uids[game.key]) return false
 
     let msg = []
-    this.redisKey = `${PluginName}:${game}:exchange:`
-    this.mysApi = new MysApi({ uid: uids[game], server: 'mys', game })
+    this.redisKey = `${PluginName}:${game.key}:exchange:`
+    this.mysApi = new MysApi({ uid: uids[game.key], server: 'mys', game: game.key })
 
     const catchData = await redis.get(this.redisKey + 'codes')
     if (catchData) {
@@ -39,27 +39,28 @@ export class exchange extends plugin {
     } else {
       const { actid = '', deadline = '', timeout = false, EXTime = { EX: 0 } } = await this.getActId()
       if (timeout) {
-        this.reply('当前暂无直播兑换码')
+        this.reply(`当前暂无${game.name}直播兑换码`)
         return true
       }
       if (!actid) {
-        logger.info('[兑换码] 未获取到actId')
+        logger.info(game.name + '[兑换码] 未获取到actId')
         return true
       }
 
-      const index = await this.getData('index', { actid })
+      const index = await this.mysApi.getData('miyolive_index', { actid })
       if (!index?.data?.live?.title) return true
 
       const index_data = index.data.live
-      const { title, code_ver, remain } = index_data.title
+      const { title, code_ver, remain } = index_data
       if (remain > 0) {
-        this.reply(`暂无${title}直播兑换码`)
+        this.reply(`暂无${title}-直播兑换码`)
         return true
       }
 
       const code = await this.mysApi.getData('miyolive_code', { actid, code_ver })
       if (!code?.data?.code_list) {
-        logger.info('[兑换码] 未获取到兑换码')
+        logger.info(game.name + '[兑换码] 未获取到兑换码')
+        this.reply(`当前暂无${title}-直播兑换码`)
         return true
       }
 
@@ -74,6 +75,11 @@ export class exchange extends plugin {
         }), EXTime)
       }
 
+      if (!code?.data?.code_list?.length || !code?.data?.code_list?.[0]?.code) {
+        this.reply(`当前暂无${title}-直播兑换码`)
+        return true
+      }
+
       const codes = code.data.code_list.map(val => val.code)
       msg = [`${title}-直播兑换码`, `兑换码过期时间: \n${deadline}`, ...codes]
       if (codes.length === 3) {
@@ -81,7 +87,7 @@ export class exchange extends plugin {
       }
     }
 
-    this.reply(common.makeForward(msg))
+    this.replyForward(common.makeForward(msg))
     return true
   }
 
