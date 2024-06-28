@@ -2,11 +2,11 @@ import { plugin, redis } from '#Karin'
 import { common, PluginName } from '#MysTool/utils'
 import { MysApi, MysUtil } from '#MysTool/mys'
 
-const uids = {
-  gs: '75276550',
-  sr: '80823548',
-  zzz: '152039149'
-}
+const games = [
+  { key: 'gs', name: '原神', uid: '75276550' },
+  { key: 'sr', name: '崩坏：星穹铁道', uid: '80823548' },
+  { key: 'zzz', name: '绝区零', uid: '152039149' }
+]
 
 const reg = Object.values(MysUtil.reg).join('|')
 export class exchange extends plugin {
@@ -25,13 +25,23 @@ export class exchange extends plugin {
     })
   }
 
+  getGameByMsg (msg = '') {
+    for (const i in MysUtil.reg) {
+      if (new RegExp('^' + MysUtil.reg[i]).test(msg)) {
+        return games.find((g) => g.key === i)
+      }
+    }
+
+    return false
+  }
+
   async getCode () {
-    const game = MysUtil.getGameByMsg(this.e.msg)
-    if (!uids[game.key]) return false
+    const game = this.getGameByMsg(this.e.msg)
+    if (!game) return false
 
     let msg = []
     this.redisKey = `${PluginName}:${game.key}:exchange:`
-    this.mysApi = new MysApi({ uid: uids[game.key], server: 'mys', game: game.key })
+    this.mysApi = new MysApi({ uid: game.uid, server: 'mys', game: game.key })
 
     const catchData = await redis.get(this.redisKey + 'codes')
     if (catchData) {
