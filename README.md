@@ -47,7 +47,8 @@ pnpm install --filter=karin-plugin-MysTool
 ```
 
 #### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../Zenless)
->请自行选择安装
+> [!WARNING]
+>请自行选择安装、不安装则无法使用对应功能
 
 ---
 ### 待完成功能

@@ -65,8 +65,10 @@ export class UserBing extends plugin {
   }
 
   /** 获取当前user实例 */
-  async user () {
-    return await User.create(this.e, MysUtil.getGameByMsg(this.e.msg).key)
+  async user (game = '') {
+    if (!game) game = MysUtil.getGameByMsg(this.e.msg)?.key
+    if (!game) return false
+    return await User.create(this.e, game)
   }
 
   async bing () {
@@ -105,8 +107,7 @@ export class UserBing extends plugin {
   /** 扫码登录 */
   async miHoYoLoginQRCode () {
     if (QRCodes[this.e.user_id]) {
-      this.reply([
-        segment.text('请使用米游社扫码登录'), QRCodes[this.e.user_id]
+      this.reply(['请使用米游社扫码登录', QRCodes[this.e.user_id]
       ], { at: true, recallMsg: 60 })
       return true
     }
@@ -127,7 +128,7 @@ export class UserBing extends plugin {
     const ticket = url.split('ticket=')[1]
     const img = segment.image((await QR.toDataURL(url)).replace('data:image/png;base64,', 'base64://'))
     QRCodes[this.e.user_id] = img
-    this.reply([segment.text('请使用米游社扫码登录'), img], { at: true, recallMsg: 60 })
+    this.reply(['请使用米游社扫码登录', img], { at: true, recallMsg: 60 })
 
     let data
     let Scanned
@@ -178,12 +179,14 @@ export class UserBing extends plugin {
     } else {
       game = MysUtil.getGame(game)
     }
+    if (!game) return false
+
     if (!uid) {
       this.reply(`${game.name}UID输入错误`, { at: true })
       return
     }
 
-    const user = await this.user()
+    const user = await this.user(game)
     user.addRegUid(uid, game.key)
 
     return await this.showUid()
@@ -194,6 +197,7 @@ export class UserBing extends plugin {
     const idx = this.e.msg.match(/[0-9]{1,2}/g)
     if (idx && idx[0]) {
       const user = await this.user()
+      if (!user) return false
 
       const uidList = user.getUidList()
       if (idx[0] > uidList.length) {
@@ -224,12 +228,13 @@ export class UserBing extends plugin {
     this.finish('saveSrUid')
   }
 
-  /** 查看切换uid */
+  /** 查看uid */
   async showUid () {
     const base = new Base(this.e, 'uid')
     base.model = 'user/uid-list'
 
-    const user = await this.user()
+    const user = await this.user('gs')
+
     const uids = [...MysUtil.games]
     if (uids.length === 0) {
       this.reply('请查看插件README.md后安装额外组件后再查看！')
@@ -257,9 +262,10 @@ export class UserBing extends plugin {
   /** 切换UID */
   async setMainUid () {
     const idx = this.e.msg.match(/[0-9]{1,2}/g)
-
-    const user = await this.user()
     const game = MysUtil.getGameByMsg(this.e.msg)
+    if (!game) return false
+
+    const user = await this.user(game.key)
 
     const uidList = user.getUidList(game.key)
     if (idx[0] > uidList.length) {
@@ -279,6 +285,8 @@ export class UserBing extends plugin {
     const idx = this.e.msg.match(/[0-9]{1,2}/g)
 
     const user = await this.user()
+    if (!user) return false
+
     let { uid } = user.getUidType()
 
     if (idx && idx[0]) {
@@ -309,6 +317,8 @@ export class UserBing extends plugin {
       return this.reply('请私聊查看', { at: true })
     }
     const user = await this.user()
+    if (!user) return false
+
     const data = user.getUidData()
     const msg = [`${MysUtil.getGameByMsg(this.e.msg).name}UID: ${data?.uid || user.getUidType()?.uid}`]
     if (!data) {
@@ -325,7 +335,7 @@ export class UserBing extends plugin {
 
   /** 绑定Stoken */
   async bingSk (stoken = '') {
-    const user = await this.user()
+    const user = await this.user('gs')
     if (!stoken && !this.e.sk) {
       return this.reply('请发送#扫码登录')
     }
@@ -368,7 +378,7 @@ export class UserBing extends plugin {
    * @param {MysUser} mys
   */
   async bingCk (cookie = '', user = '', mys = '', type = 'ck') {
-    if (!user) user = await this.user()
+    if (!user) user = await this.user('gs')
     if (!cookie && !this.e.ck) {
       return this.reply('请发送#扫码登录')
     }
@@ -445,7 +455,7 @@ export class UserBing extends plugin {
   }
 
   async updateCK () {
-    const user = await this.user()
+    const user = await this.user('gs')
 
     const sendMsg = []
     this._reply = this.reply
@@ -460,9 +470,8 @@ export class UserBing extends plugin {
       }
       await this.bingCk(ck, user, mys, 'all')
     }
-    // todo 合并转发
-    for (const msg of sendMsg) {
-      this._reply(msg)
-    }
+
+    this.replyForward(common.makeForward(sendMsg))
+    return true
   }
 }

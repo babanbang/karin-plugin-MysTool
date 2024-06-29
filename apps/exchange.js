@@ -49,7 +49,7 @@ export class exchange extends plugin {
 
     let msg = []
     this.redisKey = `${PluginName}:${game.key}:exchange:`
-    this.mysApi = new MysApi({ uid: game.uid, server: 'mys', game: game.key })
+    this.mysApi = new MysApi({ uid: game.uid, server: 'mys', game: game.key }, { log: false })
 
     const catchData = await redis.get(this.redisKey + 'codes')
     if (catchData) {

@@ -25,7 +25,9 @@ export class calculator extends plugin {
   async Calculator () {
     const match = this.e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+?)\\s*(养成|计算)+\\s*([0-9a-z,， .\\-|]*)$`, 'i'))
 
-    let game = MysUtil.getGameByMsg(this.e.msg).key
+    let game = MysUtil.getGameByMsg(this.e.msg)?.key
+    if (!game) return false
+
     const name = match?.[1]?.replace?.(/养成|计算/g, ' ')?.trim?.()
     if (!name) {
       const key = `mys.${game}.calculator.help`
