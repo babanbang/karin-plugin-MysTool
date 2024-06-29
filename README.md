@@ -52,7 +52,7 @@ pnpm install --filter=karin-plugin-MysTool
 
 ---
 ### 待完成功能
-- [x] 可选安装原神、崩坏：星穹铁道相关功能
+- [x] 可选安装`原神`、`崩坏：星穹铁道`、`绝区零`相关功能
 <details><summary><b>米游社、UID相关</b></summary>
 
 - [x] 绑定、删除、查看游戏UID

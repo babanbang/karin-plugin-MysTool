@@ -1,4 +1,4 @@
-import { plugin, handler } from '#Karin'
+import { plugin, handler, logger } from '#Karin'
 import { MysInfo, MysUtil } from '#MysTool/mys'
 import { Character } from '#MysTool/profile'
 
@@ -12,7 +12,7 @@ export class profileReplace extends plugin {
       priority: 0,
       rule: [
         {
-          reg: /^(?!.*(不支持|更新))#*([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*((18|[1-9])[0-9]{8})*(.*[换变改].*)?$/i,
+          reg: /^#*(?!.*(访问|不支持|更新))([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*((18|[1-9])[0-9]{8})*(.*[换变改].*)?$/i,
           fnc: 'profile_detal',
           log: false
         }
@@ -26,8 +26,8 @@ export class profileReplace extends plugin {
 
     const char = Character.get(name)
     if (!char) {
-      this.reply(`暂不支持查询${name}的角色面板`)
-      return true
+      logger.info(`MysTool: 暂不支持查询${name}的角色面板`)
+      return false
     }
 
     this.e.msg = this.e.msg?.replace(new RegExp('^' + reg, 'i'), '#' + char.game)

@@ -115,7 +115,7 @@ export class UserBing extends plugin {
     QRCodes[this.e.user_id] = true
 
     const device = MysUtil.randomString(64)
-    const mysApi = new MysApi({ user_id: this.e.user_id })
+    const mysApi = new MysApi({ user_id: this.e.user_id }, { log: false })
 
     const QRcode = await mysApi.getData('fetchQRcode', { device })
 
