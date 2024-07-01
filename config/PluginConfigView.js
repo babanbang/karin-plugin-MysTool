@@ -1,7 +1,7 @@
 import { Data } from "#MysTool/utils"
 const plugins = []
 Data.readdir('lib/components').forEach(p => {
-  if (Data.isDirectory(`lib/components/${p}`)) {
+  if (Data.exists(`lib/components/${p}/index.js`)) {
     plugins.push({ name: p, value: p })
   }
 })
