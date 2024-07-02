@@ -51,6 +51,7 @@ body {
 .container {
   padding: 20px 15px 10px 15px;
   background-size: contain;
+  width: 100%;
 }
 
 .head-box {
