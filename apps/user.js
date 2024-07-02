@@ -1,14 +1,14 @@
-import { common, plugin, segment } from '#Karin'
 import { MysApi, MysUtil } from '#MysTool/mys'
 import { Player } from '#MysTool/profile'
-import { Base } from '#MysTool/utils'
 import { MysUser, User } from '#MysTool/user'
-import _ from 'lodash'
+import { Base } from '#MysTool/utils'
+import lodash from 'lodash'
+import { Plugin, common, segment } from 'node-karin'
 import QR from 'qrcode'
 
 const QRCodes = {}
 const reg = Object.values(MysUtil.reg).join('|')
-export class UserBing extends plugin {
+export class UserBing extends Plugin {
   constructor () {
     super({
       name: '用户绑定',
@@ -241,11 +241,11 @@ export class UserBing extends plugin {
       return true
     }
 
-    _.forEach(uids, (ds) => {
+    lodash.forEach(uids, (ds) => {
       const uidList = user.getUidList(ds.key, { needType: true })
       ds.uidList = uidList.list
       ds.banList = uidList.ban
-      _.forEach(ds.uidList, (uidDs) => {
+      lodash.forEach(ds.uidList, (uidDs) => {
         const player = new Player(uidDs.uid, ds.key)
         uidDs.name = player.name
         uidDs.level = player.level

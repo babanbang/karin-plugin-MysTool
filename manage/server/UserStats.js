@@ -1,18 +1,18 @@
-import { MysUser, BaseModel } from "#MysTool/user"
-import { Cfg, Data, PluginName } from "#MysTool/utils"
-import { Update } from '#Karin'
-import _ from "lodash"
+import { BaseModel, MysUser } from "#MysTool/user"
+import { Data, PluginName } from "#MysTool/utils"
+import lodash from 'lodash'
+import { Update } from 'node-karin'
 
 let updatePlugins = {}
-const set = Cfg.getConfig('set')
 const _path = process.cwd().replace(/\\/g, '/')
 const reg = new RegExp(`^(${PluginName}\/lib\/components\/|karin\-plugin\-)`)
 
-const folders = Data.readdir('lib/components').filter(p => Data.isDirectory(`lib/components/${p}`))
-const plugins = set.plugins?.length > 0
-  ? set.plugins.filter(p => folders.includes(p))
-  : folders
-const MysTools = [PluginName, ...plugins.map(p => `${PluginName}/lib/components/${p}`)]
+const MysTools = [
+  PluginName,
+  ...Data.readdir('lib/components')
+    .filter(p => Data.exists(`lib/components/${p}/index.js`))
+    .map(p => `${PluginName}/lib/components/${p}`)
+]
 
 export default async function (fastify, options) {
   fastify.get('/MysTools', async (request, reply) => {
@@ -54,7 +54,7 @@ export default async function (fastify, options) {
   fastify.post('/checkUpdate', async (request, reply) => {
     const { force } = request.body
 
-    if (!force && !_.isEmpty(updatePlugins)) {
+    if (!force && !lodash.isEmpty(updatePlugins)) {
       return reply.send({
         status: 'success',
         data: updatePlugins

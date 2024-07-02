@@ -1,40 +1,28 @@
-import { Update, plugin } from '#Karin'
-import { PluginName, common, Data } from '#MysTool/utils'
-import _ from 'lodash'
+import { Data, PluginName } from '#MysTool/utils'
+import lodash from 'lodash'
+import { Update, common, karin } from 'node-karin'
 
 let uping = false
-export class MysToolUpdata extends plugin {
-  constructor () {
-    super({
-      name: 'MysTool更新',
-      dsc: '',
-      event: 'message',
-      priority: 0,
-      rule: [
-        {
-          reg: new RegExp('^#?(强制)?更新MysTool', 'i'),
-          permission: 'master',
-          fnc: 'Updata'
-        }
-      ]
-    })
-  }
 
-  async Updata () {
+export const MysToolUpdata = karin.command(
+  new RegExp('^#?(强制)?更新MysTool', 'i'),
+  async (e) => {
     if (uping) {
-      this.reply('正在更新MysTool，请稍后...')
-      return false
+      e.reply('正在更新MysTool，请稍后...')
+      return true
     }
+
+    let isUp = false
     uping = true
     setTimeout(() => { uping = false }, 300 * 1000)
 
-    const filesAndFolders = Data.readdir('/lib/components/')
-    const folders = filesAndFolders.filter(item => {
-      return Data.isDirectory('lib/components/' + item)
+    const folders = Data.readdir('/lib/components/').filter(item => {
+      return Data.exists(`lib/components/${item}/index.js`)
     })
+
     let cm = 'git pull'
-    if (this.e.msg.includes('强制')) {
-      this.isUp = true
+    if (e.msg.includes('强制')) {
+      isUp = true
       cm = 'git reset --hard && git pull --allow-unrelated-histories'
     }
 
@@ -46,23 +34,20 @@ export class MysToolUpdata extends plugin {
 
       const msg = [`更新${name}...`]
       const { data } = await Update.update(process.cwd().replace(/\\/g, '/') + `/plugins/${name}`, cm, 60)
-      if (_.isObject(data)) {
+      if (lodash.isObject(data)) {
         msg.push(`${data.message}  ${data.stderr}`)
       } else {
         msg.push(data)
-        if (data === '更新成功！') {
-          this.isUp = true
-        }
+        if (data === '更新成功！') isUp = true
       }
       msgs.push(msg)
     }
 
-    await this.replyForward(common.makeForward(msgs))
-    if (this.isUp) {
-      this.reply('MysTool更新成功，请重启应用更新！')
-    }
+    await e.replyForward(common.makeForward(msgs))
+    if (isUp) e.reply('MysTool更新成功，请重启应用更新！')
 
     uping = false
     return true
-  }
-}
+  },
+  { name: 'MysTool更新', permission: 'master', priority: 0 }
+)

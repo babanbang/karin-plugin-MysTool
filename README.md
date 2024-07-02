@@ -43,7 +43,7 @@ git clone --depth=1 https://gitee.com/bbaban/karin-plugin-MysTool.git ./plugins/
 #### 安装依赖
 
 ```bash
-pnpm install --filter=karin-plugin-MysTool
+pnpm i -P
 ```
 
 #### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../Zenless)

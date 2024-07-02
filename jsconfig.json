@@ -4,9 +4,6 @@
     "baseUrl": "./",
     "paths": {
       // 别名解析
-      "#Karin": [
-        "./lib/index.js"
-      ],
       "#MysTool/utils": [
         "./lib/utils/index.js"
       ],

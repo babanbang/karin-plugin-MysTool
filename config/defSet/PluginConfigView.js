@@ -1,12 +1,4 @@
-import { Data } from "#MysTool/utils"
-const plugins = []
-Data.readdir('lib/components').forEach(p => {
-  if (Data.exists(`lib/components/${p}/index.js`)) {
-    plugins.push({ name: p, value: p })
-  }
-})
-
-const config = [{
+export default [{
   name: 'MysTool通用配置',
   file: 'set.yaml',
   priority: 0,
@@ -35,13 +27,6 @@ const config = [{
           type: 'number'
         }
       ]
-    }, {
-      key: '额外组件',
-      comment: '自行选择需要启用的插件组件',
-      path: 'plugins',
-      type: 'select',
-      multiple: true,
-      item: plugins
     }, {
       key: 'wkhtmltoimage渲染',
       comment: '使用wkhtmltoimage渲染图片(建议优先使用puppeteer渲染)',
@@ -98,5 +83,3 @@ const config = [{
     }
   ]
 }]
-
-export default config

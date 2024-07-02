@@ -1,48 +1,31 @@
-import { plugin, handler } from '#Karin'
 import { MysUtil } from '#MysTool/mys'
 import { Character, Weapon } from '#MysTool/profile'
-import _ from 'lodash'
+import { handler, karin } from 'node-karin'
+import lodash from 'lodash'
 
 const reg = `(${Object.values(MysUtil.reg).join('|')}?)`
-export class calculator extends plugin {
-  constructor () {
-    super({
-      name: '养成计算前置处理',
-      dsc: '',
-      event: 'message',
-      priority: 0,
-      rule: [
-        {
-          reg: new RegExp(`^${reg}(.*)(养成|计算)+\\s*([0-9a-c,， .\\-|]*)$`, 'i'),
-          fnc: 'Calculator',
-          log: false
-        }
-      ]
-    })
-  }
+/** 养成计算前置处理 */
+export const calculator = karin.command(
+  new RegExp(`^${reg}(.*)(养成|计算)+\\s*([0-9a-c,， .\\-|]*)$`, 'i'),
+  async (e) => {
+    const match = e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+?)\\s*(养成|计算)+\\s*([0-9a-z,， .\\-|]*)$`, 'i'))
 
-  /** 养成计算前置处理 */
-  async Calculator () {
-    const match = this.e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+?)\\s*(养成|计算)+\\s*([0-9a-z,， .\\-|]*)$`, 'i'))
-
-    let game = MysUtil.getGameByMsg(this.e.msg)?.key
-    if (!game) return false
-
+    let game = MysUtil.getGameByMsg(e.msg).key
     const name = match?.[1]?.replace?.(/养成|计算/g, ' ')?.trim?.()
     if (!name) {
       const key = `mys.${game}.calculator.help`
       if (handler.has(key)) {
-        return await handler.call(key, { e: this.e })
+        return await handler.call(key, { e })
       }
       return false
     }
 
     const names = name.replace(/,|，| |\./g, ',').split(',')
-    const sets = _.compact(match[3]?.replace?.(/,|，| |\./g, ',')?.split?.('|') ?? [])
+    const sets = lodash.compact(match[3]?.replace?.(/,|，| |\./g, ',')?.split?.('|') ?? [])
     const calculator = {
       roles: [],
       weapons: [],
-      set: sets.map(i => _.compact(i.split(',') ?? []).map(v => v.split('-')))
+      set: sets.map(i => lodash.compact(i.split(',') ?? []).map(v => v.split('-')))
     }
 
     const roles = []
@@ -81,8 +64,8 @@ export class calculator extends plugin {
           calculator.roles.push([role, weapons[idx]])
         }
       })
-      _.pull(weapons, ...useWeapon)
-      _.compact(weapons)
+      lodash.pull(weapons, ...useWeapon)
+      lodash.compact(weapons)
 
       calculator.roles = calculator.roles.slice(0, 8)
       for (const i in calculator.roles) {
@@ -100,15 +83,16 @@ export class calculator extends plugin {
         useNames.push(weapon.name)
       })
     } else {
-      this.reply(`养成计算暂不支持【${names.join('、')}】，请确保输入的角色或武器名正确。`)
+      e.reply(`养成计算暂不支持【${names.join('、')}】，请确保输入的角色或武器名正确。`)
       return true
     }
 
     const key = `mys.${game}.calculator`
     if (handler.has(key)) {
       logger.info('养成计算' + `(${useNames.join('、')})`)
-      return await handler.call(key, { e: this.e, calculator })
+      return await handler.call(key, { e, calculator })
     }
     return false
-  }
-}
+  },
+  { log: false, priority: 0 }
+)

@@ -6,9 +6,6 @@ proxy:
   host: null
   port: null
 
-# components中的额外功能
-plugins: []
-
 # 使用wkhtmltoimage渲染图片
 wkhtmltoimage: false
 

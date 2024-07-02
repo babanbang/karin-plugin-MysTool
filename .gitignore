@@ -1,7 +1,4 @@
 /node_modules/
 /lib/components/
-/data/
-/temp/
 .gitmodules
 /config/PluginConfigView.yaml
-/apps/index.js

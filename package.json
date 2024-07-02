@@ -12,10 +12,17 @@
     "image-size": "^1.1.1"
   },
   "imports": {
-    "#Karin": "./lib/index.js",
     "#MysTool/utils": "./lib/utils/index.js",
     "#MysTool/mys": "./lib/mys/index.js",
     "#MysTool/user": "./lib/user/index.js",
     "#MysTool/profile": "./lib/profile/index.js"
+  },
+  "karin": {
+    "apps": [
+      "lib/components/Genshin/Apps",
+      "lib/components/StarRail/Apps",
+      "lib/components/Zenless/Apps",
+      "lib/components/MysSign/Apps"
+    ]
   }
 }

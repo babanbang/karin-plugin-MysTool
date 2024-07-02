@@ -1,6 +1,6 @@
-import { plugin, redis } from '#Karin'
-import { common, PluginName } from '#MysTool/utils'
 import { MysApi, MysUtil } from '#MysTool/mys'
+import { PluginName } from '#MysTool/utils'
+import { Plugin, common, redis } from 'node-karin'
 
 const games = [
   { key: 'gs', name: '原神', uid: '75276550' },
@@ -9,11 +9,10 @@ const games = [
 ]
 
 const reg = Object.values(MysUtil.reg).join('|')
-export class exchange extends plugin {
+export class exchange extends Plugin {
   constructor () {
     super({
-      name: '直播兑换码',
-      dsc: '前瞻直播兑换码',
+      name: '前瞻直播兑换码',
       event: 'message',
       priority: 0,
       rule: [

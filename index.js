@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path'
-import YAML from 'yaml'
 
 export const getDir = (PATH) => {
   const _path = path.dirname(
@@ -35,43 +34,30 @@ const copyFolderContents = (src, dest) => {
   })
 }
 
-const oldcompath = dirPath + '/components/'
 const compath = dirPath + '/lib/components/'
 if (!fs.existsSync(compath)) {
   fs.mkdirSync(compath)
 }
 
-/** 迁移组件至lib目录 */
-if (fs.existsSync(oldcompath)) {
-  logger.info(`${PluginName} 转移组件至 ${compath}`)
-  copyFolderContents(oldcompath, compath)
-  fs.rmSync(oldcompath, { recursive: true, force: true })
+// /** 迁移组件至lib目录 */
+// const oldcompath = dirPath + '/components/'
+// if (fs.existsSync(oldcompath)) {
+//   logger.info(`${PluginName} 转移组件至 ${compath}`)
+//   copyFolderContents(oldcompath, compath)
+//   fs.rmSync(oldcompath, { recursive: true, force: true })
+// }
+
+if (fs.existsSync(dirPath + '/apps/index.js')) {
+  fs.unlinkSync(dirPath + '/apps/index.js')
 }
 
-/** 创建 appss/index.js */
-const txt = []
-let plugins = []
-const filesAndFolders = fs.readdirSync(compath)
-const folders = filesAndFolders.filter(item => {
-  return fs.statSync(compath + item).isDirectory()
-})
-if (fs.existsSync(dirPath + '/config/config/set.yaml')) {
-  plugins = (YAML.parse(fs.readFileSync(dirPath + '/config/config/set.yaml', 'utf8'))).plugins || {}
-}
-for (const folder of folders) {
-  if (plugins.length > 0 && !plugins.includes(folder)) continue
-  txt.unshift(`export * from '../lib/components/${folder}/index.js'`)
-}
-fs.writeFileSync(dirPath + '/apps/index.js', (txt.join('\n') || 'export const a = 1') + '\n', 'utf8')
-
-
-/** 迁移旧数据 */
-const old_dataPath = dirPath + '/data/'
-const new_dataPath = './data/' + PluginName + '/'
-if (fs.existsSync(old_dataPath)) {
-  logger.info(`${PluginName} 转移数据至 ${new_dataPath}`)
-  copyFolderContents(old_dataPath, new_dataPath)
-  fs.rmSync(old_dataPath, { recursive: true, force: true })
-}
+// /** 迁移旧数据 */
+// const old_dataPath = dirPath + '/data/'
+// const new_dataPath = './data/' + PluginName + '/'
+// if (fs.existsSync(old_dataPath)) {
+//   logger.info(`${PluginName} 转移数据至 ${new_dataPath}`)
+//   copyFolderContents(old_dataPath, new_dataPath)
+//   fs.rmSync(old_dataPath, { recursive: true, force: true })
+// }
 
 logger.info(`${PluginName} 插件初始化~`)
