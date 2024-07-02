@@ -43,7 +43,7 @@ export const MysToolUpdata = karin.command(
       msgs.push(msg)
     }
 
-    await e.replyForward(common.makeForward(msgs))
+    await e.bot.sendForwardMessage(e.contact, common.makeForward(msgs))
     if (isUp) e.reply('MysTool更新成功，请重启应用更新！')
 
     uping = false
