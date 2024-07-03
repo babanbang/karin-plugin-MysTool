@@ -46,9 +46,13 @@ export const calculator = karin.command(
       } else {
         if (!game) game = role.game
         roles.push(role)
-        const w = Weapon.get(names[Number(idx) + 1], game)
-        if (w) next = true
-        weapons.push(w || '')
+        if (names[Number(idx) + 1]) {
+          const w = Weapon.get(names[Number(idx) + 1], game)
+          if (w) next = true
+          weapons.push(w || '')
+        } else {
+          weapons.push('')
+        }
       }
     }
 
