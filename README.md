@@ -93,7 +93,12 @@ pnpm i -P
 
 <details><summary><b>绝区零相关</b></summary>
 
-- [ ] 这没公测也写不了啊
+- [x] 前瞻兑换码
+- [x] 电量查询
+- [ ] 角色列表查询
+- [ ] 式舆防卫战查询
+- [ ] 角色面板更新、查询
+- [ ] 祈愿记录更新、查询、导出
 </details>
 
 <details><summary><b>其他</b></summary>
