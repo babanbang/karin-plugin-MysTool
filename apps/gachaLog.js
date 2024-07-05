@@ -71,6 +71,8 @@ export const dealGachaUrl = karin.command(
         p = getData(g, params)
         res = await new MysApi(p.cfg, option).getData(...p.data)
         if (res.retcode == -111) continue
+        game = g
+        break
       }
     }
     if (!res?.data?.region) {
