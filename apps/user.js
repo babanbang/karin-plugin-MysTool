@@ -89,16 +89,12 @@ export class UserBing extends Plugin {
       return true
     }
 
-    if (new RegExp(`^(${MysUtil.reg.sr})?绑定(uid)?$`, 'i').test(this.e.msg)) {
-      this.setContext('saveUid')
-      this.reply('请发送需要绑定的原神uid', { at: true })
-      return true
-    }
-
-    if ((new RegExp(`^${MysUtil.reg.sr}绑定(uid)?$`, 'i')).test(this.e.msg)) {
-      this.setContext('saveSrUid')
-      this.reply('请发送需要绑定的星铁uid', { at: true })
-      return true
+    for (const game in MysUtil.games) {
+      if (new RegExp(`^${MysUtil.reg[game.key]}${game.key == 'gs' ? '?' : ''}绑定(uid)?$`, 'i').test(this.e.msg)) {
+        this.setContext('saveUid_' + game.key)
+        this.reply(`请发送需要绑定的${game.name}uid`, { at: true })
+        return true
+      }
     }
 
     return false
