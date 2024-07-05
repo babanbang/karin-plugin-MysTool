@@ -46,7 +46,7 @@ git clone --depth=1 https://gitee.com/bbaban/karin-plugin-MysTool.git ./plugins/
 pnpm i -P
 ```
 
-#### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../Zenless)
+#### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../ZZZero)
 > [!WARNING]
 >请自行选择安装、不安装则无法使用对应功能
 

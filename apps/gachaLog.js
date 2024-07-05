@@ -1,5 +1,6 @@
-import { MysApi } from '#MysTool/mys'
-import { handler, karin } from 'node-karin'
+import { MysApi, MysUtil } from '#MysTool/mys'
+import { handler, karin, common } from 'node-karin'
+import lodash from 'lodash'
 
 function checkUrl (res) {
   if (res?.retcode == -101) {
@@ -27,11 +28,16 @@ export const checkGachaUrl = karin.handler(
 export const dealGachaUrl = karin.command(
   "(.*)authkey=(.*)",
   async (e) => {
-    let game = /\/(common|hkrpg)\//.test(this.e.msg) ? 'sr' : 'gs'
+    let game = /(operation-nap|\/nap\/)/.test(this.e.msg) ? 'zzz'
+      : /\/(common|hkrpg)\//.test(this.e.msg) ? 'sr'
+        : 'gs'
 
     let url = this.e.msg.replace(/〈=/g, "&")
-    if (url.includes("getGachaLog?")) url = url.split("getGachaLog?")[1]
-    if (url.includes("index.html?")) url = url.split("index.html?")[1]
+    if (url.includes("getGachaLog?")) {
+      url = url.split("getGachaLog?")[1]
+    } else if (url.includes("index.html?")) {
+      url = url.split("index.html?")[1]
+    }
 
     const params = {}
     const arr = new URLSearchParams(url).entries()
@@ -49,8 +55,8 @@ export const dealGachaUrl = karin.command(
 
     const getData = (game, params) => {
       return {
-        data: ['gacha', { authkey: params.authkey, page: 1, gacha_type: game === 'sr' ? 11 : 301, end_id: 0 }],
-        cfg: { game, server: params.region || (game === 'sr' ? "prod_gf_cn" : "cn_gf01") }
+        data: ['gacha', { authkey: params.authkey, page: 1, gacha_type: game === 'sr' ? 11 : game === 'gs' ? 301 : 0, end_id: 0 }],
+        cfg: { game, server: params.region || MysUtil.getRegion(100000000, game) }
       }
     }
 
@@ -58,12 +64,17 @@ export const dealGachaUrl = karin.command(
     const option = { log: false }
     let res = await new MysApi(p.cfg, option).getData(...p.data)
     if (res.retcode == -111) {
-      game = game === 'sr' ? 'gs' : 'sr'
-      p = getData(game, params)
-      res = await new MysApi(p.cfg, option).getData(...p.data)
+      const games = lodash(MysUtil.games).map('key').pull(game)
+
+      for (const g of games) {
+        await common.sleep(200)
+        p = getData(game, params)
+        res = await new MysApi(p.cfg, option).getData(...p.data)
+        if (res.retcode == -111) continue
+      }
     }
     if (!res?.data?.region) {
-      p.cfg.server = game === 'sr' ? "prod_official_usa" : "os_usa"
+      p.cfg.server = MysUtil.getRegion(600000000, game)
       res = await new MysApi(p.cfg, option).getData(...p.data)
     }
 

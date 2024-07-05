@@ -45,7 +45,7 @@ export class UserBing extends Plugin {
           fnc: 'delCk_Sk'
         },
         {
-          reg: new RegExp(`^#?(${reg})?绑定(uid)?(\\s|\\+)*((18|[1-9])[0-9]{8})?$`, 'i'),
+          reg: new RegExp(`^#?(${reg})?绑定(uid)?(\\s|\\+)*((18|11|12|13|14|[1-9])[0-9]{8}|[1-9][0-9]{7})?$`, 'i'),
           fnc: 'bingUid'
         },
         {

@@ -21,7 +21,7 @@
     "apps": [
       "lib/components/Genshin/Apps",
       "lib/components/StarRail/Apps",
-      "lib/components/Zenless/Apps",
+      "lib/components/ZZZero/Apps",
       "lib/components/MysSign/Apps"
     ]
   }
