@@ -9,7 +9,9 @@ export const profile_detal = karin.command(
     const name = (e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+)\\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\\d*)?)\\s*(\\d{9,10})*(.*[换变改].*)?$`))?.[1])?.trim()
     if (!name) return false
 
-    const char = Character.get(name)
+    const game = MysUtil.getGameByMsg(e.msg)
+
+    const char = Character.get(name, game.key)
     if (!char) {
       logger.info(`MysTool: 暂不支持查询${name}的角色面板`)
       return false
