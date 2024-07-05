@@ -173,7 +173,6 @@ export class UserBing extends Plugin {
 
   /** 绑定uid */
   async bingUid (game) {
-    const uid = MysUtil.matchUid(this.e.msg)
     if (typeof game !== 'string') {
       game = MysUtil.getGameByMsg(this.e.msg)
     } else {
@@ -181,6 +180,7 @@ export class UserBing extends Plugin {
     }
     if (!game) return false
 
+    const uid = MysUtil.matchUid(this.e.msg, game)
     if (!uid) {
       this.reply(`${game.name}UID输入错误`, { at: true })
       return
