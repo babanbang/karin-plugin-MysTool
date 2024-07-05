@@ -55,7 +55,7 @@ export const dealGachaUrl = karin.command(
 
     const getData = (game, params) => {
       return {
-        data: ['gacha', { authkey: params.authkey, page: 1, gacha_type: game === 'sr' ? 11 : game === 'gs' ? 301 : 0, end_id: 0 }],
+        data: ['gacha', { authkey: params.authkey, page: 1, gacha_type: game === 'sr' ? 11 : game === 'gs' ? 301 : 1001, end_id: 0 }],
         cfg: { game, server: params.region || MysUtil.getRegion(100000000, game) }
       }
     }
@@ -68,20 +68,20 @@ export const dealGachaUrl = karin.command(
 
       for (const g of games) {
         await common.sleep(200)
-        p = getData(game, params)
+        p = getData(g, params)
         res = await new MysApi(p.cfg, option).getData(...p.data)
         if (res.retcode == -111) continue
       }
     }
     if (!res?.data?.region) {
-      p.cfg.server = MysUtil.getRegion(600000000, game)
+      p.cfg.server = MysUtil.getRegion(game == 'zzz' ? 1000000000 : 600000000, game)
       res = await new MysApi(p.cfg, option).getData(...p.data)
     }
 
     if (res?.data?.region) {
       params.region = res?.data?.region
     } else {
-      this.reply("抽卡链接复制错误或已失效")
+      e.reply("抽卡链接复制错误或已失效")
       return true
     }
 
