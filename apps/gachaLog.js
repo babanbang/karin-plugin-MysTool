@@ -28,11 +28,11 @@ export const checkGachaUrl = karin.handler(
 export const dealGachaUrl = karin.command(
   "(.*)authkey=(.*)",
   async (e) => {
-    let game = /(operation-nap|\/nap\/)/.test(this.e.msg) ? 'zzz'
-      : /\/(common|hkrpg)\//.test(this.e.msg) ? 'sr'
+    let game = /(operation-nap|\/nap\/)/.test(e.msg) ? 'zzz'
+      : /\/(common|hkrpg)\//.test(e.msg) ? 'sr'
         : 'gs'
 
-    let url = this.e.msg.replace(/〈=/g, "&")
+    let url = e.msg.replace(/〈=/g, "&")
     if (url.includes("getGachaLog?")) {
       url = url.split("getGachaLog?")[1]
     } else if (url.includes("index.html?")) {
