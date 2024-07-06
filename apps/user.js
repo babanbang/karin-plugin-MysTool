@@ -45,7 +45,7 @@ export class UserBing extends Plugin {
           fnc: 'delCk_Sk'
         },
         {
-          reg: new RegExp(`^#?(${reg})?绑定(uid)?(\\s|\\+)*((18|11|12|13|14|[1-9])[0-9]{8}|[1-9][0-9]{7})?$`, 'i'),
+          reg: new RegExp(`^#?(${reg})?绑定(uid)?(\\s|\\+)*((18|10|13|15|17|[1-9])[0-9]{8}|[1-9][0-9]{7})?$`, 'i'),
           fnc: 'bingUid'
         },
         {
@@ -176,7 +176,7 @@ export class UserBing extends Plugin {
     }
     if (!game) return false
 
-    const uid = MysUtil.matchUid(this.e.msg, game)
+    const uid = MysUtil.matchUid(this.e.msg, game.key)
     if (!uid) {
       this.reply(`${game.name}UID输入错误`, { at: true })
       return
@@ -209,21 +209,29 @@ export class UserBing extends Plugin {
   }
 
   /** 绑定原神uid */
-  async saveUid () {
+  async saveUid_gs () {
     if (!this.e.msg) return
 
     await this.bingUid(MysUtil.getGame('gs'))
-    this.finish('saveUid')
+    this.finish('saveUid_gs')
   }
 
   /** 绑定星铁uid */
-  async saveSrUid () {
+  async saveUid_sr () {
     if (!this.e.msg) return
 
     await this.bingUid(MysUtil.getGame('sr'))
-    this.finish('saveSrUid')
+    this.finish('saveUid_sr')
   }
 
+  /** 绑定绝区零uid */
+  async saveUid_zzz () {
+    if (!this.e.msg) return
+
+    await this.bingUid(MysUtil.getGame('zzz'))
+    this.finish('saveUid_zzz')
+  }
+  
   /** 查看uid */
   async showUid () {
     const base = new Base(this.e, 'uid')
