@@ -24,7 +24,8 @@ export const profile_detal = karin.command(
     if (handler.has(key)) {
       return await handler.call(key, {
         e, uid, profile: {
-          name: char.name,
+          id: char.id,
+          elem: char.elem,
           dmgIdx: ((/伤害(\d*)$/.exec(e.msg))?.[1] || 0) * 1
         }
       })
