@@ -6,7 +6,7 @@ const reg = `(${Object.values(MysUtil.reg).join('|')}?)`
 export const profile_detal = karin.command(
   /^#*(?!.*(访问|不支持|更新))([^#]+)\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\d*)?)\s*((18|[1-9])[0-9]{8})*(.*[换变改].*)?$/i,
   async (e) => {
-    const name = (e.msg?.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^${reg}]+)\\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\\d*)?)\\s*(\\d{9,10})*(.*[换变改].*)?$`))?.[1])?.trim()
+    const name = (e.msg.match(new RegExp(`^${reg.replace(/\(/g, '(?:')}([^]+)\\s*(详细|详情|面板|面版|圣遗物|伤害([1-9]+\\d*)?)\\s*(\\d{9,10})*(.*[换变改].*)?$`))?.[1])?.trim()
     if (!name) return false
 
     const game = MysUtil.getGameByMsg(e.msg)
@@ -25,6 +25,7 @@ export const profile_detal = karin.command(
       return await handler.call(key, {
         e, uid, profile: {
           id: char.id,
+          name: char.name,
           elem: char.elem,
           dmgIdx: ((/伤害(\d*)$/.exec(e.msg))?.[1] || 0) * 1
         }
