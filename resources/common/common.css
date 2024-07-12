@@ -6,6 +6,11 @@
 }
 
 @font-face {
+  font-family: "zzz-font";
+  src: url("../fonts/zzz_fonts.ttf");
+}
+
+@font-face {
   font-family: 'Number';
   src: url("../fonts/tttgbnumber.woff") format('woff'), url("../fonts/tttgbnumber.ttf") format('truetype');
 }

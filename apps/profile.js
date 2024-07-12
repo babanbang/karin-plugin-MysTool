@@ -27,6 +27,7 @@ export const profile_detal = karin.command(
           id: char.id,
           name: char.name,
           elem: char.elem,
+          char,
           dmgIdx: ((/伤害(\d*)$/.exec(e.msg))?.[1] || 0) * 1
         }
       })
