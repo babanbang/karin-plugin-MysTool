@@ -18,7 +18,7 @@ dialect: sqlite
 # PostgreSQL 数据库默认配置
 postgres:
   host: localhost
-  prot: 5432
+  port: 5432
   database: mystool
   username: postgres
   password: a123456

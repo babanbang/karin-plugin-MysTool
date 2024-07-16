@@ -61,7 +61,7 @@ export default [{
         }, {
           key: '数据库端口',
           comment: '默认 5432',
-          path: 'postgres.prot',
+          path: 'postgres.port',
           type: 'text',
         }, {
           key: '创建的数据库名',
