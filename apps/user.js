@@ -1,7 +1,7 @@
 import { MysApi, MysUtil } from '#MysTool/mys'
 import { Player } from '#MysTool/profile'
 import { MysUser, User } from '#MysTool/user'
-import { Base } from '#MysTool/utils'
+import { Base, dirPath } from '#MysTool/utils'
 import lodash from 'lodash'
 import { Plugin, common, segment } from 'node-karin'
 import QR from 'qrcode'
@@ -16,6 +16,10 @@ export class UserBing extends Plugin {
       event: 'message',
       priority: 300,
       rule: [
+        {
+          reg: new RegExp(`^#?(MysTool|${reg})(指令|帮助)$`, 'i'),
+          fnc: 'MysTool_help'
+        },
         {
           reg: /ltoken|ltoken_v2|ltuid|login_uid|ltmid_v2|stoken|stuid/,
           fnc: 'bing'
@@ -62,6 +66,10 @@ export class UserBing extends Plugin {
         }
       ]
     })
+  }
+  MysTool_help () {
+    this.reply(segment.image(`${dirPath}/resources/imgs/other/help.jpg`))
+    return true
   }
 
   /** 获取当前user实例 */
@@ -231,7 +239,7 @@ export class UserBing extends Plugin {
     await this.bingUid(MysUtil.getGame('zzz'))
     this.finish('saveUid_zzz')
   }
-  
+
   /** 查看uid */
   async showUid () {
     const base = new Base(this.e, 'uid')

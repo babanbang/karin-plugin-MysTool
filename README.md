@@ -53,6 +53,9 @@ pnpm i -P
 ---
 ### 待完成功能
 - [x] 可选安装`原神`、`崩坏：星穹铁道`、`绝区零`相关功能
+
+<img src="/resources/imgs/other/help.jpg">
+
 <details><summary><b>米游社、UID相关</b></summary>
 
 - [x] 绑定、删除、查看游戏UID
