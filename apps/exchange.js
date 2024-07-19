@@ -36,18 +36,10 @@ export class exchange extends Plugin {
 
   async getCode () {
     const game = this.getGameByMsg(this.e.msg)
-    if (game?.key == 'zzz' && Date.now() < 1720713599000) {
-      this.replyForward(common.makeForward([
-        '《绝区零》公测前瞻特别节目-直播兑换码',
-        '兑换码过期时间: \n2024-7-11 23:59',
-        'ZZZFREE100'
-      ]))
-      return true
-    }
     if (!game) return false
 
     let msg = []
-    this.redisKey = `${PluginName}:${game.key}:exchange:`
+    this.redisKey = `${PluginName}:${game.key}:Exchange:`
     this.mysApi = new MysApi({ uid: game.uid, server: 'mys', game: game.key }, { log: false })
 
     const catchData = await redis.get(this.redisKey + 'codes')
@@ -101,7 +93,7 @@ export class exchange extends Plugin {
         return true
       }
 
-      const codes = code.data.code_list.map(val => val.code)
+      const codes = code.data.code_list.map(val => val.code).filter(code => !code)
       msg = [`${title || game.name}-直播兑换码`, `兑换码过期时间: \n${deadline}`, ...codes]
       if (codes.length === 3) {
         redis.set(this.redisKey + 'codes', JSON.stringify(msg), EXTime)
