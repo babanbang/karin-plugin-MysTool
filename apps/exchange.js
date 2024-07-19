@@ -93,7 +93,7 @@ export class exchange extends Plugin {
         return true
       }
 
-      const codes = code.data.code_list.map(val => val.code).filter(code => !code)
+      const codes = code.data.code_list.map(val => val.code).filter(code => code)
       msg = [`${title || game.name}-直播兑换码`, `兑换码过期时间: \n${deadline}`, ...codes]
       if (codes.length === 3) {
         redis.set(this.redisKey + 'codes', JSON.stringify(msg), EXTime)
