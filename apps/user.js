@@ -68,7 +68,7 @@ export class UserBing extends Plugin {
     })
   }
   MysTool_help () {
-    this.reply(segment.image(`${dirPath}/resources/imgs/other/help.jpg`))
+    this.reply(segment.image(`file://${dirPath}/resources/imgs/other/help.jpg`))
     return true
   }
 
