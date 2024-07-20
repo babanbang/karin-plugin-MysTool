@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "author": "",
   "type": "module",
+  "scripts": {
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
+  },
   "dependencies": {
     "sequelize": "^6.37.3",
     "sqlite3": "5.1.6",
@@ -10,19 +13,5 @@
     "md5": "^2.3.0",
     "qrcode": "^1.5.3",
     "image-size": "^1.1.1"
-  },
-  "imports": {
-    "#MysTool/utils": "./lib/utils/index.js",
-    "#MysTool/mys": "./lib/mys/index.js",
-    "#MysTool/user": "./lib/user/index.js",
-    "#MysTool/profile": "./lib/profile/index.js"
-  },
-  "karin": {
-    "apps": [
-      "lib/components/Genshin/Apps",
-      "lib/components/StarRail/Apps",
-      "lib/components/ZZZero/Apps",
-      "lib/components/MysSign/Apps"
-    ]
   }
 }

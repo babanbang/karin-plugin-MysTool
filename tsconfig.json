@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "ESNext",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "outDir": "./lib",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@MysTool/*": [
+        "src/*"
+      ],
+    },
+    "rootDir": "./src",
+    "declaration": true,
+    "noImplicitAny": true,
+    "strict": true
+  },
+  "tsc-alias": {
+    "resolveFullPaths": true,
+    "resolveFullExtension": ".js"
+  },
+  "include": [
+    "src/**/*",
+  ],
+  "exclude": [
+    "node_modules",
+    "components"
+  ]
+}
