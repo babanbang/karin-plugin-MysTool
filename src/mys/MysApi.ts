@@ -1,72 +1,96 @@
-import { MysTool } from './MysTool.js';
-import { MysUtil } from './MysUtil.js';
-const MiYouSheUrlMap = {};
-const HoYoLabUrlMap = {};
-const OtherUrlMap = {};
+import { MysTool } from './MysTool'
+import { MysUtil } from './MysUtil'
+import {
+    GameList, HeaderTypes, ApiMapType
+} from '@/types/mys'
+
+type ApiInfo = {
+    [key: string]: {
+        url: string
+        query?: string
+        body?: any
+        header?: {
+            [key: string]: string
+        }
+        HeaderType?: HeaderTypes
+    }
+}
+
+type ApiMapFn = (data: any) => ApiInfo
+
+type UrlMap = {
+    [key in GameList]?: ApiMapFn[]
+}
+
+const MiYouSheUrlMap: UrlMap = {}
+const HoYoLabUrlMap: UrlMap = {}
+const OtherUrlMap: UrlMap = {}
+
 export class MysApi {
-    uid;
-    ltuid;
-    server;
-    game;
-    hoyolab;
-    game_biz;
-    constructor(params) {
-        this.uid = params.uid;
-        this.ltuid = params.ltuid;
-        this.game = params.game;
-        this.server = params.server;
-        this.hoyolab = /os_|official/.test(this.server);
+    uid?: string
+    ltuid?: string
+    server?: string
+    game: GameList
+    hoyolab: boolean
+    game_biz?: string
+
+    constructor(params: {
+        uid: string,
+        ltuid?: string,
+        server: string,
+        game: GameList
+    }) {
+        this.uid = params.uid
+        this.ltuid = params.ltuid
+        this.game = params.game
+        this.server = params.server
+        this.hoyolab = /os_|official/.test(this.server)
     }
-    MiYouSheUrlMap(data) {
-        if (!MiYouSheUrlMap[this.game])
-            return {};
-        return MiYouSheUrlMap[this.game].reduce((result, item) => {
-            return { ...result, ...item.call(this, data) };
-        }, {});
+
+    MiYouSheUrlMap(data: any) {
+        if (!MiYouSheUrlMap[this.game]) return {}
+        return MiYouSheUrlMap[this.game]!.reduce((result, item) => {
+            return { ...result, ...item.call(this, data) }
+        }, {})
     }
-    HoYoLabUrlMap(data) {
-        if (!MiYouSheUrlMap[this.game])
-            return {};
-        return HoYoLabUrlMap[this.game].reduce((result, item) => {
-            return { ...result, ...item.call(this, data) };
-        }, {});
+    HoYoLabUrlMap(data: any) {
+        if (!MiYouSheUrlMap[this.game]) return {}
+        return HoYoLabUrlMap[this.game]!.reduce((result, item) => {
+            return { ...result, ...item.call(this, data) }
+        }, {})
     }
-    OtherUrlMap(data) {
-        if (!OtherUrlMap[this.game])
-            return {};
-        return OtherUrlMap[this.game].reduce((result, item) => {
-            return { ...result, ...item.call(this, data) };
-        }, {});
+    OtherUrlMap(data: any) {
+        if (!OtherUrlMap[this.game]) return {}
+        return OtherUrlMap[this.game]!.reduce((result, item) => {
+            return { ...result, ...item.call(this, data) }
+        }, {})
     }
-    static setApiMap(game, apiMap, type) {
+
+    static setApiMap(game: GameList, apiMap: ApiMapFn, type: ApiMapType) {
         if (type === 'mys') {
-            if (!MiYouSheUrlMap[game])
-                MiYouSheUrlMap[game] = [];
-            MiYouSheUrlMap[game].push(apiMap);
-        }
-        else if (type === 'hoyolab') {
-            if (!HoYoLabUrlMap[game])
-                HoYoLabUrlMap[game] = [];
-            HoYoLabUrlMap[game].push(apiMap);
-        }
-        else if (type === 'other') {
-            if (!OtherUrlMap[game])
-                OtherUrlMap[game] = [];
-            OtherUrlMap[game].push(apiMap);
+            if (!MiYouSheUrlMap[game]) MiYouSheUrlMap[game] = []
+            MiYouSheUrlMap[game].push(apiMap)
+        } else if (type === 'hoyolab') {
+            if (!HoYoLabUrlMap[game]) HoYoLabUrlMap[game] = []
+            HoYoLabUrlMap[game].push(apiMap)
+        } else if (type === 'other') {
+            if (!OtherUrlMap[game]) OtherUrlMap[game] = []
+            OtherUrlMap[game].push(apiMap)
         }
     }
+
     getUrlMap(data = {}) {
         if (!this.hoyolab) {
-            this.game_biz = MysTool.game_biz[this.game][0];
-            return this.getMiYouSheUrlMap(data);
-        }
-        else {
-            this.game_biz = MysTool.game_biz[this.game][1];
-            return this.getHoYoLabUrlMap(data);
+            this.game_biz = MysTool.game_biz[this.game][0]
+            return this.getMiYouSheUrlMap(data)
+        } else {
+            this.game_biz = MysTool.game_biz[this.game][1]
+            return this.getHoYoLabUrlMap(data)
         }
     }
-    getMiYouSheUrlMap(data) {
-        const otherUrlMap = {
+
+    getMiYouSheUrlMap(data: any): ApiInfo {
+        const otherUrlMap: ApiInfo = {
             getLtoken: {
                 url: `${MysTool.pass_api}account/auth/api/getLTokenBySToken`,
                 query: `${data.cookies}`,
@@ -158,11 +182,12 @@ export class MysApi {
                 },
                 HeaderType: 'authKey'
             }
-        };
-        return { ...this.MiYouSheUrlMap(data), ...otherUrlMap, ...this.OtherUrlMap(data) };
+        }
+        return { ...this.MiYouSheUrlMap(data), ...otherUrlMap, ...this.OtherUrlMap(data) }
     }
-    getHoYoLabUrlMap(data) {
-        const otherUrlMap = {
+
+    getHoYoLabUrlMap(data: any): ApiInfo {
+        const otherUrlMap: ApiInfo = {
             getCookieBySToken: {
                 url: `${MysTool.os_web_api}auth/api/getCookieAccountInfoBySToken`,
                 query: `game_biz=hk4e_global&${data.cookies}`,
@@ -193,7 +218,8 @@ export class MysApi {
                 },
                 HeaderType: 'authKey'
             }
-        };
-        return { ...this.HoYoLabUrlMap(data), ...otherUrlMap, ...this.OtherUrlMap(data) };
+        }
+
+        return { ...this.HoYoLabUrlMap(data), ...otherUrlMap, ...this.OtherUrlMap(data) }
     }
 }

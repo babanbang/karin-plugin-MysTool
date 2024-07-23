@@ -1,4 +1,3 @@
 /node_modules/
-/lib/components/
-.gitmodules
 /config/PluginConfigView.yaml
+/lib

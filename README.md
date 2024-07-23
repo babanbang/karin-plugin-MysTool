@@ -1,6 +1,6 @@
 <p align="center">
-  <img src="/resources/imgs/other/摸.png" height="60">
-  <img src="/resources/imgs/other/鱼.gif" height="60">
+  <img src="/resources/images/other/摸.png" height="60">
+  <img src="/resources/images/other/鱼.gif" height="60">
   <br>
   <a href="https://github.com/babanbang/karin-plugin-MysTool/commits/main" style="text-decoration: none;">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/babanbang/karin-plugin-MysTool?color=%23114514&style=flat-square">
@@ -27,23 +27,11 @@
 <p align="center">米游社、原神、星穹铁道、绝区零</p>
 
 ---
-#### 克隆仓库
 
-karin根目录执行以下命令克隆仓库到本地
->请根据你的网络选择使用`GitHub`或`Gitee`
-1. 使用GitHub
+#### 安装使用(开发中...)
 ```bash
-git clone --depth=1 https://github.com/babanbang/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
-```
-1. 使用Gitee
-```bash
-git clone --depth=1 https://gitee.com/bbaban/karin-plugin-MysTool.git ./plugins/karin-plugin-MysTool
-```
-
-#### 安装依赖
-
-```bash
-pnpm i -P
+# 在karin根目录执行
+pnpm add karin-plugin-MysTool -w
 ```
 
 #### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../ZZZero)
@@ -54,7 +42,7 @@ pnpm i -P
 ### 待完成功能
 - [x] 可选安装`原神`、`崩坏：星穹铁道`、`绝区零`相关功能
 
-<img src="/resources/imgs/other/help.jpg">
+<img src="/resources/images/other/help.jpg">
 
 <details><summary><b>米游社、UID相关</b></summary>
 
