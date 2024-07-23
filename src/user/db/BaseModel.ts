@@ -1,11 +1,11 @@
 import { Sequelize, DataTypes, Model, Op } from 'sequelize'
-import { Data, Cfg } from '@MysTool/utils'
+import { Data, Cfg } from '@/utils'
 
 const dbset = Cfg.getConfig('set')
 
 const SequelizeSet = {
   sqlite: {
-    storage: Data.createDir('db/data.db', { k_data: true }),
+    storage: Data.createDir('db/data.db', { k: 'data' }),
     dialect: 'sqlite',
   },
   postgres: {

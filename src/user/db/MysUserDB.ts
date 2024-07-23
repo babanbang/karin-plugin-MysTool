@@ -1,5 +1,6 @@
-import { MysUtil } from '#MysTool/mys'
+import { MysUtil } from '@/mys'
 import { BaseModel } from './BaseModel.js'
+import { GameList } from '@/types/mys'
 const { Types, Column, ArrayColumn, Op, DIALECT } = BaseModel
 
 const COLUMNS = {
@@ -62,13 +63,13 @@ export default class MysUserDB extends BaseModel {
 
     for (const k of ['gs_uids', 'sr_uids', 'zzz_uids']) {
       if (!mys[k]) continue
-      this[k as keyof typeof COLUMNS] = mys[k].sort((a, b) => a - b)
+      this[k as keyof typeof COLUMNS] = mys[k].sort((a: any, b: any) => a - b)
     }
 
     await this.save()
   }
 
-  static async findByUid(uid: string, game) {
+  static async findByUid(uid: string, game: GameList) {
     if (!uid || !game) return false
 
     const users = await MysUserDB.findAll({

@@ -9,10 +9,13 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
-      "@MysTool/*": [
+      "@/*": [
         "src/*"
       ],
     },
+    "types": [
+      "@types/node"
+    ],
     "rootDir": "./src",
     "declaration": true,
     "noImplicitAny": true,
@@ -27,6 +30,5 @@
   ],
   "exclude": [
     "node_modules",
-    "components"
   ]
 }
