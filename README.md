@@ -31,7 +31,7 @@
 #### 安装使用(开发中...)
 ```bash
 # 在karin根目录执行
-pnpm add karin-plugin-MysTool -w
+pnpm add karin-plugin-mystool -w
 ```
 
 #### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../ZZZero)

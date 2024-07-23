@@ -1,5 +1,5 @@
 {
-  "name": "karin-plugin-MysTool",
+  "name": "karin-plugin-mystool",
   "version": "1.0.0",
   "author": "babanbang",
   "type": "module",
@@ -50,6 +50,7 @@
     "/lib/**/*.js",
     "/lib/**/*.d.ts",
     "/config/*.yaml",
+    "/config/*.js",
     "resources",
     "LICENSE",
     "package.json",
