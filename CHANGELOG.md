@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.0.0...v1.1.0) (2024-07-24)
+
+
+### Features
+
+* simple-qrbtf ([5aee1bd](https://github.com/babanbang/karin-plugin-MysTool/commit/5aee1bd0a54dfaee8b5bb50792988a267a762a32))
+
 ## 1.0.0 (2024-07-23)
 
 
