@@ -1,7 +1,7 @@
 import { Sequelize, DataTypes, Model, Op } from 'sequelize'
 import { Data, Cfg } from '@/utils'
-
-const dbset = Cfg.getConfig('set')
+import { GamePathType } from '@/utils'
+const dbset = Cfg.getConfig('set', GamePathType.Core)
 
 const SequelizeSet = {
   sqlite: {
@@ -47,13 +47,20 @@ export class BaseModel extends Model {
     }
   }
 
-  static ArrayColumn(key: string, def: string[] = []) {
+  static ArrayColumn(key: string, options: {
+    def?: string[],
+    fn?: (data: string[]) => string[]
+  } = {}) {
+    const { def = [], fn = false } = options
     if (dbset.dialect === 'postgres') {
       return {
         type: DataTypes.JSONB,
         defaultValue: def,
         get: (): string[] => {
           return this.getDataValue(key).filter(Boolean)
+        },
+        set: (data: string[] = def) => {
+          this.setDataValue(key, fn ? fn(data) : data)
         }
       }
     } else {
@@ -64,13 +71,13 @@ export class BaseModel extends Model {
           return this.getDataValue(key).split(',').filter(Boolean)
         },
         set: (data: string[] = def) => {
-          this.setDataValue(key, data.join(','))
+          this.setDataValue(key, (fn ? fn(data) : data).join(','))
         }
       }
     }
   }
 
-  static JsonColumn(key: string, def: { [key: string]: any } = {}) {
+  static JsonColumn(key: string, def: Record<string, any> = {}) {
     if (dbset.dialect === 'postgres') {
       return {
         type: DataTypes.JSONB,
@@ -80,7 +87,7 @@ export class BaseModel extends Model {
       return {
         type: DataTypes.STRING,
         defaultValue: JSON.stringify(def),
-        get: (): { [key: string]: any } => {
+        get: (): Record<string, any> => {
           let data = this.getDataValue(key)
           try {
             data = JSON.parse(data) || def
@@ -89,7 +96,7 @@ export class BaseModel extends Model {
           }
           return data
         },
-        set: (data: { [key: string]: any }) => {
+        set: (data: Record<string, any>) => {
           this.setDataValue(key, JSON.stringify(data))
         }
       }
@@ -121,7 +128,7 @@ export class BaseModel extends Model {
     }
   }
 
-  static initDB(model: any, columns: { [key: string]: any }) {
+  static initDB(model: any, columns: Record<string, any>) {
     model.init(columns, {
       sequelize,
       tableName: model.name.replace(/DB$/, 's')

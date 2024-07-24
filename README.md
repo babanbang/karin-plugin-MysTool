@@ -106,3 +106,4 @@ pnpm add karin-plugin-mystool -w
 |:------:|------------|
 |[Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)|喵喵！|
 |[miao-plugin](https://gitee.com/yoimiya-kokomi/miao-plugin)|喵喵！|
+|[simple-qrbtf](https://github.com/StringKe/simple-qrbtf)|二维码生成|

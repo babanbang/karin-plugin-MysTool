@@ -1,7 +1,7 @@
 import { logger } from 'node-karin'
 import { yaml as Yaml, chokidar, fs, lodash } from 'node-karin/modules.js'
 import { Data, GamePathType } from './Data'
-import { PluginName, dirPath } from './dir'
+import { PluginName } from './dir'
 
 type ConfigType = 'config' | 'defSet'
 
@@ -9,11 +9,11 @@ export const Cfg = new (class Config {
   #config: Map<string, any> = new Map()
   #watcher: Map<string, any> = new Map()
   constructor() {
-    this.initCfg('', 'core')
+    this.initCfg(GamePathType.Core)
   }
 
   /** 初始化配置 */
-  async initCfg(Path: string = '', game: GamePathType) {
+  async initCfg(game: GamePathType) {
     const PathName = Data.getGamePath(game)
 
     const defSetPath = Data.getFilePath(`${PathName}/config`, { k: 'plugins' })
@@ -54,12 +54,12 @@ export const Cfg = new (class Config {
   }
 
   /** 用户配置 */
-  getConfig(name: string, game: GamePathType = 'core') {
+  getConfig(name: string, game: GamePathType) {
     return { ...this.#getYaml('config', name, game) }
   }
 
   /** 默认配置 */
-  getdefSet(name: string, game: GamePathType = 'core', Document = false) {
+  getdefSet(name: string, game: GamePathType, Document = false) {
     const defSet = this.#getYaml('defSet', name, game, Document)
     if (Document) return Yaml.parseDocument(defSet.toString())
     return { ...defSet }

@@ -1,4 +1,4 @@
-import { Cfg, PluginName } from "@/utils"
+import { Cfg, PluginName, GamePathType } from "@/utils"
 import { lodash, axios, moment } from "node-karin/modules.js"
 import { handler, logger, redis } from 'node-karin'
 import { app_version, salt } from './MysTool'
@@ -34,7 +34,7 @@ export class MysReq {
         this.hoyolab = MysUtil.isHoyolab(this.server, this.game)
         this.MysApi = new MysApi({ uid: this.uid, ltuid: mys.ltuid, server: this.server, game: this.game })
 
-        this.set = Cfg.getConfig('set')
+        this.set = Cfg.getConfig('set', GamePathType.Core)
         this.option = {
             log: true,
             ...options

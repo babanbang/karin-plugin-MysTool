@@ -1,5 +1,5 @@
 import { MysUtil } from '@/mys'
-import { BaseModel } from './BaseModel.js'
+import { BaseModel } from './BaseModel'
 import { GameList } from '@/types/mys'
 const { Types, Column, ArrayColumn, Op, DIALECT } = BaseModel
 
@@ -18,55 +18,46 @@ const COLUMNS = {
   mid: Column('STRING'),
   login_ticket: Column('STRING'),
   device: Column('STRING'),
-  gs_uids: ArrayColumn('gs_uids'),
-  sr_uids: ArrayColumn('sr_uids'),
-  zzz_uids: ArrayColumn('zzz_uids')
+  gs_uids: ArrayColumn('gs_uids', {
+    fn: (data) => data.sort((a, b) => Number(a) - Number(b))
+  }),
+  sr_uids: ArrayColumn('sr_uids', {
+    fn: (data) => data.sort((a, b) => Number(a) - Number(b))
+  }),
+  zzz_uids: ArrayColumn('zzz_uids', {
+    fn: (data) => data.sort((a, b) => Number(a) - Number(b))
+  })
 }
 
 export default class MysUserDB extends BaseModel {
   static COLUMNS = COLUMNS
 
   /** 米游社ID */
-  ltuid?: string
+  ltuid!: string
   /** 米游社类型 */
-  type?: 'mys' | 'hoyolab'
+  type!: 'mys' | 'hoyolab'
   /** 米游社cookie */
-  cookie?: string
+  cookie!: string
   /** 米游社stoken */
-  stoken?: string
+  stoken!: string
   /** 米游社ltoken */
-  ltoken?: string
+  ltoken!: string
   /** 米游社mid */
-  mid?: string
+  mid!: string
   /** 米游社login_ticket */
-  login_ticket?: string
+  login_ticket!: string
   /** 随机设备device */
-  device?: string
+  device!: string
   /** 原神UID */
-  gs_uids?: string[]
+  gs_uids!: string[]
   /** 崩铁UID */
-  sr_uids?: string[]
+  sr_uids!: string[]
   /** 绝区零UID */
-  zzz_uids?: string[]
+  zzz_uids!: string[]
 
   /** 根据ltuid查找MysUser */
   static async find(ltuid: string) {
     return await MysUserDB.findByPk(ltuid) || MysUserDB.build({ ltuid })
-  }
-
-  async saveDB(mys: any) {
-    this.cookie = mys.ck || ''
-    for (const k of ['type', 'stoken', 'ltoken', 'mid', 'login_ticket', 'device']) {
-      if (!mys[k]) continue
-      this[k as keyof typeof COLUMNS] = mys[k]
-    }
-
-    for (const k of ['gs_uids', 'sr_uids', 'zzz_uids']) {
-      if (!mys[k]) continue
-      this[k as keyof typeof COLUMNS] = mys[k].sort((a: any, b: any) => a - b)
-    }
-
-    await this.save()
   }
 
   static async findByUid(uid: string, game: GameList) {

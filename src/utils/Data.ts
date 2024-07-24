@@ -13,20 +13,20 @@ interface Options {
   module?: string
 }
 
-export type GamePathType = 'gs' | 'sr' | 'zzz' | 'sign' | 'core'
+export const enum GamePathType {
+  Gs = 'gs', Sr = 'sr', Zzz = 'zzz', Sign = 'sign', Core = 'core'
+}
 
 const KarinPath = getDir(import.meta.url, 4).path
 
 export const Data = new (class Data {
-  #GamePath: {
-    [key in GamePathType]?: string
-  } = {
-      gs: PluginName + '-Genshin/',
-      sr: PluginName + '-StarRail/',
-      zzz: PluginName + '-ZZZero/',
-      sign: PluginName + '-MysSign/',
-      core: PluginName
-    }
+  #GamePath: Partial<Record<GamePathType, string>> = {
+    [GamePathType.Gs]: PluginName + '-Genshin/',
+    [GamePathType.Sr]: PluginName + '-StarRail/',
+    [GamePathType.Zzz]: PluginName + '-ZZZero/',
+    [GamePathType.Sign]: PluginName + '-MysSign/',
+    [GamePathType.Core]: PluginName
+  }
   /** 
    * 获取文件路径，返回的路径不以/结尾
    */

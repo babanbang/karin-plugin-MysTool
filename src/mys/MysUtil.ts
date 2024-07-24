@@ -109,11 +109,11 @@ export const MysUtil = new (class Mysutil {
 
     getCookieMap(cookie: string) {
         const cookieArray = cookie.replace(/#|'|"/g, '').replace(/\s*/g, '').split(';')
-        const cookieMap: any = {}
+        const cookieMap: Record<string, string> = {}
         for (let item of cookieArray) {
             const entry = item.replace('=', '~').split('~')
             if (!entry[0]) continue
-            cookieMap[entry[0]] = entry[1]
+            cookieMap[entry[0]] = entry[1] || ''
         }
         return cookieMap
     }

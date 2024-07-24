@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "babanbang",
   "type": "module",
-  "description": "karin plugin template",
+  "description": "karin plugin MysTool",
   "homepage": "https://github.com/babanbang/karin-plugin-MysTool",
   "bugs": {
     "url": "https://github.com/babanbang/karin-plugin-MysTool/issues"
@@ -12,6 +12,7 @@
     "type": "git",
     "url": "git+https://github.com/babanbang/karin-plugin-MysTool.git"
   },
+  "main": "lib/index.js",
   "scripts": {
     "addpkg": "node pkg.js --type add",
     "delpkg": "node pkg.js --type del",
@@ -24,20 +25,7 @@
     "sqlite3": "5.1.6",
     "pg": "^8.12.0",
     "md5": "^2.3.0",
-    "qrcode": "^1.5.3",
     "image-size": "^1.1.1"
-  },
-  "devDependencies": {
-    "@types/express": "^4.17.21",
-    "@types/lodash": "^4.17.7",
-    "@types/node": "^20.14.11",
-    "@types/node-schedule": "^2.1.7",
-    "@types/ws": "^8.5.11",
-    "@types/md5": "^2.3.5",
-    "eslint": "^9.7.0",
-    "neostandard": "^0.11.1",
-    "tsc-alias": "^1.8.10",
-    "typescript": "^5.5.3"
   },
   "karin": {
     "apps": [

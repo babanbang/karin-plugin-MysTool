@@ -4,23 +4,17 @@ import {
     GameList, HeaderTypes, ApiMapType
 } from '@/types/mys'
 
-type ApiInfo = {
-    [key: string]: {
-        url: string
-        query?: string
-        body?: any
-        header?: {
-            [key: string]: string
-        }
-        HeaderType?: HeaderTypes
-    }
-}
+type ApiInfo = Record<string, {
+    url: string
+    query?: string
+    body?: any
+    header?: Record<string, any>
+    HeaderType?: HeaderTypes
+}>
 
 type ApiMapFn = (data: any) => ApiInfo
 
-type UrlMap = {
-    [key in GameList]?: ApiMapFn[]
-}
+type UrlMap = Partial<Record<GameList, ApiMapFn[]>>
 
 const MiYouSheUrlMap: UrlMap = {}
 const HoYoLabUrlMap: UrlMap = {}
