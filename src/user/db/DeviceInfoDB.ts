@@ -1,5 +1,5 @@
 import { DeviceInfoDBCOLUMNS } from '@/types/user'
-import { lodash } from 'node-karin/modules'
+import { lodash } from 'node-karin/modules.js'
 import { DbBaseModel } from './BaseModel'
 
 const { Types, Column, Op } = DbBaseModel

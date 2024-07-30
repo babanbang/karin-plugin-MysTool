@@ -1,4 +1,4 @@
-import { art_template, fs, lodash } from 'node-karin/modules'
+import { art_template, fs, lodash } from 'node-karin/modules.js'
 import { KarinRenderType, logger } from 'node-karin'
 import { exec } from 'child_process'
 import { PluginName, dirPath } from './dir'

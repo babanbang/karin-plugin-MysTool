@@ -1,5 +1,5 @@
 import { logger } from "node-karin"
-import { fs, lodash } from "node-karin/modules"
+import { fs, lodash } from "node-karin/modules.js"
 import { PluginName, dirPath, getDir } from "./dir"
 
 export const enum karinPath {

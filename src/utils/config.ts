@@ -1,5 +1,5 @@
 import { logger } from 'node-karin'
-import { yaml as Yaml, chokidar, fs, lodash } from 'node-karin/modules'
+import { yaml as Yaml, chokidar, fs, lodash } from 'node-karin/modules.js'
 import { Data, GamePathType, karinPath } from './Data'
 import { PluginName } from './dir'
 import { ConfigName, ConfigsType, CfgType } from '@/types'

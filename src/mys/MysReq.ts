@@ -1,5 +1,5 @@
 import { Cfg, PluginName, GamePathType } from "@/utils"
-import { lodash, axios, moment } from "node-karin/modules"
+import { lodash, axios, moment } from "node-karin/modules.js"
 import { handler, logger, redis } from 'node-karin'
 import { app_version, salt } from './MysTool'
 import { MysApi } from './MysApi'
