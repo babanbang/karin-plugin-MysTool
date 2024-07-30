@@ -29,16 +29,17 @@ export class MysApi {
     game_biz?: string
 
     constructor(params: {
-        uid: string,
-        ltuid?: string,
-        server: string,
+        uid: string
+        ltuid?: string
+        server: string
         game: GameList
+        hoyolab?: boolean
     }) {
         this.uid = params.uid
         this.ltuid = params.ltuid
         this.game = params.game
         this.server = params.server
-        this.hoyolab = /os_|official/.test(this.server)
+        this.hoyolab = params.hoyolab || /os_|official/.test(this.server)
     }
 
     MiYouSheUrlMap(data: any) {

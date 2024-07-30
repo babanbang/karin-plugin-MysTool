@@ -1,11 +1,26 @@
 import { Cfg, PluginName, GamePathType } from "@/utils"
-import { lodash, axios, moment } from "node-karin/modules.js"
+import { lodash, axios, moment } from "node-karin/modules"
 import { handler, logger, redis } from 'node-karin'
 import { app_version, salt } from './MysTool'
 import { MysApi } from './MysApi'
 import { MysUtil } from './MysUtil'
-import { MysReqMys, MysReqOptions, GameList, HeaderTypes } from "@/types"
+import { MysReqMys, MysReqOptions, GameList, HeaderTypes, ConfigName, ConfigsType } from "@/types"
 import md5 from 'md5'
+
+interface REQ {
+    MysApi?: MysApi
+    UseProxy?: boolean
+    [key: string]: any
+}
+
+interface RES {
+    [key: string]: any
+    api?: string
+    data?: { device_fp: string } | any
+    retcode?: number
+    reqData?: REQ
+    resDataTime?: string
+}
 
 export class MysReq {
     mys: MysReqMys
@@ -15,7 +30,7 @@ export class MysReq {
     device_id: string
     hoyolab: boolean
     MysApi: MysApi
-    set: any
+    config: ConfigsType<ConfigName.config, GamePathType.Core>
     option: MysReqOptions
     _deviceName?: string
     _device_fp?: {
@@ -23,6 +38,7 @@ export class MysReq {
             device_fp: string
         }
     }
+    #needfp: string[] = []
     #nofp: HeaderTypes[] = ['FullInfo', 'noHeader', 'passport', 'authKey', 'MysSign', 'os_MysSign', 'Bbs', 'BbsSign', 'GameRole']
     constructor(mys: MysReqMys = {}, options: MysReqOptions = {}) {
         this.mys = mys
@@ -32,9 +48,11 @@ export class MysReq {
         this.device_id = (mys.device || MysUtil.getDeviceGuid()).toUpperCase()
 
         this.hoyolab = MysUtil.isHoyolab(this.server, this.game)
-        this.MysApi = new MysApi({ uid: this.uid, ltuid: mys.ltuid, server: this.server, game: this.game })
+        this.MysApi = new MysApi({
+            uid: this.uid, ltuid: mys.ltuid, server: this.server, game: this.game, hoyolab: this.hoyolab,
+        })
 
-        this.set = Cfg.getConfig('set', GamePathType.Core)
+        this.config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
         this.option = {
             log: true,
             ...options
@@ -64,17 +82,13 @@ export class MysReq {
         return { url, headers, body, HeaderType }
     }
 
-    async getData(type: string, data: {
-        MysApi?: MysApi
-        UseProxy?: boolean
-        [key: string]: any
-    } = {}): Promise<any> {
+    async getData<R extends RES>(type: string, data: REQ = {}): Promise<R | undefined> {
         if (!this.hoyolab && data.UseProxy && handler.has('mys.req.proxy.getData')) {
             return await handler.call('mys.req.proxy.getData', { mysApi: this, type, data })
         }
 
         let { url, headers, body, HeaderType } = this.getUrl(type, data)
-        if (!url) return false
+        if (!url) return undefined
 
         const cacheKey = this.cacheKey(type, data)
         const cahce = await redis.get(cacheKey)
@@ -89,17 +103,19 @@ export class MysReq {
                 Getfp: true
             })
         }
-        if (type === 'getFp' && !data?.Getfp) return this._device_fp
+        if (type === 'getFp' && !data?.Getfp) return this._device_fp as R
 
         if (data.headers) {
             headers = { ...headers, ...data.headers }
         }
 
         if (
-            !HeaderType ||
-            (!this.#nofp.includes(HeaderType) && !headers['x-rpc-device_fp'] && this._device_fp?.data?.device_fp)
+            !HeaderType || this.#needfp.includes(type) ||
+            (!this.#nofp.includes(HeaderType) && !headers['x-rpc-device_fp'])
         ) {
-            headers['x-rpc-device_fp'] = this._device_fp!.data.device_fp
+            if (this._device_fp && this._device_fp.data?.device_fp) {
+                headers['x-rpc-device_fp'] = this._device_fp.data.device_fp
+            }
         }
 
         const param: any = {
@@ -112,8 +128,8 @@ export class MysReq {
             param.method = 'post'
             param.data = body
         }
-        if (this.hoyolab && this.set.proxy?.host && this.set.proxy?.port) {
-            param.proxy = this.set.proxy
+        if (this.hoyolab && this.config.proxy?.host && this.config.proxy?.port) {
+            param.proxy = this.config.proxy
         }
 
         logger.debug(`[${this.UIDTYPE}接口][${type}][${this.game}][${this.mys.user_id || this.uid}] ${JSON.stringify(param)}`)
@@ -123,7 +139,7 @@ export class MysReq {
             response = await axios(param)
         } catch (err) {
             this.checkstatus(err, type)
-            return false
+            return undefined
         }
 
         if (this.option.log && type !== 'getFp' && !data?.option?.nolog) {
@@ -133,18 +149,21 @@ export class MysReq {
 
         if (!res) {
             logger.mark(`[${this.UIDTYPE}接口][${type}][${this.game}][${this.mys.user_id || this.uid}]没有返回`)
-            return false
+            return undefined
         }
 
         logger.debug(`[${this.UIDTYPE}接口][${type}][${this.game}][${this.mys.user_id || this.uid}] ${JSON.stringify(res)}`)
 
         res.api = type
         res.reqData = data
+        if ('retcode' in res) {
+            res.retcode = Number(res.retcode)
+        }
         if (data.needTime) {
             res.resDataTime = moment().format('YYYY-MM-DD HH:mm:ss')
         }
-        if (res.reqData?.ApiTool) {
-            delete res.reqData.ApiTool
+        if (res.reqData?.MysApi) {
+            delete res.reqData.MysApi
         }
 
         if (this.option.cacheCd || data.cacheCd) this.cache(res, cacheKey, this.option.cacheCd || data.cacheCd)

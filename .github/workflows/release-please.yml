@@ -33,13 +33,16 @@ jobs:
           registry-url: "https://registry.npmjs.org"
         if: ${{ steps.release.outputs.release_created }}
       # 添加node-karin并安装依赖
-      - run: npm run init
+      - run: npm install --save-dev node-karin && npm install
         if: ${{ steps.release.outputs.release_created }}
       # 编译
       - run: npm run build
         if: ${{ steps.release.outputs.release_created }}
-      # 发布
+      # 安装jq工具 删除开发依赖
+      - run: sudo apt-get install jq && jq 'del(.devDependencies)' package.json > package.json.tmp && mv package.json.tmp package.json
+        if: ${{ steps.release.outputs.release_created }}
+      # 发布至npm
       - run: npm run pub
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 发布到 npm
-        if: ${{ steps.release.outputs.release_created }} # 仅在创建发布时执行
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        if: ${{ steps.release.outputs.release_created }}

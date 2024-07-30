@@ -1,5 +1,5 @@
-import { GameKeyAndName, GameList, GameNames } from '@/types/mys'
-import { lodash, moment } from 'node-karin/modules.js'
+import { GameKeyAndName, GameList, GameNames, MysType } from '@/types/mys'
+import { lodash, moment } from 'node-karin/modules'
 import { game_biz, game_region } from './MysTool'
 
 export const MysUtil = new (class Mysutil {
@@ -10,17 +10,30 @@ export const MysUtil = new (class Mysutil {
         { key: GameList.Sr, name: GameNames.Sr },
         { key: GameList.Zzz, name: GameNames.Zzz }
     ]
+    #allReg = {
+        [GameList.Sr]: '(\\*|#?(sr|星铁|星轨|穹轨|星穹|崩铁|星穹铁道|崩坏星穹铁道|铁道))',
+        [GameList.Zzz]: '(%|#?(zzz|绝区零))',
+        [GameList.Gs]: '#?(gs|原神)'
+    }
 
     get reg() {
-        return {
-            [GameList.Sr]: '(\\*|#?(sr|星铁|星轨|穹轨|星穹|崩铁|星穹铁道|崩坏星穹铁道|铁道))',
-            [GameList.Zzz]: '(%|#?(zzz|绝区零))',
-            [GameList.Gs]: '#?(gs|原神)'
-        }
+        return { ...this.#allReg }
     }
-    get servs() { return ['mys', 'hoyolab'] }
-    get games() { return [...this.#gamelist] }
-    get AllGameBiz() { return [...this.#all_game_biz] }
+    get regs() {
+        return this.games.map(g => this.reg[g.key])
+    }
+    get servs() {
+        return [MysType.cn, MysType.os]
+    }
+    get games() {
+        return [...this.#gamelist]
+    }
+    get AllGames() {
+        return [...this.#allgames]
+    }
+    get AllGameBiz() {
+        return [...this.#all_game_biz]
+    }
     get EndOfDay() {
         return Number(moment().endOf('day').format('X')) - Number(moment().format('X'))
     }
@@ -34,7 +47,7 @@ export const MysUtil = new (class Mysutil {
         return this.games.find((g) => g.key === game)!
     }
 
-    getGameByMsg(msg = '') {
+    getGameByMsg(msg: string) {
         for (const i in this.reg) {
             const game = i as GameList
             if (new RegExp('^' + this.reg[game]).test(msg)) {
@@ -42,7 +55,7 @@ export const MysUtil = new (class Mysutil {
             }
         }
 
-        return this.games[0]
+        return this.#allgames[2]
     }
 
     getServ(uid: string, game: GameList) {
@@ -53,24 +66,24 @@ export const MysUtil = new (class Mysutil {
         return game_biz[game][os ? 1 : 0]
     }
 
-    getGameByGamebiz(biz: string): GameList {
+    getGameByGamebiz(biz: string) {
         for (const i in game_biz) {
             const game = i as GameList
             if (game_biz[game].includes(biz)) {
-                return game
+                return this.#allgames.find((g) => g.key === game)!
             }
         }
-        return GameList.Gs
+        return this.#allgames[2]
     }
 
-    getGameByRegion(region: string): GameList {
+    getGameByRegion(region: string) {
         for (const i in game_region) {
             const game = i as GameList
             if (game_region[game].some(r => r.region === region)) {
-                return game
+                return this.#allgames.find((g) => g.key === game)!
             }
         }
-        return GameList.Gs
+        return this.#allgames[2]
     }
 
     getRegion(uid: string, game: GameList) {
@@ -127,7 +140,7 @@ export const MysUtil = new (class Mysutil {
     }
 
     isHoyolab(region: string, game: GameList) {
-        return game_region[game].find((r) => r.region === region)!.os
+        return region === MysType.os || game_region[game].find((r) => r.region === region)!.os
     }
 
     matchUid(msg: string, game: GameList) {
@@ -137,7 +150,7 @@ export const MysUtil = new (class Mysutil {
     }
 
     /** 循环game */
-    async eachGame(fn: Function, all = false) {
+    async eachGame(fn: (game: GameList, ds: GameKeyAndName) => any, all = false) {
         for (const ds of (all ? this.#allgames : this.games)) {
             await fn(ds.key, ds)
         }
@@ -159,6 +172,10 @@ export const MysUtil = new (class Mysutil {
     RegionName(region: string, game: GameList) {
         if (Number(region)) region = this.getRegion(region, game)
         return game_region[game].find((r) => r.region === region)!.name
+    }
+
+    getEndOfDay() {
+        return Number(moment().endOf('day').format('X')) - Number(moment().format('X'))
     }
 
     checkMonth(year: number, month: number, num = 2) {

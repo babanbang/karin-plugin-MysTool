@@ -1,19 +1,18 @@
-import { Sequelize, DataTypes, Model, Op } from 'sequelize'
-import { Data, Cfg } from '@/utils'
-import { GamePathType } from '@/utils'
-const dbset = Cfg.getConfig('set', GamePathType.Core)
+import { ConfigName } from '@/types'
+import { Cfg, Data, GamePathType, karinPath } from '@/utils'
+import { DataTypes, Model, Op, Sequelize, Dialect } from 'sequelize'
+const dbset = Cfg.getConfig(ConfigName.config, GamePathType.Core)
 
-const SequelizeSet = {
+const SequelizeSet: Partial<Record<Dialect, any>> = {
   sqlite: {
-    storage: Data.createDir('db/data.db', { k: 'data' }),
+    storage: Data.createDir('db/data.db', { k: karinPath.data }),
     dialect: 'sqlite',
   },
   postgres: {
     host: 'localhost',
-    prot: 5432,
+    port: 5432,
     database: 'postgres',
     username: 'postgres',
-    password: 123456,
     ...dbset.postgres,
     dialect: 'postgres',
   }
@@ -28,12 +27,12 @@ if (dbset.dialect === 'postgres') {
 }
 
 const sequelize = new Sequelize({
-  ...SequelizeSet[dbset.dialect as 'postgres' | 'sqlite'] || SequelizeSet.sqlite,
+  ...SequelizeSet[dbset.dialect] || SequelizeSet.sqlite,
   logging: false
 })
 
-export class BaseModel extends Model {
-  static DIALECT = SequelizeSet[dbset.dialect as 'postgres' | 'sqlite']?.dialect || 'sqlite'
+export class DbBaseModel extends Model {
+  static DIALECT = SequelizeSet[dbset.dialect]?.dialect || 'sqlite'
   static Types = DataTypes
   static Op: typeof Op = Op
 

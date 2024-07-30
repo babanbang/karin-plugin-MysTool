@@ -10,6 +10,10 @@ export const enum GameNames {
     Zzz = '绝区零'
 }
 
+export const enum MysType {
+    cn = 'mys', os = 'hoyolab'
+}
+
 export type GameKeyAndName = {
     key: GameList
     name: GameNames

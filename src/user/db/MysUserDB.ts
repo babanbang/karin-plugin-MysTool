@@ -1,65 +1,63 @@
 import { MysUtil } from '@/mys'
-import { BaseModel } from './BaseModel'
-import { GameList } from '@/types/mys'
-const { Types, Column, ArrayColumn, Op, DIALECT } = BaseModel
+import { GameList, MysType, MysUserDBCOLUMNS } from '@/types'
+import { DbBaseModel } from './BaseModel'
+const { Types, Column, ArrayColumn, Op, DIALECT } = DbBaseModel
 
 const COLUMNS = {
-  ltuid: {
+  [MysUserDBCOLUMNS['ltuid']]: {
     type: Types.INTEGER,
     primaryKey: true
   },
-  type: {
-    ...Column('STRING', 'mys'),
-    notNull: true
-  },
-  cookie: Column('TEXT'),
-  stoken: Column('STRING'),
-  ltoken: Column('STRING'),
-  mid: Column('STRING'),
-  login_ticket: Column('STRING'),
-  device: Column('STRING'),
-  gs_uids: ArrayColumn('gs_uids', {
+  [MysUserDBCOLUMNS['type']]: Column('STRING', 'mys'),
+  [MysUserDBCOLUMNS['cookie']]: Column('TEXT'),
+  [MysUserDBCOLUMNS['stoken']]: Column('STRING'),
+  [MysUserDBCOLUMNS['ltoken']]: Column('STRING'),
+  [MysUserDBCOLUMNS['mid']]: Column('STRING'),
+  [MysUserDBCOLUMNS['login_ticket']]: Column('STRING'),
+  [MysUserDBCOLUMNS['device']]: Column('STRING'),
+  [MysUserDBCOLUMNS['gs']]: ArrayColumn('gs_uids', {
     fn: (data) => data.sort((a, b) => Number(a) - Number(b))
   }),
-  sr_uids: ArrayColumn('sr_uids', {
+  [MysUserDBCOLUMNS['sr']]: ArrayColumn('sr_uids', {
     fn: (data) => data.sort((a, b) => Number(a) - Number(b))
   }),
-  zzz_uids: ArrayColumn('zzz_uids', {
+  [MysUserDBCOLUMNS['zzz']]: ArrayColumn('zzz_uids', {
     fn: (data) => data.sort((a, b) => Number(a) - Number(b))
   })
 }
 
-export default class MysUserDB extends BaseModel {
-  static COLUMNS = COLUMNS
-
+export class MysUserDB extends DbBaseModel {
   /** 米游社ID */
-  ltuid!: string
+  [MysUserDBCOLUMNS.ltuid]!: string
   /** 米游社类型 */
-  type!: 'mys' | 'hoyolab'
+  [MysUserDBCOLUMNS.type]!: MysType
   /** 米游社cookie */
-  cookie!: string
+  [MysUserDBCOLUMNS.cookie]!: string
   /** 米游社stoken */
-  stoken!: string
+  [MysUserDBCOLUMNS.stoken]!: string
   /** 米游社ltoken */
-  ltoken!: string
+  [MysUserDBCOLUMNS.ltoken]!: string
   /** 米游社mid */
-  mid!: string
+  [MysUserDBCOLUMNS.mid]!: string
   /** 米游社login_ticket */
-  login_ticket!: string
+  [MysUserDBCOLUMNS.login_ticket]!: string
   /** 随机设备device */
-  device!: string
+  [MysUserDBCOLUMNS.device]!: string
   /** 原神UID */
-  gs_uids!: string[]
+  [MysUserDBCOLUMNS.gs]!: string[]
   /** 崩铁UID */
-  sr_uids!: string[]
+  [MysUserDBCOLUMNS.sr]!: string[]
   /** 绝区零UID */
-  zzz_uids!: string[]
+  [MysUserDBCOLUMNS.zzz]!: string[]
+
+  static COLUMNS = COLUMNS
 
   /** 根据ltuid查找MysUser */
   static async find(ltuid: string) {
     return await MysUserDB.findByPk(ltuid) || MysUserDB.build({ ltuid })
   }
 
+  /** 根据uid查找MysUser */
   static async findByUid(uid: string, game: GameList) {
     if (!uid || !game) return false
 
@@ -77,5 +75,5 @@ export default class MysUserDB extends BaseModel {
   }
 }
 
-BaseModel.initDB(MysUserDB, COLUMNS)
+DbBaseModel.initDB(MysUserDB, COLUMNS)
 await MysUserDB.sync()

@@ -14,11 +14,7 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "addpkg": "node pkg.js --type add",
-    "delpkg": "node pkg.js --type del",
-    "init": "npm run addpkg && npm install",
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json && npm run delpkg",
-    "pub": "npm publish --access public"
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
   },
   "dependencies": {
     "sequelize": "^6.37.3",
@@ -26,6 +22,18 @@
     "pg": "^8.12.0",
     "md5": "^2.3.0",
     "image-size": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/lodash": "^4.17.7",
+    "@types/node": "^20.14.11",
+    "@types/node-schedule": "^2.1.7",
+    "@types/ws": "^8.5.11",
+    "@types/md5": "^2.3.5",
+    "eslint": "^9.7.0",
+    "neostandard": "^0.11.1",
+    "tsc-alias": "^1.8.10",
+    "typescript": "^5.5.3"
   },
   "karin": {
     "apps": [

@@ -1,22 +1,34 @@
-import { lodash } from 'node-karin/modules.js'
-import { BaseModel } from './BaseModel'
-const { Types, Column, Op } = BaseModel
+import { DeviceInfoDBCOLUMNS } from '@/types/user'
+import { lodash } from 'node-karin/modules'
+import { DbBaseModel } from './BaseModel'
+
+const { Types, Column, Op } = DbBaseModel
 
 const COLUMNS = {
-  user_id: {
+  [DeviceInfoDBCOLUMNS['user_id']]: {
     type: Types.STRING,
     primaryKey: true
   },
-  deviceModel: Column('STRING'),
-  androidVersion: Column('STRING'),
-  deviceFingerprint: Column('STRING'),
-  deviceName: Column('STRING'),
-  deviceBoard: Column('STRING'),
-  deviceProduct: Column('STRING'),
-  oaid: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['deviceName']]: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['deviceModel']]: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['deviceBoard']]: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['deviceProduct']]: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['deviceFingerprint']]: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['androidVersion']]: Column('STRING'),
+  [DeviceInfoDBCOLUMNS['oaid']]: Column('STRING')
 }
 
-class DeviceInfoDB extends BaseModel {
+export class DeviceInfoDB extends DbBaseModel {
+  /** 用户ID */
+  [DeviceInfoDBCOLUMNS.user_id]!: string
+  [DeviceInfoDBCOLUMNS.deviceName]!: string
+  [DeviceInfoDBCOLUMNS.deviceModel]!: string
+  [DeviceInfoDBCOLUMNS.deviceBoard]!: string
+  [DeviceInfoDBCOLUMNS.deviceProduct]!: string
+  [DeviceInfoDBCOLUMNS.deviceFingerprint]!: string
+  [DeviceInfoDBCOLUMNS.androidVersion]!: string
+  [DeviceInfoDBCOLUMNS.oaid]!: string
+
   static COLUMNS = COLUMNS
 
   static async find(user_id: string) {
@@ -35,7 +47,5 @@ class DeviceInfoDB extends BaseModel {
   }
 }
 
-BaseModel.initDB(DeviceInfoDB, COLUMNS)
+DbBaseModel.initDB(DeviceInfoDB, COLUMNS)
 await DeviceInfoDB.sync()
-
-export default DeviceInfoDB

@@ -1,50 +1,48 @@
-import { BaseModel } from './BaseModel'
-import { BingUIDType } from '@/types'
-const { Types, ArrayColumn, JsonColumn, Column } = BaseModel
+import { BingUIDType, UserDBCOLUMNS } from '@/types/user'
+import { DbBaseModel } from './BaseModel'
+const { Types, ArrayColumn, JsonColumn, Column } = DbBaseModel
 
 const COLUMNS = {
-  user_id: {
+  [UserDBCOLUMNS['user_id']]: {
     type: Types.STRING,
     primaryKey: true
   },
-  ltuids: ArrayColumn('ltuids'),
-  stuids: ArrayColumn('stuids'),
-  gs_main: Column('STRING'),
-  sr_main: Column('STRING'),
-  zzz_main: Column('STRING'),
-  gs_uids: JsonColumn('gs_uids'),
-  sr_uids: JsonColumn('sr_uids'),
-  zzz_uids: JsonColumn('zzz_uids')
+  [UserDBCOLUMNS['ltuids']]: ArrayColumn('ltuids'),
+  [UserDBCOLUMNS['stuids']]: ArrayColumn('stuids'),
+  [UserDBCOLUMNS['gs_main']]: Column('STRING'),
+  [UserDBCOLUMNS['sr_main']]: Column('STRING'),
+  [UserDBCOLUMNS['zzz_main']]: Column('STRING'),
+  [UserDBCOLUMNS['gs_uids']]: JsonColumn('gs_uids'),
+  [UserDBCOLUMNS['sr_uids']]: JsonColumn('sr_uids'),
+  [UserDBCOLUMNS['zzz_uids']]: JsonColumn('zzz_uids')
 }
 
-class UserDB extends BaseModel {
-  static COLUMNS = COLUMNS
-
+export class UserDB extends DbBaseModel {
   /** 用户ID */
-  user_id!: string
+  [UserDBCOLUMNS.user_id]!: string
   /** 绑定的cookie ltuids */
-  ltuids!: string[]
+  [UserDBCOLUMNS.ltuids]!: string[]
   /** 绑定的stoken stuids */
-  stuids!: string[]
+  [UserDBCOLUMNS.stuids]!: string[]
   /** 当前使用的原神UID */
-  gs_main!: string
+  [UserDBCOLUMNS.gs_main]!: string
   /** 当前使用的崩坏；星穹铁道UID */
-  sr_main!: string
+  [UserDBCOLUMNS.sr_main]!: string
   /** 当前使用绝区零UID */
-  zzz_main!: string
+  [UserDBCOLUMNS.zzz_main]!: string
   /** 绑定的原神UID列表 */
-  gs_uids!: Record<string, BingUIDType>
+  [UserDBCOLUMNS.gs_uids]!: Record<string, BingUIDType>
   /** 绑定的崩坏；星穹铁道UID列表 */
-  sr_uids!: Record<string, BingUIDType>
+  [UserDBCOLUMNS.sr_uids]!: Record<string, BingUIDType>
   /** 绑定的绝区零UID列表 */
-  zzz_uids!: Record<string, BingUIDType>
+  [UserDBCOLUMNS.zzz_uids]!: Record<string, BingUIDType>
+
+  static COLUMNS = COLUMNS
 
   static async find(user_id: string) {
     return await UserDB.findByPk(user_id) || UserDB.build({ user_id })
   }
 }
 
-BaseModel.initDB(UserDB, COLUMNS)
+DbBaseModel.initDB(UserDB, COLUMNS)
 await UserDB.sync()
-
-export default UserDB

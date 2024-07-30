@@ -1,12 +1,11 @@
 import { logger } from 'node-karin'
-import { yaml as Yaml, chokidar, fs, lodash } from 'node-karin/modules.js'
-import { Data, GamePathType } from './Data'
+import { yaml as Yaml, chokidar, fs, lodash } from 'node-karin/modules'
+import { Data, GamePathType, karinPath } from './Data'
 import { PluginName } from './dir'
-
-type ConfigType = 'config' | 'defSet'
+import { ConfigName, ConfigsType, CfgType } from '@/types'
 
 export const Cfg = new (class Config {
-  #config: Map<string, any> = new Map()
+  #config: Map<string, ConfigsType<ConfigName, GamePathType> | Yaml.Document<Yaml.ParsedNode, true>> = new Map()
   #watcher: Map<string, any> = new Map()
   constructor() {
     this.initCfg(GamePathType.Core)
@@ -16,26 +15,26 @@ export const Cfg = new (class Config {
   async initCfg(game: GamePathType) {
     const PathName = Data.getGamePath(game)
 
-    const defSetPath = Data.getFilePath(`${PathName}/config`, { k: 'plugins' })
+    const defSetPath = Data.getFilePath(`${PathName}/config`, { k: karinPath.plugins })
     if (!fs.existsSync(defSetPath)) return false
 
-    const configPath = Data.getFilePath('', { k: 'config/plugin' })
+    const configPath = Data.getFilePath('', { k: karinPath.config })
     const files = fs.readdirSync(defSetPath).filter(file => file.endsWith('.yaml'))
     files.forEach((file) => {
-      const fileName = file.replace('.yaml', '')
+      const fileName = file.replace('.yaml', '') as ConfigName
 
       if (!['lable', 'PluginConfigView'].includes(fileName)) {
         if (!fs.existsSync(`${configPath}/${file}`)) {
           Data.copyFile(`${defSetPath}/${file}`, `${configPath}/${file}`)
         } else {
-          this.setConfig(this.getConfig(fileName, game))
+          this.setConfig(fileName, game, this.getConfig(fileName, game))
         }
       } else {
         this.getdefSet(fileName, game, true)
       }
       this.getdefSet(fileName, game)
     })
-    Data.createDir(Data.getGamePath(game, true), { k: 'data' })
+    Data.createDir(Data.getGamePath(game, true), { k: karinPath.data })
 
     const ViewPath = `${defSetPath}/PluginConfigView.js`
     if (fs.existsSync(ViewPath)) {
@@ -53,34 +52,30 @@ export const Cfg = new (class Config {
     return Data.readJSON('package.json')
   }
 
-  /** 用户配置 */
-  getConfig(name: string, game: GamePathType) {
-    return { ...this.#getYaml('config', name, game) }
+  /** 获取用户配置 */
+  getConfig<N extends ConfigName, G extends GamePathType>(name: N, game: G): ConfigsType<N, G> {
+    return { ...this.getdefSet(name, game), ...this.#getYaml(CfgType.config, name, game) }
   }
 
-  /** 默认配置 */
-  getdefSet(name: string, game: GamePathType, Document = false) {
-    const defSet = this.#getYaml('defSet', name, game, Document)
-    if (Document) return Yaml.parseDocument(defSet.toString())
-    return { ...defSet }
+  /** 获取默认配置 */
+  getdefSet(name: ConfigName, game: GamePathType, Document: true): Yaml.Document<Yaml.ParsedNode, true>
+  getdefSet(name: ConfigName, game: GamePathType): ConfigsType<ConfigName, GamePathType>
+  getdefSet(name: ConfigName, game: GamePathType, Document = false) {
+    if (Document) {
+      const defSet = this.#getYaml(CfgType.defSet, name, game, true)
+      return Yaml.parseDocument(defSet.toString()) as Yaml.Document<Yaml.ParsedNode, true>
+    }
+    return { ...this.#getYaml(CfgType.defSet, name, game) } as ConfigsType<ConfigName, GamePathType>
   }
 
   /** 修改用户配置 */
-  setConfig(data: {
-    [key: string]: any,
-    CfgKey: string
-  }) {
-    if (!data.CfgKey) {
-      logger.error('无法识别配置文件')
-      return false
-    }
-    const [type, game, name] = data.CfgKey.split('.')
-    const ConfigPath = this.getConfigPath('config', game as GamePathType, name)
-    const defSetPath = this.getConfigPath('defSet', game as GamePathType, name)
+  setConfig(name: ConfigName, game: GamePathType, data: any) {
+    const ConfigPath = this.getConfigPath(CfgType.config, game as GamePathType, name)
+    const defSetPath = this.getConfigPath(CfgType.defSet, game as GamePathType, name)
 
-    let config = ''
+    let config: string
     if (fs.existsSync(defSetPath)) {
-      const defSet = this.getdefSet(name, game as GamePathType, true)
+      const defSet = this.getdefSet(name as ConfigName, game as GamePathType, true)
       lodash.forEach(data, (value, key) => {
         if (defSet.hasIn([key])) {
           defSet.setIn([key], value)
@@ -96,22 +91,24 @@ export const Cfg = new (class Config {
     fs.writeFileSync(ConfigPath, config, 'utf8')
   }
 
+
   /** 获取配置yaml */
-  #getYaml(type: ConfigType, name: string, game: GamePathType, Document = false) {
+  #getYaml(type: CfgType, name: ConfigName, game: GamePathType, Document: true): Yaml.Document<Yaml.ParsedNode, true>
+  #getYaml<N extends ConfigName, G extends GamePathType>(type: CfgType, name: N, game: G): ConfigsType<N, G>
+  #getYaml(type: CfgType, name: ConfigName, game: GamePathType, Document = false) {
     const file = this.getConfigPath(type, game, name)
-    if (Document) type += '_Document'
-    const key = `${type}.${game}.${name}`
+    const key = `${Document ? (type + '_Document') : type}.${game}.${name}`
 
     let cfg = this.#config.get(key)
     if (cfg) return cfg
 
     try {
       const data = fs.readFileSync(file, 'utf8')
-      cfg = Document ? Yaml.parseDocument(data) : { ...Yaml.parse(data), CfgKey: key }
+      cfg = Document ? Yaml.parseDocument(data) : Yaml.parse(data)
       this.#config.set(key, cfg)
     } catch (error) {
       logger.error(`[${PluginName}][${key}] 格式错误 ${error}`)
-      return false
+      throw error
     }
 
     if (!Document) this.#watch(file, key)
@@ -119,11 +116,11 @@ export const Cfg = new (class Config {
   }
 
   /** 获取配置路径 */
-  getConfigPath(type: ConfigType, game: GamePathType, name: string) {
-    if (type === 'config') {
-      return Data.getFilePath(`${Data.getGamePath(game)}${name}.yaml`, { k: 'config/plugin' })
+  getConfigPath(type: CfgType, game: GamePathType, name: string) {
+    if (type === CfgType.config) {
+      return Data.getFilePath(`${Data.getGamePath(game)}${name}.yaml`, { k: karinPath.config })
     } else {
-      return Data.getFilePath(`${Data.getGamePath(game)}${name}.yaml`, { k: 'plugins' })
+      return Data.getFilePath(`${Data.getGamePath(game)}${name}.yaml`, { k: karinPath.plugins })
     }
   }
 
@@ -138,8 +135,8 @@ export const Cfg = new (class Config {
         logger.mark(`[${PluginName}修改配置文件][${key}]`)
       } else {
         const [type, game, name] = key.split('.')
-        const defSetPath = this.getConfigPath(type as ConfigType, game as GamePathType, name)
-        fs.writeFileSync(defSetPath, (this.getdefSet(name, game as GamePathType, true)).toString(), 'utf8')
+        const defSetPath = this.getConfigPath(type as CfgType, game as GamePathType, name)
+        fs.writeFileSync(defSetPath, (this.getdefSet(name as ConfigName, game as GamePathType, true)).toString(), 'utf8')
         logger.error(`[${PluginName}]请勿对defSet内配置文件进行修改`)
       }
     })
