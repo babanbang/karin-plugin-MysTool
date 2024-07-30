@@ -14,7 +14,8 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json"
+    "build": "tsc --project tsconfig.json && tsc-alias -p tsconfig.json",
+    "pub": "npm publish --access public"
   },
   "dependencies": {
     "sequelize": "^6.37.3",
