@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.0...v1.1.1) (2024-07-30)
+
+
+### Bug Fixes
+
+* 用户绑定→Ts ([fbf91d3](https://github.com/babanbang/karin-plugin-MysTool/commit/fbf91d3832d0b31fcff12f6d3ad8d3895d408b15))
+
 ## [1.1.0](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.0.0...v1.1.0) (2024-07-24)
 
 
