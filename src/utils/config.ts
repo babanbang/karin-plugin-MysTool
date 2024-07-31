@@ -16,9 +16,7 @@ export const Cfg = new (class Config {
 
   /** 初始化配置 */
   async initCfg(game: GamePathType) {
-    const PathName = Data.getGamePath(game)
-
-    const defSetPath = Data.getFilePath(`${PathName}/config`, game, karinPath.node)
+    const defSetPath = Data.getFilePath(`config`, game, karinPath.node)
     if (!fs.existsSync(defSetPath)) return false
 
     const configPath = Data.getFilePath('', game, karinPath.config)
@@ -26,7 +24,7 @@ export const Cfg = new (class Config {
     files.forEach((file) => {
       const fileName = file.replace('.yaml', '') as ConfigName
 
-      if (!['lable', 'PluginConfigView'].includes(fileName)) {
+      if (![ConfigName.lables, 'PluginConfigView'].includes(fileName)) {
         if (!fs.existsSync(`${configPath}/${file}`)) {
           Data.copyFile(`${defSetPath}/${file}`, file, game, karinPath.config)
         } else {
