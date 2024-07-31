@@ -27,7 +27,7 @@ export class BaseModel {
     }
 
     get ModelName() {
-        return Data.getGamePath(this.game) + this.model
+        return this.PluginName + this.model
     }
 
     async renderImg(data: any, options: {
@@ -36,26 +36,27 @@ export class BaseModel {
         Scale?: boolean
         wait?: 'load' | 'domcontentloaded' | 'networkidle0' | 'networkidle2'
     } = {}) {
-        if (data && options.test) {
-            Data.writeJSON(`template/${this.model}/${this.game}/data.json`, data, { k: karinPath.data })
+        if (options.test) {
+            if (data) {
+                Data.writeJSON(`template/${this.model}/data.json`, data, this.game, karinPath.temp)
+            }
+            data = Data.readJSON(`template/${this.model}/${this.game}/data.json`, this.game, karinPath.temp)
         }
         const ImageData = {
             name: this.ModelName,
             fileID: data.uid || this.uid || this.e?.user_id || this.model,
-            file: `./plugins/${Data.getGamePath(this.game)}resources/template/${this.model}.html`,
+            file: `./node_modules/${Data.getGamePath(this.game, true)}resources/template/${this.model}.html`,
             quality: this.config.quality || 100,
             data: {
                 uid: this.uid,
                 useBrowser: '-pu',
                 fontsPath: `${dirPath}/resources/fonts/`,
-                pluResPath: `${Data.getFilePath(`-${Data.getGamePath(this.game, true)}resources`, { k: karinPath.plugins })}/`,
+                pluResPath: `${Data.getFilePath('resources/', this.game, karinPath.node)}/`,
                 res_Path: `${dirPath}/resources/`,
                 elemLayout: `${dirPath}/resources/template/layout/elem.html`,
                 defaultLayout: `${dirPath}/resources/template/layout/default.html`,
                 PluginName: this.PluginName,
-                ...((!data && options.test)
-                    ? Data.readJSON(`template/${this.model}/${this.game}/data.json`, { k: karinPath.data })
-                    : data)
+                ...data
             },
             // setViewport: {
             //   deviceScaleFactor: 1

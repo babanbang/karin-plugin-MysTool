@@ -1,6 +1,6 @@
 import { GameList } from "@/types";
 import { PanelBase } from "./Base";
-import { Data, karinPath } from "@/utils";
+import { Data, GamePathType, karinPath } from "@/utils";
 
 export class Player extends PanelBase {
     /** 查询UID */
@@ -25,7 +25,7 @@ export class Player extends PanelBase {
     }
 
     get PlayerDataPath() {
-        return `${this.gamePath(true)}PlayerData/${this.uid}.json`
+        return `PlayerData/${this.uid}.json`
     }
 
     static create(uid: string, game: GameList) {
@@ -39,13 +39,13 @@ export class Player extends PanelBase {
 
     /** 加载面板数据文件 */
     reload() {
-        const data = Data.readJSON(this.PlayerDataPath, { k: karinPath.data, defData: {} })
+        const data = Data.readJSON(this.PlayerDataPath, GamePathType[this.game], karinPath.data, {})
         this.setBasicData(data)
     }
 
     /** 保存面板数据 */
     save(saveData: any) {
-        Data.writeJSON(this.PlayerDataPath, saveData, { k: karinPath.data })
+        Data.writeJSON(this.PlayerDataPath, saveData, GamePathType[this.game], karinPath.data)
         this._delCache()
     }
 

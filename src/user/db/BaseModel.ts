@@ -5,7 +5,7 @@ const dbset = Cfg.getConfig(ConfigName.config, GamePathType.Core)
 
 const SequelizeSet: Partial<Record<Dialect, any>> = {
   sqlite: {
-    storage: Data.createDir('db/data.db', { k: karinPath.data }),
+    storage: Data.createDir('db/data.db', GamePathType.Core, karinPath.data),
     dialect: 'sqlite',
   },
   postgres: {

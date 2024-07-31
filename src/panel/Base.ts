@@ -40,9 +40,6 @@ export class PanelBase {
             }
         })
     }
-    gamePath(isData = false) {
-        return Data.getGamePath(GamePathType[this.game], isData)
-    }
 
     getData<T extends string>(arrList: T[]) {
         return Data.getData<T>(this, arrList)

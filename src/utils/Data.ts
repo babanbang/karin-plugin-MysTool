@@ -1,19 +1,15 @@
 import { logger } from "node-karin"
 import { fs, lodash } from "node-karin/modules.js"
-import { PluginName, dirPath, getDir } from "./dir"
+import { PluginName, LowPluginName, dirPath, getDir } from "./dir"
 
 export const enum karinPath {
   config = 'config/plugin',
-  plugins = 'plugins',
+  node = 'node_modules',
   data = 'data',
   temp = 'temp'
 }
-7
+
 interface Options {
-  /** 使用MysTool的指定目录 */
-  m_path?: string
-  /** 使用Karin的指定目录 */
-  k?: karinPath
   /** 读取数据失败时的默认值 */
   defData?: {} | []
   /** 读取模块时的指定模块名 */
@@ -24,35 +20,35 @@ export enum GamePathType {
   gs = 'gs', sr = 'sr', zzz = 'zzz', Sign = 'sign', Core = 'core'
 }
 
-const KarinPath = getDir(import.meta.url, 4).path
+const KarinPath = process.cwd().replace(/\\/g, '/')
 
 export const Data = new (class Data {
-  #GamePath: Partial<Record<GamePathType, string>> = {
-    [GamePathType.gs]: 'Genshin/',
-    [GamePathType.sr]: 'StarRail/',
-    [GamePathType.zzz]: 'ZZZero/',
-    [GamePathType.Sign]: 'MysSign/',
-    [GamePathType.Core]: '/'
+  #GamePath: Record<GamePathType, string> = {
+    [GamePathType.gs]: PluginName + '-Genshin/',
+    [GamePathType.sr]: PluginName + '-StarRail/',
+    [GamePathType.zzz]: PluginName + '-ZZZero/',
+    [GamePathType.Sign]: PluginName + '-MysSign/',
+    [GamePathType.Core]: PluginName + '/'
+  }
+  #LowGamePath: Record<GamePathType, string> = {
+    [GamePathType.gs]: this.#GamePath[GamePathType.gs].toLowerCase(),
+    [GamePathType.sr]: this.#GamePath[GamePathType.sr].toLowerCase(),
+    [GamePathType.zzz]: this.#GamePath[GamePathType.zzz].toLowerCase(),
+    [GamePathType.Sign]: this.#GamePath[GamePathType.Sign].toLowerCase(),
+    [GamePathType.Core]: this.#GamePath[GamePathType.Core].toLowerCase()
   }
   /** 
-   * 获取文件路径，返回的路径不以/结尾
+   * 获取文件或文件夹路径
    */
-  getFilePath(file: string, options: Options = {}) {
-    if (new RegExp(KarinPath).test(file)) return file
-
-    file = file.replace(/(^\/|\/$)/g, '')
-    if (file) file += '/'
-
-    if (options.k) return KarinPath + `/${options.k}/${PluginName}` + file
-    if (options.m_path) return getDir(options.m_path).path + file
-    return dirPath + file
+  getFilePath(file: string, game: GamePathType, k_path: karinPath) {
+    return KarinPath + `/${k_path}/${this.getGamePath(game, true)}` + file
   }
   /** 
    * 根据指定的path依次检查与创建目录
    */
-  createDir(path: string, options: Options = {}) {
+  createDir(path: string, game: GamePathType, k_path: karinPath) {
     let file = '/'
-    const dirpath = options.k ? (KarinPath + `/${options.k}/${PluginName}`) : dirPath
+    const createDirPath = KarinPath + `/${k_path}/${this.getGamePath(game, true)}`
 
     if (/\.(yaml|json|js|html|db)$/.test(path)) {
       const idx = path.lastIndexOf('/') + 1
@@ -61,11 +57,11 @@ export const Data = new (class Data {
     }
 
     path = path.replace(/^\/+|\/+$/g, '')
-    if (fs.existsSync(dirpath + '/' + path)) {
-      return dirpath + '/' + path + file
+    if (fs.existsSync(createDirPath + '/' + path)) {
+      return createDirPath + '/' + path + file
     }
 
-    let nowPath = dirpath + '/'
+    let nowPath = createDirPath + '/'
     path.split('/').forEach(name => {
       nowPath += name + '/'
       if (!fs.existsSync(nowPath)) {
@@ -76,14 +72,13 @@ export const Data = new (class Data {
     return nowPath + file
   }
 
-  copyFile(copy: string, target: string, options: Options = {}) {
-    const copyFile = this.getFilePath(copy, options)
-    const targetFile = this.createDir(target, options)
+  copyFile(copyFile: string, target: string, game: GamePathType, k_path: karinPath) {
+    const targetFile = this.createDir(target, game, k_path)
     fs.copyFileSync(copyFile, targetFile)
   }
 
-  readJSON(file: string, options: Options = {}) {
-    const path = this.getFilePath(file, options)
+  readJSON(file: string, game: GamePathType, k_path: karinPath, defData: Options['defData'] = {}) {
+    const path = this.getFilePath(file, game, k_path)
     if (fs.existsSync(path)) {
       try {
         return JSON.parse(fs.readFileSync(path, 'utf8'))
@@ -92,27 +87,22 @@ export const Data = new (class Data {
         logger.error(e)
       }
     }
-    return options.defData
+    return defData
   }
 
-  writeJSON(file: string, data: any, options: Options = {}) {
-    const path = this.createDir(file, options)
+  writeJSON(file: string, data: any, game: GamePathType, k_path: karinPath) {
+    const path = this.createDir(file, game, k_path)
     fs.writeFileSync(path, JSON.stringify(data, null, 2))
     return path
   }
 
-  addGamePath(file: string, game: GamePathType) {
-    this.#GamePath[game] = file
+  getGamePath(game: GamePathType, LowerCase = false) {
+    if (LowerCase) return this.#LowGamePath[game]
+    return this.#GamePath[game]
   }
 
-  /** 获取组件目录，返回的路径以/结尾 */
-  getGamePath(game: GamePathType, noPluginName = false) {
-    if (noPluginName) return this.#GamePath[game]!
-    return PluginName + this.#GamePath[game]
-  }
-
-  async importModule(file: string, options: Options = {}) {
-    const path = this.getFilePath(file, options)
+  async importModule(file: string, game: GamePathType, options: Options = {}) {
+    const path = this.getFilePath(file, game, karinPath.node)
     if (fs.existsSync(path)) {
       try {
         const module = await import(`file://${path}?t=${Date.now()}`) || {}

@@ -15,17 +15,17 @@ export const Cfg = new (class Config {
   async initCfg(game: GamePathType) {
     const PathName = Data.getGamePath(game)
 
-    const defSetPath = Data.getFilePath(`${PathName}/config`, { k: karinPath.plugins })
+    const defSetPath = Data.getFilePath(`${PathName}/config`, game, karinPath.node)
     if (!fs.existsSync(defSetPath)) return false
 
-    const configPath = Data.getFilePath('', { k: karinPath.config })
+    const configPath = Data.getFilePath('', game, karinPath.config)
     const files = fs.readdirSync(defSetPath).filter(file => file.endsWith('.yaml'))
     files.forEach((file) => {
       const fileName = file.replace('.yaml', '') as ConfigName
 
       if (!['lable', 'PluginConfigView'].includes(fileName)) {
         if (!fs.existsSync(`${configPath}/${file}`)) {
-          Data.copyFile(`${defSetPath}/${file}`, `${configPath}/${file}`)
+          Data.copyFile(`${defSetPath}/${file}`, file, game, karinPath.config)
         } else {
           this.setConfig(fileName, game, this.getConfig(fileName, game))
         }
@@ -34,14 +34,13 @@ export const Cfg = new (class Config {
       }
       this.getdefSet(fileName, game)
     })
-    Data.createDir(Data.getGamePath(game, true), { k: karinPath.data })
 
     const ViewPath = `${defSetPath}/PluginConfigView.js`
     if (fs.existsSync(ViewPath)) {
       fs.writeFileSync(
         `${defSetPath}/PluginConfigView.yaml`,
         Yaml.stringify(
-          (await Data.importModule(ViewPath, { defData: [] })).module
+          (await Data.importModule(ViewPath, game, { defData: [] })).module
         ),
         'utf8'
       )
@@ -49,7 +48,7 @@ export const Cfg = new (class Config {
   }
 
   get package() {
-    return Data.readJSON('package.json')
+    return Data.readJSON('package.json', GamePathType.Core, karinPath.node)
   }
 
   /** 获取用户配置 */
@@ -118,9 +117,9 @@ export const Cfg = new (class Config {
   /** 获取配置路径 */
   getConfigPath(type: CfgType, game: GamePathType, name: string) {
     if (type === CfgType.config) {
-      return Data.getFilePath(`${Data.getGamePath(game)}${name}.yaml`, { k: karinPath.config })
+      return Data.getFilePath(`${name}.yaml`, game, karinPath.config)
     } else {
-      return Data.getFilePath(`${Data.getGamePath(game)}${name}.yaml`, { k: karinPath.plugins })
+      return Data.getFilePath(`config/${name}.yaml`, game, karinPath.node)
     }
   }
 

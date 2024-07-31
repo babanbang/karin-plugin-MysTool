@@ -64,7 +64,7 @@ function dealTpl(options: any) {
   const { name, file, fileID = name, data } = options
   data.useBrowser = '-wk'
   const path = `wk-html/${name.replace(new RegExp(`${PluginName}/`, 'g'), '')}/${fileID}.html`
-  const savePath = Data.createDir(path, { k: karinPath.temp })
+  const savePath = Data.createDir(path, GamePathType.Core, karinPath.temp)
 
   const paths = ('../../../../' + lodash.repeat('../', path.split('/').length - 3)) + `plugins/${PluginName}/`
 
