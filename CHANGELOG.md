@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.5](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.4...v1.1.5) (2024-07-31)
+
+
+### Bug Fixes
+
+* import ([7f5f442](https://github.com/babanbang/karin-plugin-MysTool/commit/7f5f442eb12de7da87b2c41a67171a8739b06698))
+
 ## [1.1.4](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.3...v1.1.4) (2024-07-31)
 
 
