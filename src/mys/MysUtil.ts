@@ -1,5 +1,6 @@
 import { GameKeyAndName, GameList, GameNames, MysType } from '@/types/mys'
-import { lodash, moment } from 'node-karin/modules.js'
+import lodash from 'node-karin/lodash'
+import moment from 'node-karin/moment'
 import { game_biz, game_region } from './MysTool'
 
 export const MysUtil = new (class Mysutil {

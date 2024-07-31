@@ -1,10 +1,12 @@
-import { art_template, fs, lodash } from 'node-karin/modules.js'
-import { KarinRenderType, logger } from 'node-karin'
+import { ConfigName } from '@/types'
 import { exec } from 'child_process'
-import { PluginName, dirPath } from './dir'
+import fs from 'fs'
+import { logger } from 'node-karin'
+import art_template from 'node-karin/art-template'
+import lodash from 'node-karin/lodash'
 import { Cfg } from './config'
 import { Data, GamePathType, karinPath } from './Data'
-import { ConfigName } from '@/types'
+import { PluginName, dirPath } from './dir'
 
 let wk = true
 const config = Cfg.getConfig(ConfigName.config, GamePathType.Core)

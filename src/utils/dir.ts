@@ -14,5 +14,3 @@ export const getDir = (PATH: string, r: number = 0) => {
 export const { path: dirPath } = getDir(import.meta.url, 2)
 
 export const PluginName = 'Karin-Plugin-MysTool'
-
-export const LowPluginName = PluginName.toLowerCase()

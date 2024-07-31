@@ -1,11 +1,13 @@
-import { Cfg, PluginName, GamePathType } from "@/utils"
-import { lodash, axios, moment } from "node-karin/modules.js"
-import { handler, logger, redis } from 'node-karin'
-import { app_version, salt } from './MysTool'
-import { MysApi } from './MysApi'
-import { MysUtil } from './MysUtil'
-import { MysReqMys, MysReqOptions, GameList, HeaderTypes, ConfigName, ConfigsType } from "@/types"
+import { ConfigName, ConfigsType, GameList, HeaderTypes, MysReqMys, MysReqOptions } from "@/types"
+import { Cfg, GamePathType, PluginName } from "@/utils"
 import md5 from 'md5'
+import { handler, logger, redis } from 'node-karin'
+import axios from 'node-karin/axios'
+import lodash from 'node-karin/lodash'
+import moment from 'node-karin/moment'
+import { MysApi } from './MysApi'
+import { app_version, salt } from './MysTool'
+import { MysUtil } from './MysUtil'
 
 interface REQ {
     MysApi?: MysApi

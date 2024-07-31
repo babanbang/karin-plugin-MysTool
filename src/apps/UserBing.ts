@@ -4,7 +4,7 @@ import { BingUIDType, ConfigName, GameList, MysUserDBCOLUMNS, UidWithType } from
 import { MysUser, User } from "@/user"
 import { BaseModel, Cfg, GamePathType, getSimpleQrOption, SimpleQr, SimpleQrType } from "@/utils"
 import { common, ImageElement, karin, KarinMessage, logger, segment } from "node-karin"
-import { lodash } from "node-karin/modules.js"
+import lodash from 'node-karin/lodash'
 
 interface uidInfo {
     key: GameList

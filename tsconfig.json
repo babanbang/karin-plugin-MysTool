@@ -3,7 +3,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "outDir": "./lib",
     "resolveJsonModule": true,
     "allowSyntheticDefaultImports": true,

@@ -1,8 +1,11 @@
+import { CfgType, ConfigName, ConfigsType } from '@/types'
+import fs from 'fs'
 import { logger } from 'node-karin'
-import { yaml as Yaml, chokidar, fs, lodash } from 'node-karin/modules.js'
+import chokidar from 'node-karin/chokidar'
+import lodash from 'node-karin/lodash'
+import Yaml from 'node-karin/yaml'
 import { Data, GamePathType, karinPath } from './Data'
 import { PluginName } from './dir'
-import { ConfigName, ConfigsType, CfgType } from '@/types'
 
 export const Cfg = new (class Config {
   #config: Map<string, ConfigsType<ConfigName, GamePathType> | Yaml.Document<Yaml.ParsedNode, true>> = new Map()
