@@ -1,4 +1,4 @@
-import { ConfigName, GameList, ConfigsType } from "@/types";
+import { ConfigName, ConfigsType } from "@/types";
 import { KarinMessage, karin, segment } from "node-karin";
 import { PluginName, dirPath } from "./dir";
 import { Cfg } from "./config";

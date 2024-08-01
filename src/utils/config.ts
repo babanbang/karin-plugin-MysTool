@@ -24,7 +24,7 @@ export const Cfg = new (class Config {
     files.forEach((file) => {
       const fileName = file.replace('.yaml', '') as ConfigName
 
-      if (![ConfigName.lables, 'PluginConfigView'].includes(fileName)) {
+      if (![ConfigName.lables].includes(fileName)) {
         if (!fs.existsSync(`${configPath}/${file}`)) {
           Data.copyFile(`${defSetPath}/${file}`, file, game, karinPath.config)
         } else {
@@ -41,7 +41,7 @@ export const Cfg = new (class Config {
       fs.writeFileSync(
         `${defSetPath}/PluginConfigView.yaml`,
         Yaml.stringify(
-          (await Data.importModule(ViewPath, game, { defData: [] })).module
+          (await Data.importModule('config/PluginConfigView.js', game, { defData: [] })).module
         ),
         'utf8'
       )
