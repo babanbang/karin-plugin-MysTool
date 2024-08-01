@@ -4,10 +4,10 @@ export const enum GameList {
     Zzz = 'zzz'
 }
 
-export const enum GameNames {
-    Gs = '原神',
-    Sr = '崩坏：星穹铁道',
-    Zzz = '绝区零'
+export enum GameNames {
+    gs = '原神',
+    sr = '崩坏：星穹铁道',
+    zzz = '绝区零'
 }
 
 export const enum MysType {

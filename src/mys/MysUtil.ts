@@ -7,9 +7,9 @@ export const MysUtil = new (class Mysutil {
     #all_game_biz = Object.values(game_biz).flat()
     #gamelist: GameKeyAndName[] = []
     #allgames: GameKeyAndName[] = [
-        { key: GameList.Gs, name: GameNames.Gs },
-        { key: GameList.Sr, name: GameNames.Sr },
-        { key: GameList.Zzz, name: GameNames.Zzz }
+        { key: GameList.Gs, name: GameNames.gs },
+        { key: GameList.Sr, name: GameNames.sr },
+        { key: GameList.Zzz, name: GameNames.zzz }
     ]
     #allReg = {
         [GameList.Sr]: '(\\*|#?(sr|星铁|星轨|穹轨|星穹|崩铁|星穹铁道|崩坏星穹铁道|铁道))',
@@ -39,8 +39,9 @@ export const MysUtil = new (class Mysutil {
         return Number(moment().endOf('day').format('X')) - Number(moment().format('X'))
     }
 
-    addGame(key: GameList, name: GameNames) {
-        this.#gamelist.push({ key, name })
+    initGame(key: GameList) {
+        if (this.#gamelist.some((g) => g.key === key)) return
+        this.#gamelist.push({ key, name: GameNames[key] })
         this.#gamelist = lodash.sortBy(this.#gamelist, 'key')
     }
 

@@ -48,8 +48,8 @@ export const Cfg = new (class Config {
     }
   }
 
-  get package() {
-    return Data.readJSON('package.json', GamePathType.Core, karinPath.node)
+  package(game: GamePathType) {
+    return Data.readJSON('package.json', game, karinPath.node)
   }
 
   /** 获取用户配置 */
