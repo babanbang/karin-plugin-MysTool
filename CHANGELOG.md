@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.8](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.7...v1.1.8) (2024-08-01)
+
+
+### Bug Fixes
+
+* 读取package，initGame ([d8b3adf](https://github.com/babanbang/karin-plugin-MysTool/commit/d8b3adf8383ee521b057325f8ab30c13006620a6))
+
 ## [1.1.7](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.6...v1.1.7) (2024-08-01)
 
 
