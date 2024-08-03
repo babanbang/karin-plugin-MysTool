@@ -5,7 +5,7 @@ import { Plugin, common, redis } from 'node-karin'
 const games = [
   { key: 'gs', name: '原神', uid: '75276550' },
   { key: 'sr', name: '崩坏：星穹铁道', uid: '80823548' },
-  { key: 'zzz', name: '绝区零', uid: '152039149' }
+  { key: 'zzz', name: '绝区零', uid: '152039148' }
 ]
 
 const reg = Object.values(MysUtil.reg).join('|')
