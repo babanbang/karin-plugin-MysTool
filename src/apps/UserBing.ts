@@ -54,7 +54,7 @@ const showUid = async (e: KarinMessage) => {
             })
         })
         uids.push(uidInfo)
-    })
+    }, !MysUtil.games.length)
 
     const base = new BaseModel(GamePathType.Core, e)
     base.model = 'user/uid-list'

@@ -21,8 +21,6 @@ export type GameKeyAndName = {
 
 export type ApiMapType = 'mys' | 'hoyolab' | 'other'
 
-export type HeaderTypes = 'BbsSign' | 'Bbs' | 'MysSign' | 'os_MysSign' | 'noHeader' | 'passport' | 'Action' | 'GameRole' | 'FullInfo' | 'authKey'
-
 export interface MysReqMys {
     uid?: string
     ltuid?: string
@@ -38,6 +36,3 @@ export interface MysReqOptions {
     cacheCd?: number
     log?: boolean
 }
-
-
-

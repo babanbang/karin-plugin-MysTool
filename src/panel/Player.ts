@@ -21,7 +21,9 @@ export class Player extends PanelBase {
     }
 
     get banner() {
-        return `images/other/default_banner.png`
+        const imgPath = Data.getFilePath(`resources/images/other/default_banner.png`, GamePathType[this.game], karinPath.node)
+        if (!imgPath) return Data.getFilePath(`resources/images/other/default_banner.png`, GamePathType.Core, karinPath.node)
+        return imgPath
     }
 
     get PlayerDataPath() {

@@ -41,8 +41,12 @@ export const Data = new (class Data {
   /** 
    * 获取文件或文件夹路径
    */
-  getFilePath(file: string, game: GamePathType, k_path: karinPath) {
-    return KarinPath + `/${k_path}/${this.getGamePath(game, true)}` + file
+  getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck: true): string | false
+  getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck?: false): string
+  getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck = false) {
+    const filePath = KarinPath + `/${k_path}/${this.getGamePath(game, true)}` + file
+    if (ckeck) return fs.existsSync(filePath) ? filePath : false
+    return filePath
   }
   /** 
    * 根据指定的path依次检查与创建目录
