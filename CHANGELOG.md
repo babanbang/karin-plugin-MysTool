@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.10](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.9...v1.1.10) (2024-08-22)
+
+
+### Bug Fixes
+
+* Generic type 'MysReq&lt;g&gt;' requires 1 type argument(s). ([07022ba](https://github.com/babanbang/karin-plugin-MysTool/commit/07022baea4532e9c24a817002075ad42e43747d9))
+
 ## [1.1.9](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.8...v1.1.9) (2024-08-22)
 
 
