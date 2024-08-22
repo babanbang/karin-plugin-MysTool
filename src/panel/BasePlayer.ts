@@ -1,8 +1,8 @@
 import { GameList } from "@/types";
-import { PanelBase } from "./Base";
+import { BasePanel } from "./BasePanel";
 import { Data, GamePathType, karinPath } from "@/utils";
 
-export class Player extends PanelBase {
+export class BasePlayer extends BasePanel {
     /** 查询UID */
     uid: string
     /** 昵称 */
@@ -31,7 +31,7 @@ export class Player extends PanelBase {
     }
 
     static create(uid: string, game: GameList) {
-        const player = new Player(uid, game)
+        const player = new BasePlayer(uid, game)
         const cache = player._getCache(`player:${game}:${uid}`)
         if (cache) return cache
 
@@ -65,6 +65,4 @@ export class Player extends PanelBase {
 
         save && this.save(this.getData(['name', 'level', 'face', 'card']))
     }
-
-
 }

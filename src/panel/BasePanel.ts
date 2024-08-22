@@ -4,7 +4,7 @@ import { Data, GamePathType, PluginName } from "@/utils";
 const reFn: Partial<Record<string, any>> = {}
 const metaMap: Partial<Record<string, any>> = {}
 const cacheMap: Partial<Record<string, any>> = {}
-export class PanelBase {
+export class BasePanel {
     game: GameList
     _uuid!: string
     _get?: (key: string) => any

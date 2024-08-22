@@ -21,6 +21,9 @@ jobs:
           package-name: karin-plugin-mystool
           # 设置发起PR的默认分支
           default-branch: main
+          # 设置发布PR标签为 autorelease: pending
+          release-labels: |
+            autorelease: pending
       # 检出代码
       - uses: actions/checkout@v4
         if: ${{ steps.release.outputs.release_created }}
@@ -46,3 +49,24 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
+  # 自动合并PR
+  auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # 安装 GitHub CLI
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get install -y gh
+      # 自动合并PR
+      - name: Check for autorelease pending label
+        run: |
+          LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')
+          if [[ "$LABELS" == *"autorelease: pending"* ]]; then
+            echo "Label found, merging PR."
+            gh pr merge ${{ github.event.pull_request.number }} --merge --admin
+          else
+            echo "Label not found, skipping merge."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
