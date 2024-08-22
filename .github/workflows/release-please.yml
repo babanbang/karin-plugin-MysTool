@@ -56,3 +56,5 @@ jobs:
       - name: Check for autorelease pending label
         run: |
           gh pr merge --auto --merge
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
