@@ -49,12 +49,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
-      - run: |
-          for i in 1 2 3; do
-            sleep $((i * 20))
-            if [ "${{ steps.release.outputs.release_created }}" = "true" ]; then break; fi
-          done
-        if: ${{ !steps.release.outputs.release_created }}
+      - run: sleep 30
         # 自动合并PR
       - uses: actions/checkout@v4
         with:
