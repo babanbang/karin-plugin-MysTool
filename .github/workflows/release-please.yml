@@ -49,10 +49,12 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
+      - run: sleep 10
         # 自动合并PR
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          if: ${{ steps.release.outputs.release_created }}
       - name: Auto Merge PR
         run: |
           sudo apt-get install -y gh && gh pr merge --auto --merge
