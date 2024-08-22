@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.9](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.8...v1.1.9) (2024-08-22)
+
+
+### Bug Fixes
+
+* 米游社接口返回类型标注 ([79b28f5](https://github.com/babanbang/karin-plugin-MysTool/commit/79b28f56201e41d7126147761ba539e49aa22006))
+
 ## [1.1.8](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.7...v1.1.8) (2024-08-01)
 
 
