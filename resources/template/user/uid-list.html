@@ -1,0 +1,87 @@
+{{extend elemLayout}}
+
+{{block 'css'}}
+<link rel="stylesheet" type="text/css" href="{{pluResPath}}html/user/uid-list.css" />
+{{/block}}
+
+{{block 'main'}}
+{{ set gameMap = {gs:'#gs',sr:'#sr',zzz:'#zzz'} }}
+
+<div class="uid-list">
+  {{each uids game}}
+  {{set mark = gameMap[game.key]}}
+  <div class="game-cont">
+    <div class="game-title">
+      <strong>{{mark}}{{game.name}}</strong>
+      <span>使用<nobr>{{mark}}uid1</nobr>切换uid</span>
+    </div>
+    <div class="game-ul">
+      {{if game.uidList?.length > 0 }}
+      {{each game.uidList uid idx}}
+      <div class="game-li  {{uid.main ? 'active':''}}">
+        <div class="game-idx">
+          <span>{{idx+1}}</span>
+        </div>
+        <div class="game-bar" style="background-image: url('{{uid.banner}}')">
+          <div class="game-inner">
+            <div class="face"
+              style="background-image: url('{{uid.face?uid.face:'${res_Path}image/icon/default-face.png'}}')"></div>
+            <div class="info">
+              <div class="uid-info">
+                <div class="uid shadow">{{uid.uid}}<span>{{uid.uid}}</span></div>
+                <div class="type {{(uid.type==='ck'||uid.type==='all')?'ck':'reg'}}">
+                  {{(uid.type==='ck'||uid.type==='all')?'CK':'绑定'}}</div>
+                {{if (uid.type==='sk'||uid.type==='all')}}
+                <div class="type sk">SK</div>
+                {{/if}}
+              </div>
+              <div class="detail">
+                {{if uid.name && uid.level}}
+                <div class="name">{{uid.name}} Lv.{{uid.level}}</div>
+                {{else}}
+                <div class="no-info">暂无uid信息，可通过更新面板获取信息</div>
+                {{/if}}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {{/each}}
+      {{else}}
+      <div class="no-uid">暂无uid，请发送CK或通过
+        <nobr>{{mark}}绑定123456789</nobr>
+        来绑定UID
+      </div>
+      {{/if}}
+      {{if game.banList?.length > 0}}
+      <ul class="ban">
+        {{each game.banList uid}}
+        <nobr>×{{uid}}</nobr>
+        {{/each}}
+      </ul>
+      {{/if}}
+    </div>
+
+  </div>
+  {{/each}}
+</div>
+
+<ul class="tips">
+  <li>原神及通用命令以#gs开头，星铁命令以#sr开头，绝区零命令以#zzz开头。</li>
+  <li>绑定Cookie或Stoke请使用#扫码登录</li>
+  <li>
+    <nobr>{{mark}}删除uid1</nobr>
+    删除指定序号uid
+
+    <nobr>{{mark}}绑定123456789</nobr>
+    绑定对应uid
+  </li>
+  <li>
+    <nobr>{{mark}}我的ck</nobr>
+    查看ck信息
+
+    <nobr>{{mark}}删除ck</nobr>
+    删除当前ck
+  </li>
+</ul>
+{{/block}}
