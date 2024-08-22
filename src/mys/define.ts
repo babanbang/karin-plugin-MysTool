@@ -1,8 +1,9 @@
 import { DailyCache } from "@/user"
 import { KarinMessage, handler, logger } from "node-karin"
 import { MysReq } from "./MysReq"
+import { GameList } from "@/types"
 
-type MysApi<ReturnType, ReqData> = (mysReq: MysReq, reqData?: ReqData) => Promise<ReturnType | undefined>
+type MysApi<ReturnType, ReqData> = (mysReq: MysReq<GameList>, reqData?: ReqData) => Promise<ReturnType | undefined>
 
 export interface BaseMysResData {
     retcode: number
@@ -11,10 +12,10 @@ export interface BaseMysResData {
 
 export type defineApi<ReqData> = {
     urlKey: string,
-    url: (mysReq: MysReq, reqData: ReqData) => string,
-    query?: (mysReq: MysReq, reqData: ReqData) => string,
-    body?: (mysReq: MysReq, reqData: ReqData) => any,
-    header: (mysReq: MysReq, options?: { q?: string, b?: any, reqData?: ReqData }) => Record<string, any>,
+    url: (mysReq: MysReq<GameList>, reqData: ReqData) => string,
+    query?: (mysReq: MysReq<GameList>, reqData: ReqData) => string,
+    body?: (mysReq: MysReq<GameList>, reqData: ReqData) => any,
+    header: (mysReq: MysReq<GameList>, options?: { q?: string, b?: any, reqData?: ReqData }) => Record<string, any>,
     noFp?: boolean
 }
 
@@ -26,7 +27,7 @@ export function defineMysApi<
     CheckCode = false,
     stoken = false
 ): MysApi<ReturnType, ReqData> {
-    return async (mysReq: MysReq, reqData: ReqData = {} as ReqData, e?: KarinMessage & { isTask: boolean }) => {
+    return async (mysReq: MysReq<GameList>, reqData: ReqData = {} as ReqData, e?: KarinMessage & { isTask: boolean }) => {
         let result = await mysReq.getData<ReturnType, ReqData>(Api, reqData)
 
         if (result && CheckCode) {
@@ -39,7 +40,7 @@ export function defineMysApi<
 
 export async function checkRetCode<
     ReqData extends Partial<Record<string, any>> = {}
->(res: any, req: ReqData, ApiInfo: defineApi<ReqData>, mysReq: MysReq, stoken: boolean, e?: KarinMessage & { isTask: boolean }) {
+>(res: any, req: ReqData, ApiInfo: defineApi<ReqData>, mysReq: MysReq<GameList>, stoken: boolean, e?: KarinMessage & { isTask: boolean }) {
     const { uid, game, mysUserInfo } = mysReq
 
     const err = (msg: string) => {
