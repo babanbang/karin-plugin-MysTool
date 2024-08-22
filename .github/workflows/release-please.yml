@@ -56,4 +56,3 @@ jobs:
       - name: Check for autorelease pending label
         run: |
           gh pr merge --auto --merge
-        if: ${{ steps.release.outputs.release_created }}
