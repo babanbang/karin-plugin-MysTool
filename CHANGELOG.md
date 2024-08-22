@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.1.11](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.10...v1.1.11) (2024-08-22)
+
+
+### Bug Fixes
+
+* auto merge ([2ca559d](https://github.com/babanbang/karin-plugin-MysTool/commit/2ca559d626da39d7902f8f1bfde43e2b3231c984))
+* auto merge ([0c8d9ce](https://github.com/babanbang/karin-plugin-MysTool/commit/0c8d9ce83b8e43f6fe83f704c99019a3db953abe))
+* auto-merge ([ca85dae](https://github.com/babanbang/karin-plugin-MysTool/commit/ca85dae6eedfaa547e5fa35511ed0fb9f60dbc19))
+* GITHUB_TOKEN ([d8d7b96](https://github.com/babanbang/karin-plugin-MysTool/commit/d8d7b961f5d9a201cf9462ee03b88304398ea72e))
+
 ## [1.1.10](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.9...v1.1.10) (2024-08-22)
 
 
