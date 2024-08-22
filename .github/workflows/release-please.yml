@@ -26,6 +26,8 @@ jobs:
             autorelease: pending
       # 检出代码
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
         if: ${{ steps.release.outputs.release_created }}
       # 设置 Node.js 环境
       - uses: actions/setup-node@v4
@@ -50,6 +52,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
         # 自动合并PR
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+        if: ${{ steps.release.outputs.release_created }}
       - name: Auto Merge PR
         run: |
           sudo apt-get install -y gh && gh pr merge --auto --merge
