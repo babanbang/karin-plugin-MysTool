@@ -49,24 +49,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         if: ${{ steps.release.outputs.release_created }}
-  # 自动合并PR
-  auto-merge:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      # 安装 GitHub CLI
-      - name: Install GitHub CLI
+        # 自动合并PR
+      - name: Auto Merge PR
         run: |
-          sudo apt-get install -y gh
-      # 自动合并PR
-      - name: Check for autorelease pending label
-        run: |
-          LABELS=$(gh pr view ${{ github.event.pull_request.number }} --json labels --jq '.labels[].name')
-          if [[ "$LABELS" == *"autorelease: pending"* ]]; then
-            echo "Label found, merging PR."
-            gh pr merge ${{ github.event.pull_request.number }} --merge --admin
-          else
-            echo "Label not found, skipping merge."
-          fi
+          sudo apt-get install -y gh && gh pr merge --auto --merge
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
