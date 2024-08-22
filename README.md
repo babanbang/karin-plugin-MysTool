@@ -1,26 +1,6 @@
 <p align="center">
-  <img src="/resources/images/other/摸.png" height="60">
-  <img src="/resources/images/other/鱼.gif" height="60">
-  <br>
-  <a href="https://github.com/babanbang/karin-plugin-MysTool/commits/main" style="text-decoration: none;">
-    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/babanbang/karin-plugin-MysTool?color=%23114514&style=flat-square">
-  </a>
-  <a href="https://github.com/babanbang/karin-plugin-MysTool/stargazers" style="text-decoration: none;">
-    <img alt="GitHub repo stars" src="https://img.shields.io/github/stars/babanbang/karin-plugin-MysTool?color=%23aa4499&style=flat-square">
-  </a>
-  <a href="https://github.com/babanbang/karin-plugin-MysTool/forks" style="text-decoration: none;">
-    <img alt="GitHub forks" src="https://img.shields.io/github/forks/babanbang/karin-plugin-MysTool?color=%23456789&style=flat-square">
-  </a>
-  <br>
-  <a href="https://github.com/babanbang/karin-plugin-MysTool" style="text-decoration: none;">
-    <img alt="GitHub repo size" src="https://img.shields.io/github/repo-size/babanbang/karin-plugin-MysTool?style=flat-square">
-  </a>
-  <a href="https://github.com/babanbang/karin-plugin-MysTool/issues" style="text-decoration: none;">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues/babanbang/karin-plugin-MysTool?style=flat-square">
-  </a>
-  <a href="https://github.com/babanbang/karin-plugin-MysTool/graphs/contributors" style="text-decoration: none;">
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/babanbang/karin-plugin-MysTool?color=%23c0c0c0&style=flat-square">
-  </a>
+  <img src="https://github.com/babanbang/karin-plugin-MysTool/blob/main/resources/images/other/%E6%91%B8.png?raw=true" height="60">
+  <img src="https://github.com/babanbang/karin-plugin-MysTool/blob/main/resources/images/other/%E9%B1%BC.gif?raw=true" height="60">
 </p>
 
 <h1 align="center">karin-plugin-MysTool</h1>
@@ -34,7 +14,7 @@
 pnpm add karin-plugin-mystool@latest -w
 ```
 
-#### 附加功能：[原神](../../../Genshin)、[崩坏：星穹铁道](../../../StarRail)、[绝区零](../../../ZZZero)
+#### 附加功能：[原神](https://github.com/babanbang/Genshin)、[崩坏：星穹铁道](https://github.com/babanbang/StarRail)、[绝区零](https://github.com/babanbang/ZZZero)
 > [!WARNING]
 >请自行选择安装、不安装则无法使用对应功能
 
@@ -42,7 +22,7 @@ pnpm add karin-plugin-mystool@latest -w
 ### 待完成功能
 - [x] 可选安装`原神`、`崩坏：星穹铁道`、`绝区零`相关功能
 
-<img src="/resources/images/other/help.jpg">
+<img src="https://github.com/babanbang/karin-plugin-MysTool/blob/main/resources/images/other/help.jpg?raw=true">
 
 <details><summary><b>米游社、UID相关</b></summary>
 
@@ -95,7 +75,7 @@ pnpm add karin-plugin-mystool@latest -w
 <details><summary><b>其他</b></summary>
 
 - [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(由于坤术原因部分图片不支持使用，暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
-- [x] 1034、10035、签到(额外安装[插件](../../../MysSign)提供功能)
+- [x] 1034、10035、签到(额外安装[插件](https://github.com/babanbang/MysSign)提供功能)
 </details>
 
 ---
@@ -107,3 +87,5 @@ pnpm add karin-plugin-mystool@latest -w
 |[Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)|喵喵！|
 |[miao-plugin](https://gitee.com/yoimiya-kokomi/miao-plugin)|喵喵！|
 |[simple-qrbtf](https://github.com/StringKe/simple-qrbtf)|二维码生成|
+
+![Alt](https://repobeats.axiom.co/api/embed/a987d3b44ed2f3c8cac52fe11b3f24b075d5f58b.svg "Repobeats analytics image")

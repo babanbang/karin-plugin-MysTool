@@ -1,5 +1,5 @@
 import { MysUtil } from '@/mys'
-import { BingUIDType, GameList, UidListWithType, UserDBCOLUMNS } from '@/types'
+import { BingUIDType, GameList, MysUserDBCOLUMNS, UidListWithType, UserDBCOLUMNS } from '@/types'
 import Base from './Base'
 import { MysUser } from './MysUser'
 import { UserDB } from './db'
@@ -27,7 +27,7 @@ export class User extends Base {
 	/** 绑定的绝区零UID列表 */
 	[UserDBCOLUMNS.zzz_uids]!: Record<string, BingUIDType>
 	/** 绑定的米游社账号 */
-	mysUsers: Record<string, MysUser> = {}
+	#mysUsers: Record<string, MysUser> = {}
 
 	static COLUMNS_KEY = Object.keys(UserDB.COLUMNS).filter(k => k !== UserDBCOLUMNS['user_id']) as UserDBCOLUMNS[]
 
@@ -43,6 +43,10 @@ export class User extends Base {
 
 	get uid() {
 		return this[this.Key.m]
+	}
+
+	mainUid(game: GameList) {
+		return this[this.gameKey(game).m]
 	}
 
 	get Key() {
@@ -91,20 +95,20 @@ export class User extends Base {
 	async initMysUser() {
 		for (const ltuid of this.ltuids) {
 			const mys = await MysUser.create(ltuid)
-			if (mys) this.mysUsers[ltuid] = mys
+			if (mys) this.#mysUsers[ltuid] = mys
 		}
 
 		for (const stuid of this.stuids) {
 			if (this.ltuids.includes(stuid)) continue
 
 			const mys = await MysUser.create(stuid)
-			if (mys) this.mysUsers[stuid] = mys
+			if (mys) this.#mysUsers[stuid] = mys
 		}
 	}
 
 	/** 获取全部MysUser对象 */
 	getAllMysUser() {
-		return Object.values(this.mysUsers)
+		return Object.values(this.#mysUsers)
 	}
 
 	/** 查询全部数据 */
@@ -119,8 +123,8 @@ export class User extends Base {
 	}
 
 	/** 添加MysUser */
-	async addMysUser(mysUser: MysUser, type: BingUIDType) {
-		this.mysUsers[mysUser.ltuid] = mysUser
+	addMysUser(mysUser: MysUser, type: BingUIDType) {
+		this.#mysUsers[mysUser.ltuid] = mysUser
 		const self = this
 		MysUtil.eachGame((game) => {
 			const g = self.gameKey(game)
@@ -131,6 +135,20 @@ export class User extends Base {
 			}
 		}, true)
 		this.save()
+	}
+
+	getMysUserByUid(params: { game?: GameList, uid?: string } = {}) {
+		const { game = this.game, uid = this.mainUid(game) } = params
+
+		return Object.values(this.#mysUsers).find(v => v[MysUserDBCOLUMNS[game]].some(u => u === uid))!
+	}
+
+	getMysUserByLtuid(ltuid: string) {
+		return this.#mysUsers[ltuid]
+	}
+
+	getCkInfoByUid(params: { game?: GameList, uid?: string } = {}) {
+
 	}
 
 	/** 添加绑定UID */
