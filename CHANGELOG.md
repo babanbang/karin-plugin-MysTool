@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.0 (2024-08-22)
+
+
+### Features
+
+* 重构为ts ([346c72a](https://github.com/babanbang/karin-plugin-MysTool/commit/346c72a5c5eec3ae6d4ccb0135dea95f27305d65))
+
 ## [1.1.10](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.9...v1.1.10) (2024-08-22)
 
 
