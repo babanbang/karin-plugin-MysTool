@@ -1,35 +1,34 @@
-import { ConfigName, ConfigsType, GameList, MysReqMys, MysReqOptions } from "@/types"
+import { ConfigName, ConfigsType, GameList, MysType, gameServer, mysUserInfo } from "@/types"
 import { Cfg, GamePathType, PluginName } from "@/utils"
 import md5 from 'md5'
 import { logger, redis } from 'node-karin'
-import { axios, lodash, moment } from 'node-karin/modules.js'
-import { defineApi } from "./define"
+import { AxiosHeaders, AxiosRequestConfig } from "node-karin/axios"
+import { axios, lodash } from 'node-karin/modules.js'
 import { game_biz, salt } from './MysTool'
 import { MysUtil } from './MysUtil'
+import { defineApi } from "./define"
 
-export class MysReq {
-    mys: MysReqMys
+export class MysReq<g extends GameList>{
+    /** 查询的id可为uid、ltuid、user_id */
     uid: string
-    game: GameList
-    server: string
-    device_id: string
-    hoyolab: boolean
-    config: ConfigsType<ConfigName.config, GamePathType.Core>
-    option: MysReqOptions
-    _deviceName?: string
-    _device_fp?: {
-        data: {
-            device_fp: string
-        }
-    }
-    constructor(mys: MysReqMys = {}, options: MysReqOptions = {}) {
-        this.mys = mys
-        this.uid = mys.uid || ''
-        this.game = mys.game || GameList.Gs
-        this.server = mys.server || MysUtil.getRegion(this.uid, this.game)
-        this.device_id = (mys.device || MysUtil.getDeviceGuid()).toUpperCase()
+    game: g
+    mysUserInfo?: mysUserInfo<g>
 
-        this.hoyolab = MysUtil.isHoyolab(this.server, this.game)
+    option: { log: boolean, cacheCd?: number }
+    config: ConfigsType<ConfigName.config, GamePathType.Core>
+
+    #deviceName?: string
+    #server?: gameServer
+    #device_id?: string
+
+    constructor(uid: string, game: g, mys: mysUserInfo<g> = {}, options: {
+        cacheCd?: number
+        log?: boolean
+    } = {}) {
+        this.uid = uid
+        this.game = game
+
+        this.mysUserInfo = mys
 
         this.config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
         this.option = {
@@ -37,22 +36,49 @@ export class MysReq {
             ...options
         }
     }
-    get UIDTYPE() {
-        return this.hoyolab ? 'HoYoLab' : '米游社'
-    }
 
     get deviceName() {
-        if (!this._deviceName) this._deviceName = `Karin-${md5(this.game + this.uid).substring(0, 5)}`
-        return this._deviceName
+        if (!this.#deviceName) this.#deviceName = `Karin-${md5(this.game + this.uid).substring(0, 5)}`
+        return this.#deviceName
+    }
+
+    /** 获取游戏区服 */
+    get server() {
+        if (!this.#server) {
+            if (this.mysUserInfo?.region) {
+                this.#server = MysUtil.getServerByRegion(this.mysUserInfo.region, this.game)
+            } else {
+                this.#server = MysUtil.getServerByUid(this.uid, this.game)
+            }
+        }
+        return this.#server
+    }
+    /** 是否为国际服 */
+    get hoyolab() {
+        return this.mysUserInfo?.type === MysType.os || this.server.os
     }
 
     get game_biz() {
         return game_biz[this.game][this.hoyolab ? 0 : 1]
     }
 
+    get device_id() {
+        if (!this.#device_id) this.#device_id = (this.mysUserInfo?.device || MysUtil.getDeviceGuid()).toUpperCase()
+        return this.#device_id
+    }
+
+    async get_device_fp() {
+
+
+        return {
+            'x-rpc-device_id': '',
+            'x-rpc-device_fp': ''
+        }
+    }
+
     async getData<
         ReturnType = undefined,
-        ReqData extends Partial<Record<string, unknown>> = {}
+        ReqData extends Partial<Record<string, any>> = {}
     >(
         Api: defineApi<ReqData>,
         reqData: ReqData
@@ -64,13 +90,19 @@ export class MysReq {
         if (cahce) return JSON.parse(cahce)
 
         const b = body?.(this, reqData)
-        const headers = Object.assign(header(this, { q: query?.(this, reqData), b, reqData }))
+        const headers = new AxiosHeaders(
+            header(this, { q: query?.(this, reqData), b, reqData })
+        )
 
-        const param: any = {
+        if (!noFp) {
+            headers.set(await this.get_device_fp())
+        }
+
+        const param: AxiosRequestConfig = {
             url: url(this, reqData),
-            method: reqData.method ?? 'get',
+            method: reqData?.method ?? 'get',
             headers,
-            timeout: reqData.timeout ?? 10000
+            timeout: reqData?.timeout ?? 10000
         }
         if (b) {
             param.method = 'post'
@@ -80,41 +112,33 @@ export class MysReq {
             param.proxy = this.config.proxy
         }
 
-        logger.debug(`[${this.UIDTYPE}接口][${urlKey}][${this.game}][${this.mys.user_id || this.uid}] ${JSON.stringify(param)}`)
-        let response
+        logger.debug(`requst: [${urlKey}][${this.game}][${this.uid}] ${JSON.stringify(param)}`)
+        let response: any = undefined
         const start = Date.now()
         try {
             response = await axios(param)
         } catch (err) {
             this.checkstatus(err, urlKey)
-            return undefined
+            return response
         }
 
-        if (this.option.log && type !== 'getFp' && !data?.option?.nolog) {
-            logger.mark(`[${this.UIDTYPE}接口][${type}][${this.game}][${this.mys.user_id || this.uid}] ${Date.now() - start}ms`)
-        }
         const res = response.data
 
         if (!res) {
-            logger.mark(`[${this.UIDTYPE}接口][${urlKey}][${this.game}][${this.mys.user_id || this.uid}]没有返回`)
-            return undefined
+            logger.error(`[${urlKey}][${this.game}][${this.uid}] 接口没有返回数据！`)
+            return response
         }
 
-        logger.debug(`[${this.UIDTYPE}接口][${urlKey}][${this.game}][${this.mys.user_id || this.uid}] ${JSON.stringify(res)}`)
+        logger.debug(`response: [${urlKey}][${this.game}][${this.uid}] ${Date.now() - start}ms ${JSON.stringify(res)}`)
 
-        res.api = type
-        res.reqData = data
         if ('retcode' in res) {
             res.retcode = Number(res.retcode)
         }
-        if (data.needTime) {
-            res.resDataTime = moment().format('YYYY-MM-DD HH:mm:ss')
-        }
-        if (res.reqData?.MysApi) {
-            delete res.reqData.MysApi
+
+        if (this.option.cacheCd || reqData.cacheCd) {
+            this.cache(res, cacheKey, this.option.cacheCd || reqData.cacheCd)
         }
 
-        if (this.option.cacheCd || data.cacheCd) this.cache(res, cacheKey, this.option.cacheCd || data.cacheCd)
         return res
     }
 
@@ -149,13 +173,13 @@ export class MysReq {
 
     checkstatus(err: any, type: string) {
         if (err.response) {
-            let error = `[${this.UIDTYPE}接口][${type}][${this.game}][${this.mys.user_id || this.uid}] ${err.response.status} ${err.response.statusText}`
-            if (err.response.status == 403 && this.hoyolab) {
+            let error = `[${type}][${this.game}][${this.uid}] ${err.response.status} ${err.response.statusText}`
+            if (err.response.status === 403 && this.hoyolab) {
                 error += `未配置代理或代理不可用！`
             }
             logger.error(error)
         } else if (err.request) {
-            logger.error(`[${this.UIDTYPE}接口][${type}][${this.game}][${this.mys.user_id || this.uid}] 请求无返回或超时`)
+            logger.error(`[${type}][${this.game}][${this.uid}] 请求无返回或超时！`)
         } else {
             logger.error(err)
         }

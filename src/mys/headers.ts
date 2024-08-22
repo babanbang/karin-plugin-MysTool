@@ -1,4 +1,4 @@
-import { app_version, salt } from "./MysTool"
+import { app_version } from "./MysTool"
 import { MysReq } from "./MysReq"
 
 export const BaseHeaders = (mysReq: MysReq) => {
@@ -21,7 +21,7 @@ export const NoHeader = (mysReq: MysReq, options: { q?: string, b?: unknown } = 
 
 export const CookieHeader = (mysReq: MysReq, options: { q?: string, b?: unknown } = {}) => {
     return {
-        Cookie: mysReq.mys.cookie,
+        Cookie: mysReq.mysUserInfo!.cookie,
         ...(mysReq.hoyolab ? BaseOsHeaders : BaseHeaders(mysReq))
     }
 }
@@ -31,7 +31,7 @@ export const StokenHeader = (mysReq: MysReq) => {
         ...(mysReq.hoyolab ? BaseOsHeaders : BaseHeaders(mysReq)),
         'x-rpc-client_type': '2',
         'User-Agent': 'okhttp/4.8.0',
-        Cookie: mysReq.mys.stoken
+        Cookie: mysReq.mysUserInfo!.stoken
     }
 }
 

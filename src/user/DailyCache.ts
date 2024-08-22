@@ -42,7 +42,12 @@ export class DailyCache {
         return (await DailyCacheDB.zMin(game))?.ltuid
     }
 
-    /** 删除对应ltuid缓存 */
+    /** 增加对应ltuid查询次数 */
+    static async addCache(ltuid: string, game: GameList) {
+        return await DailyCacheDB.zAdd({ ltuid, game })
+    }
+
+    /** 删除对应ltuid查询次数 */
     static async delCache(ltuid: string) {
         return await DailyCacheDB.zRem(ltuid)
     }

@@ -1,3 +1,4 @@
+import { GameList, GameRegion } from '@/types'
 import { defineMysApi, BaseMysResData } from './define'
 import { ActionHeader, CookieHeader, NoHeader, PassportHeader, StokenHeader } from './headers'
 import { MysTool } from './MysTool'
@@ -5,7 +6,11 @@ import { MysUtil } from './MysUtil'
 import lodash from 'node-karin/lodash'
 
 export const getDeviceFp = defineMysApi<
-    { data: { device_fp: string } } & BaseMysResData
+    BaseMysResData & {
+        data: {
+            device_fp: string
+        }
+    }
 >(
     {
         urlKey: 'get-device-fp',
@@ -34,7 +39,11 @@ export const getDeviceFp = defineMysApi<
 )
 
 export const getLTokenBySToken = defineMysApi<
-    { data: { ltoken: string } } & BaseMysResData,
+    BaseMysResData & {
+        data: {
+            ltoken: string
+        }
+    },
     { cookie: string }
 >({
     urlKey: 'getLTokenBySToken',
@@ -45,12 +54,17 @@ export const getLTokenBySToken = defineMysApi<
 })
 
 export const getTokenByGameToken = defineMysApi<
-    {
+    BaseMysResData & {
         data: {
-            token: { token: string },
-            user_info: { aid: string, mid: string }
+            token: {
+                token: string
+            },
+            user_info: {
+                aid: string
+                mid: string
+            }
         }
-    } & BaseMysResData,
+    },
     { account_id: number, game_token: string }
 >(
     {
@@ -68,13 +82,17 @@ export const getTokenByGameToken = defineMysApi<
 )
 
 export const getCookieBySToken = defineMysApi<
-    { data: { cookie_token: string } } & BaseMysResData,
+    BaseMysResData & {
+        data: {
+            cookie_token: string
+        }
+    },
     { method: 'GET' | 'POST' }
 >(
     {
         urlKey: 'getCookieBySToken',
-        url: (mysReq, data) => `${MysTool[mysReq.hoyolab ? 'os_web_api' : 'web_api']}auth/api/getCookieAccountInfoBySToken?game_biz=${mysReq.game_biz}&${mysReq.mys.stoken}`,
-        query: (mysReq, data) => `game_biz=${mysReq.game_biz}&${mysReq.mys.stoken}`,
+        url: (mysReq, data) => `${MysTool[mysReq.hoyolab ? 'os_web_api' : 'web_api']}auth/api/getCookieAccountInfoBySToken?game_biz=${mysReq.game_biz}&${mysReq.mysUserInfo!.stoken}`,
+        query: (mysReq, data) => `game_biz=${mysReq.game_biz}&${mysReq.mysUserInfo!.stoken}`,
         header: NoHeader,
         noFp: true
     }
@@ -89,11 +107,11 @@ interface UserGameRole {
 }
 
 export const getUserGameRolesByCookie = defineMysApi<
-    {
+    BaseMysResData & {
         data: {
             list: UserGameRole[]
         }
-    } & BaseMysResData
+    }
 >(
     {
         urlKey: 'getUserGameRolesByCookie',
@@ -104,11 +122,11 @@ export const getUserGameRolesByCookie = defineMysApi<
 )
 
 export const getUserGameRolesByStoken = defineMysApi<
-    {
+    BaseMysResData & {
         data: {
             list: UserGameRole[]
         }
-    } & BaseMysResData
+    }
 >(
     {
         urlKey: 'getUserGameRolesByStoken',
@@ -119,19 +137,28 @@ export const getUserGameRolesByStoken = defineMysApi<
 )
 
 export const getActionTicketBySToken = defineMysApi<
-    { data: { ticket: string } } & BaseMysResData
+    BaseMysResData & {
+        data: {
+            ticket: string
+        }
+    }
 >(
     {
         urlKey: 'getActionTicketBySToken',
         url: (mysReq, data) => `${MysTool.new_web_api}auth/api/getActionTicketBySToken`,
-        query: (mysReq, data) => `uid=${mysReq.mys.ltuid}&action_type=game_role`,
+        query: (mysReq, data) => `uid=${mysReq.mysUserInfo!.ltuid}&action_type=game_role`,
         header: ActionHeader,
         noFp: true
     }
 )
 
 export const changeGameRoleByDefault = defineMysApi<
-    { data: { game_biz: string, game_uid: string } } & BaseMysResData,
+    BaseMysResData & {
+        data: {
+            game_biz: string
+            game_uid: string
+        }
+    },
     { action_ticket: string, game_biz: string, game_uid: string }
 >(
     {
@@ -150,7 +177,13 @@ export const changeGameRoleByDefault = defineMysApi<
 )
 
 export const getUserFullInfo = defineMysApi<
-    { data: { user_info: { uid: string } } } & BaseMysResData
+    BaseMysResData & {
+        data: {
+            user_info: {
+                uid: string
+            }
+        }
+    }
 >(
     {
         urlKey: 'getUserFullInfo',
@@ -161,7 +194,11 @@ export const getUserFullInfo = defineMysApi<
 )
 
 export const fetchQRcode = defineMysApi<
-    { data: { url: string } },
+    BaseMysResData & {
+        data: {
+            url: string
+        }
+    },
     { device: string }
 >(
     {
@@ -176,16 +213,14 @@ export const fetchQRcode = defineMysApi<
 )
 
 export const queryQRcode = defineMysApi<
-    {
+    BaseMysResData & {
         data: {
             stat: 'Scanned' | 'Confirmed',
             payload: {
-                raw: {
-                    uid: string, token: string
-                }
+                raw: string
             }
         }
-    } & BaseMysResData,
+    },
     { device: string, ticket: string }
 >(
     {
@@ -194,17 +229,21 @@ export const queryQRcode = defineMysApi<
         body: (mysReq, data) => {
             return { app_id: MysTool.app_id, device: data.device, ticket: data.ticket }
         },
-        dealRes: (res) => {
-            res.data.payload.raw = JSON.parse(res.data.payload.raw)
-            return res
-        },
         header: NoHeader,
         noFp: true
     }
 )
 
 export const miyolive_index = defineMysApi<
-    {},
+    BaseMysResData & {
+        data: {
+            live: {
+                title: string
+                code_ver: string
+                remain: number
+            }
+        }
+    },
     { actid: string }
 >(
     {
@@ -218,7 +257,14 @@ export const miyolive_index = defineMysApi<
 )
 
 export const miyolive_code = defineMysApi<
-    {},
+    BaseMysResData & {
+        data: {
+            code_list: {
+                code: string,
+                to_get_time: number
+            }[]
+        }
+    },
     { actid: string, code_ver: string }
 >(
     {
@@ -232,7 +278,17 @@ export const miyolive_code = defineMysApi<
 )
 
 export const miyolive_actId = defineMysApi<
-    {}
+    BaseMysResData & {
+        data: {
+            list: {
+                post: {
+                    post?: {
+                        structured_content: string
+                    }
+                }
+            }[]
+        }
+    }
 >(
     {
         urlKey: 'miyolive_actId',
@@ -243,7 +299,11 @@ export const miyolive_actId = defineMysApi<
 )
 
 export const genAuthKey = defineMysApi<
-    {},
+    BaseMysResData & {
+        data: {
+            authkey: string
+        }
+    },
     { auth_appid: 'webview_gacha' }
 >(
     {
@@ -267,3 +327,28 @@ export const genAuthKey = defineMysApi<
         noFp: true
     }
 )
+
+export const getGachaLog = defineMysApi<
+    BaseMysResData & {
+        data: {
+            region: GameRegion<GameList>
+        }
+    },
+    { authkey: string, gacha_type: number, page: number, end_id: number }
+>({
+    urlKey: 'getGachaLog',
+    url: (mysReq, data) => {
+        let url = ''
+        if (mysReq.game === GameList.Gs) {
+            url = `${MysTool[mysReq.hoyolab ? 'os_hk4_api' : 'hk4e_gacha_api']}gacha_info/api/getGachaLog`
+        } else if (mysReq.game === GameList.Sr) {
+            url = `${MysTool[mysReq.hoyolab ? 'os_web_api' : 'web_api']}common/gacha_record/api/getGachaLog`
+        } else {
+            url = `${MysTool[mysReq.hoyolab ? 'os_nap_gacha_api' : 'nap_gacha_api']}common/gacha_record/api/getGachaLog`
+        }
+
+        return url + `?authkey_ver=1&lang=zh-cn&authkey=${data.authkey}&gacha_type=${data.gacha_type}&page=${data.page}&size=20&end_id=${data.end_id}&game_biz=${mysReq.game_biz}`
+    },
+    header: NoHeader,
+    noFp: true
+})

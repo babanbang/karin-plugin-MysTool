@@ -1,4 +1,4 @@
-import { MysReq, MysUtil } from '@/mys'
+import { MysReq, MysUtil, getCookieBySToken, getUserGameRolesByCookie } from '@/mys'
 import { Player } from '@/panel'
 import { GameList, MysType, MysUserDBCOLUMNS } from '@/types'
 import { logger } from 'node-karin'
@@ -125,17 +125,18 @@ export class MysUser extends Base {
         if (!this.stoken) return false
 
         for (const serv of servs || MysUtil.servs) {
-            const mysApi = new MysReq({ server: serv }, { log: false })
-            const res = await mysApi.getData('getCookieBySToken', {
-                cookies: this.stoken.replace(/;/g, '&').replace(/stuid/, 'uid'),
-                method: serv === MysType.cn ? 'GET' : 'POST'
-            })
+            const res = await getCookieBySToken(
+                new MysReq(this.ltuid, GameList.Gs, {
+                    stoken: this.stoken.replace(/;/g, '&').replace(/stuid/, 'uid'),
+                    type: serv
+                }, { log: false }),
+                { method: serv === MysType.cn ? 'GET' : 'POST' }
+            )
             if (res?.retcode == -100) {
                 this.stoken = ''
                 await this.save()
                 return false
-            }
-            if (res?.data) {
+            } else if (res?.data?.cookie_token) {
                 return MysUtil.splicToken({
                     ltoken: this.ltoken,
                     ltuid: this.ltuid,
@@ -156,20 +157,16 @@ export class MysUser extends Base {
         let res
         let msg = ''
         for (const serv of MysUtil.servs) {
-            const mysApi = new MysReq({ cookie: this.cookie, server: serv }, { log: false })
-            res = await mysApi.getData<{
-                retcode?: number, message?: string, data?: {
-                    list?: { game_biz: string, game_uid: number }[]
-                }
-            }>('getUserGameRolesByCookie')
+            res = await getUserGameRolesByCookie(
+                new MysReq(this.ltuid, GameList.Gs, { cookie: this.cookie, type: serv }, { log: false })
+            )
             if (res?.retcode === 0) {
                 this.type = serv
-                break
-            }
-            if (res?.retcode === -100) {
+            } else if (res?.retcode === -100) {
                 msg = 'cookie失效，请重新登录获取'
+            } else {
+                msg = res?.message || '请求失败'
             }
-            msg = res?.message || '请求失败'
         }
         if (!res) return err(msg)
 

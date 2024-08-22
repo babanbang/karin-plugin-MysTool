@@ -1,4 +1,4 @@
-import { GameList } from "@/types"
+import { GameList, GsRegin, SrRegin, ZzzRegin, GameRegion } from "@/types"
 
 const app_version = { cn: '2.70.1', os: '1.5.0' }
 const app_id = 2 //崩三 1 未定 2 原神 4 崩二 7 崩铁 8 绝区零 12
@@ -53,39 +53,37 @@ const game_biz = {
     zzz: ['nap_cn', 'nap_global']
 }
 
-function setRegion(regions: string[]) {
+function setRegion<g extends GameList>(regions: GameRegion<g>[]) {
     const names = ['美服', '欧服', '亚服', '港澳台服']
     return regions.map((region, idx) => {
         return { region, name: names[idx], os: true }
     })
 }
 
-const game_region: {
-    [key in GameList]: { region: string, name: string, os: boolean }[]
-} = {
-    gs: [
-        { region: 'cn_gf01', name: '天空岛(官服)', os: false }, { region: 'cn_qd01', name: '世界树(B服)', os: false },
-        ...setRegion(['os_usa', 'os_euro', 'os_asia', 'os_cht'])
+const game_servers = {
+    [GameList.Gs]: [
+        { region: GsRegin.gf, name: '天空岛(官服)', os: false }, { region: GsRegin.bili, name: '世界树(B服)', os: false },
+        ...setRegion<GameList.Gs>([GsRegin.usa, GsRegin.euro, GsRegin.asia, GsRegin.cht])
     ],
-    sr: [
-        { region: 'prod_gf_cn', name: '星穹列车(官服)', os: false }, { region: 'prod_qd_cn', name: '无名客(B服)', os: false },
-        ...setRegion(['prod_official_usa', 'prod_official_euro', 'prod_official_asia', 'prod_official_cht'])
+    [GameList.Sr]: [
+        { region: SrRegin.gf, name: '星穹列车(官服)', os: false }, { region: SrRegin.bili, name: '无名客(B服)', os: false },
+        ...setRegion<GameList.Sr>([SrRegin.usa, SrRegin.euro, SrRegin.asia, SrRegin.cht])
     ],
-    zzz: [
-        { region: 'prod_gf_cn', name: '新艾利都(官服)', os: false }, { region: 'prod_gf_cn', name: '新艾利都(官服)', os: false },
-        ...setRegion(['prod_gf_us', 'prod_gf_eu', 'prod_gf_jp', 'prod_gf_sg'])
+    [GameList.Zzz]: [
+        { region: ZzzRegin.gf, name: '新艾利都(官服)', os: false }, { region: ZzzRegin.gf, name: '新艾利都(官服)', os: false },
+        ...setRegion<GameList.Zzz>([ZzzRegin.usa, ZzzRegin.euro, ZzzRegin.asia, ZzzRegin.cht])
     ]
 }
 
 export {
-    app_id, app_version, bbs_api, game_biz, game_region, hk4_api, hk4e_gacha_api, hk4e_sdk_api,
+    app_id, app_version, bbs_api, game_biz, game_servers, hk4_api, hk4e_gacha_api, hk4e_sdk_api,
     new_web_api, os_bbs_api, os_hk4_api, os_public_api, os_public_data_api, os_record_api, os_web_api,
     pass_api, public_data_api, record_api, salt, static_api, web_api, os_hk4e_sg_api, os_public_sg_api,
     nap_gacha_api, os_nap_gacha_api, act_nap_api, os_act_nap_api
 }
 
 export const MysTool = {
-    app_id, app_version, bbs_api, game_biz, game_region, hk4_api, hk4e_gacha_api, hk4e_sdk_api,
+    app_id, app_version, bbs_api, game_biz, game_servers, hk4_api, hk4e_gacha_api, hk4e_sdk_api,
     new_web_api, os_bbs_api, os_hk4_api, os_public_api, os_public_data_api, os_record_api, os_web_api,
     pass_api, public_data_api, record_api, salt, static_api, web_api, os_hk4e_sg_api, os_public_sg_api,
     nap_gacha_api, os_nap_gacha_api, act_nap_api, os_act_nap_api

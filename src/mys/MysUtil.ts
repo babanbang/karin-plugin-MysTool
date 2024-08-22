@@ -1,7 +1,7 @@
-import { GameKeyAndName, GameList, GameNames, MysType } from '@/types/mys'
+import { GameKeyAndName, GameList, GameNames, GameRegion, MysType } from '@/types/mys'
 import lodash from 'node-karin/lodash'
 import moment from 'node-karin/moment'
-import { game_biz, game_region } from './MysTool'
+import { game_biz, game_servers } from './MysTool'
 
 export const MysUtil = new (class Mysutil {
     #all_game_biz = Object.values(game_biz).flat()
@@ -79,47 +79,51 @@ export const MysUtil = new (class Mysutil {
     }
 
     getGameByRegion(region: string) {
-        for (const i in game_region) {
+        for (const i in game_servers) {
             const game = i as GameList
-            if (game_region[game].some(r => r.region === region)) {
+            if (game_servers[game].some(r => r.region === region)) {
                 return this.#allgames.find((g) => g.key === game)!
             }
         }
         return this.#allgames[2]
     }
 
-    getRegion(uid: string, game: GameList) {
-        if (game == GameList.Zzz) {
+    getServerByRegion<g extends GameList>(region: GameRegion<g>, game: g) {
+        return game_servers[game].find(r => r.region === region)!
+    }
+
+    getServerByUid(uid: string, game: GameList) {
+        if (game === GameList.Zzz) {
             if (uid.length < 10) {
-                return game_region[game][0].region // 官服
+                return game_servers[GameList.Zzz][0] // 官服
             }
 
             switch (uid.slice(0, -8)) {
                 case '10':
-                    return game_region[game][2].region// 美服
+                    return game_servers[GameList.Zzz][2] // 美服
                 case '15':
-                    return game_region[game][3].region// 欧服
+                    return game_servers[GameList.Zzz][3] // 欧服
                 case '13':
-                    return game_region[game][4].region// 亚服
+                    return game_servers[GameList.Zzz][4] // 亚服
                 case '17':
-                    return game_region[game][5].region// 港澳台服
+                    return game_servers[GameList.Zzz][5] // 港澳台服
             }
         } else {
             switch (uid.slice(0, -8)) {
                 case '5':
-                    return game_region[game][1].region // B服
+                    return game_servers[game][1] // B服
                 case '6':
-                    return game_region[game][2].region// 美服
+                    return game_servers[game][2] // 美服
                 case '7':
-                    return game_region[game][3].region// 欧服
+                    return game_servers[game][3] // 欧服
                 case '8':
                 case '18':
-                    return game_region[game][4].region// 亚服
+                    return game_servers[game][4] // 亚服
                 case '9':
-                    return game_region[game][5].region// 港澳台服
+                    return game_servers[game][5] // 港澳台服
             }
         }
-        return game_region[game][0].region // 官服
+        return game_servers[game][0] // 官服
     }
 
     getCookieMap(cookie: string) {
@@ -142,7 +146,7 @@ export const MysUtil = new (class Mysutil {
     }
 
     isHoyolab(region: string, game: GameList) {
-        return region === MysType.os || game_region[game].find((r) => r.region === region)!.os
+        return region === MysType.os || game_servers[game].find((r) => r.region === region)!.os
     }
 
     matchUid(msg: string, game: GameList) {
@@ -169,11 +173,6 @@ export const MysUtil = new (class Mysutil {
 
     getSeedId(n: number) {
         return lodash.sampleSize('0123456789abcdef', n)
-    }
-
-    RegionName(region: string, game: GameList) {
-        if (Number(region)) region = this.getRegion(region, game)
-        return game_region[game].find((r) => r.region === region)!.name
     }
 
     getEndOfDay() {

@@ -1,4 +1,4 @@
-import { MysReq, MysUtil } from "@/mys"
+import { MysReq, MysUtil, fetchQRcode, getTokenByGameToken, getUserFullInfo, queryQRcode } from "@/mys"
 import { Player } from "@/panel"
 import { BingUIDType, ConfigName, GameList, MysUserDBCOLUMNS, UidWithType } from "@/types"
 import { MysUser, User } from "@/user"
@@ -113,8 +113,9 @@ const bingCookie = async (e: KarinMessage, cookie?: string, mysUser?: MysUser, t
     // 判断data.ltuid是否正确
     if (flagV2 && isNaN(Number(mysUser.ltuid))) {
         // 获取米游社通行证id
-        const mysReq = new MysReq({ cookie: mysUser.cookie, server: mysUser.type }, { log: false })
-        const userFullInfo = await mysReq.getData('getUserFullInfo')
+        const mysReq = new MysReq(e.user_id, GameList.Gs, { cookie: mysUser.cookie, type: mysUser.type }, { log: false })
+        const userFullInfo = await getUserFullInfo(mysReq)
+
         if (userFullInfo?.data?.user_info) {
             const ltuid = userFullInfo.data.user_info.uid || mysUser.ltuid
             mysUser.setData({
@@ -124,7 +125,6 @@ const bingCookie = async (e: KarinMessage, cookie?: string, mysUser?: MysUser, t
             logger.mark(`绑定Cookie错误2：${userFullInfo?.message || 'Cookie错误'}`)
             e.reply(`绑定Cookie失败：${userFullInfo?.message || 'Cookie错误'}`)
             return false
-
         }
 
         const user = await User.create(e.user_id, GameList.Gs)
@@ -339,9 +339,9 @@ export const MiHoYoLoginQRCode = karin.command(
         QRCodes.set(e.user_id, true)
 
         const device = MysUtil.randomString(64)
-        const mysReq = new MysReq({ user_id: e.user_id }, { log: false })
+        const mysReq = new MysReq(e.user_id, GameList.Gs, {}, { log: false })
 
-        const QRcode = await mysReq.getData('fetchQRcode', { device })
+        const QRcode = await fetchQRcode(mysReq, { device })
         if (!QRcode?.data?.url) {
             QRCodes.delete(e.user_id)
             e.reply('获取二维码失败、请稍后再试', { at: true })
@@ -375,13 +375,12 @@ export const MiHoYoLoginQRCode = karin.command(
         QRCodes.set(e.user_id, image)
         e.reply(['请使用米游社扫码登录', image], { at: true, recallMsg: 60 })
 
-        let data
-        let Scanned
+        let data, Scanned
         const ticket = QRcode.data.url.split('ticket=')[1]
         for (let n = 1; n < 60; n++) {
             await common.sleep(5000)
             try {
-                const res = await mysReq.getData('queryQRcode', { device, ticket })
+                const res = await queryQRcode(mysReq, { device, ticket })
                 if (!res) continue
 
                 if (res.retcode === 3503) {
@@ -403,24 +402,24 @@ export const MiHoYoLoginQRCode = karin.command(
                 }
 
                 if (res.data.stat === 'Confirmed') {
-                    data = JSON.parse(res.data.payload.raw)
+                    data = JSON.parse(res.data.payload.raw) as { uid: number, token: string }
                     break
                 }
             } catch (err) {
                 logger.error(`[扫码登录] 错误：${logger.red(err as string)}`)
             }
         }
-        if (!data.uid && !data.token) {
+        if (!data?.uid && !data?.token) {
             e.reply('登录失败', { at: true })
             QRCodes.delete(e.user_id)
-            return false
+            return true
         }
 
-        const res = await mysReq.getData('getTokenByGameToken', data)
+        const res = await getTokenByGameToken(mysReq, { account_id: Number(data.uid), game_token: data.token })
         if (!res) {
             e.reply('获取Token失败', { at: true })
             QRCodes.delete(e.user_id)
-            return false
+            return true
         }
         const stoken = `stoken=${res.data.token.token};stuid=${res.data.user_info.aid};mid=${res.data.user_info.mid};`
 
