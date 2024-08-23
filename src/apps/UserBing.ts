@@ -18,7 +18,7 @@ interface uidInfo {
 	banList: UidWithType[]
 }
 
-const reg = MysUtil.regs.join('|')
+const reg = MysUtil.regs.join('?|')
 const getLtuidInfo = (mysUser: MysUser, option: { ck?: boolean, sk?: boolean } = {}) => {
 	const msg = MysUtil.AllGames.map(game => {
 		const uids = mysUser[MysUserDBCOLUMNS[game.key]]
@@ -35,12 +35,11 @@ const showUid = async (e: KarinMessage) => {
 	const user = await User.create(e.user_id, GameList.Gs)
 
 	if (MysUtil.games.length === 0) {
-		e.reply('请查看插件README.md后安装额外组件后再查看！')
-		return true
+		logger.error('未安装任何游戏组件，请查看插件README.md！')
 	}
 
 	const uids: uidInfo[] = []
-	MysUtil.eachGame((game, ds) => {
+	await MysUtil.eachGame((game, ds) => {
 		const uidList = user.getUidList({ game, returnType: true })
 		const uidInfo: uidInfo = {
 			...ds,
@@ -179,7 +178,7 @@ const bingStoken = async (e: KarinMessage, stoken?: string) => {
 
 /** 绑定UID */
 export const BingUid = karin.command(
-	new RegExp(`^(${reg})?绑定(uid)*(\\s|\\+)*((18|10|13|15|17|[1-9])[0-9]{8}|[1-9][0-9]{7})*$`, 'i'),
+	new RegExp(`^(${reg})绑定(uid)*(\\s|\\+)*((18|10|13|15|17|[1-9])[0-9]{8}|[1-9][0-9]{7})*$`, 'i'),
 	async (e) => {
 		const game = MysUtil.getGameByMsg(e.msg)
 		let uid = MysUtil.matchUid(e.msg, game.key)
@@ -194,7 +193,7 @@ export const BingUid = karin.command(
 		}
 
 		const user = await User.create(e.user_id, game.key)
-		user.addRegUid({ uid, save: true })
+		await user.addRegUid({ uid, save: true })
 
 		await showUid(e)
 		return true
@@ -204,7 +203,7 @@ export const BingUid = karin.command(
 
 /** 解绑UID */
 export const DelBingUid = karin.command(
-	new RegExp(`^(${reg})*(删除|解绑)uid(\\s|\\+)*([0-9]{1,2})*$`, 'i'),
+	new RegExp(`^(${reg})(删除|解绑)uid(\\s|\\+)*([0-9]{1,2})*$`, 'i'),
 	async (e) => {
 		const game = MysUtil.getGameByMsg(e.msg)
 		const idx = e.msg.match(/[0-9]{1,2}/g)
@@ -218,7 +217,7 @@ export const DelBingUid = karin.command(
 				return true
 			}
 
-			user.delRegUid(uidList[_idx - 1])
+			await user.delRegUid(uidList[_idx - 1])
 			await showUid(e)
 		} else {
 			e.reply(`删除uid请带上序号\n例如：#${game.key}删除uid1\n发送【#uid】可查看绑定的uid以及对应的序号`)
@@ -230,7 +229,7 @@ export const DelBingUid = karin.command(
 
 /** 查询绑定的UID列表 */
 export const ShowBingUidList = karin.command(
-	new RegExp(`^(${reg})?(我的)?uid$`, 'i'),
+	new RegExp(`^(${reg})(我的)?uid$`, 'i'),
 	showUid,
 	{ name: 'MysTool-查询绑定UID列表', priority: 0 }
 )
@@ -260,7 +259,7 @@ export const BingCookieOrStokenByMsg = karin.command(
 
 /** 删除对应UID绑定的Cookie或Stoken */
 export const DelCookieOrStoken = karin.command(
-	new RegExp(`^#?(${reg})?删除(c(oo)?k(ie)?|s(to)?k(en)?)(\\s|\\+)*([0-9]{1,2})?$`, 'i'),
+	new RegExp(`^(${reg})删除(c(oo)?k(ie)?|s(to)?k(en)?)(\\s|\\+)*([0-9]{1,2})?$`, 'i'),
 	async (e) => {
 		const idx = e.msg.match(/[0-9]{1,2}/g)
 
@@ -288,7 +287,7 @@ export const DelCookieOrStoken = karin.command(
 			e.reply(`UID:${uid}暂未绑定${isCK ? 'Cookie' : 'Stoke'}`, { at: true })
 			return true
 		}
-		user.setUidType({ uid, type: BingUIDType[isCK ? 'ck' : 'sk'] })
+		await user.setUidType({ uid, type: BingUIDType[isCK ? 'ck' : 'sk'] })
 
 		e.reply(`已删除UID:${uid}绑定的${isCK ? 'Cookie' : 'Stoke'}`, { at: true })
 		return true
@@ -298,7 +297,7 @@ export const DelCookieOrStoken = karin.command(
 
 /** 查询绑定的Cookie和Stoken */
 export const ShowMyCookieAndStoken = karin.command(
-	new RegExp(`^#?(${reg})?我的(c(oo)?k(ie)?|s(to)?k(en)?)$`, 'i'),
+	new RegExp(`^(${reg})我的(c(oo)?k(ie)?|s(to)?k(en)?)$`, 'i'),
 	async (e) => {
 		if (e.isGroup) {
 			e.reply('请私聊查看', { at: true })
@@ -326,7 +325,7 @@ export const ShowMyCookieAndStoken = karin.command(
 const QRCodes: Map<string, ImageElement | true> = new Map()
 /** 扫码登录绑定UID、Cookie、Stoken */
 export const MiHoYoLoginQRCode = karin.command(
-	new RegExp(`^(${reg})*(扫码|二维码|辅助)(登录|绑定|登陆)$`, 'i'),
+	new RegExp(`^(${reg})(扫码|二维码|辅助)(登录|绑定|登陆)$`, 'i'),
 	async (e) => {
 		const qrcode = QRCodes.get(e.user_id)
 		if (qrcode) {
@@ -432,7 +431,7 @@ export const MiHoYoLoginQRCode = karin.command(
 
 /** 刷新米游社Cookie */
 export const UpdataCookie = karin.command(
-	new RegExp(`^(${reg})*(刷新|更新)c(oo)?k(ie)?$`, 'i'),
+	new RegExp(`^(${reg})(刷新|更新)c(oo)?k(ie)?$`, 'i'),
 	async (e) => {
 		const user = await User.create(e.user_id, GameList.Gs)
 

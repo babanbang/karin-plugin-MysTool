@@ -1,21 +1,20 @@
 import { CfgType, ConfigName, ConfigsType } from '@/types'
-import fs from 'fs'
 import { logger } from 'node-karin'
-import chokidar from 'node-karin/chokidar'
-import lodash from 'node-karin/lodash'
-import Yaml from 'node-karin/yaml'
+import { yaml as Yaml, chokidar, fs, lodash, path as PATH } from 'node-karin/modules.js'
 import { Data, GamePathType, karinPath } from './Data'
-import { PluginName } from './dir'
+import { NpmPath, PluginName } from './dir'
 
 export const Cfg = new (class Config {
 	#config: Map<string, ConfigsType<ConfigName, GamePathType> | Yaml.Document<Yaml.ParsedNode, true>> = new Map()
 	#watcher: Map<string, any> = new Map()
 	constructor() {
-		this.initCfg(GamePathType.Core)
+		this.initCfg(GamePathType.Core, NpmPath)
 	}
 
 	/** 初始化配置 */
-	async initCfg(game: GamePathType) {
+	async initCfg(game: GamePathType, npmPath: string) {
+		await Data.setNpmPath(game, npmPath)
+
 		const defSetPath = Data.getFilePath(`config`, game, karinPath.node)
 		if (!fs.existsSync(defSetPath)) return false
 
@@ -25,8 +24,9 @@ export const Cfg = new (class Config {
 			const fileName = file.replace('.yaml', '') as ConfigName
 
 			if (![ConfigName.lables].includes(fileName)) {
-				if (!fs.existsSync(`${configPath}/${file}`)) {
-					Data.copyFile(`${defSetPath}/${file}`, file, game, karinPath.config)
+				const cPath = PATH.join(configPath, file)
+				if (!fs.existsSync(cPath)) {
+					Data.copyFile(cPath, file, game, karinPath.config)
 				} else {
 					this.setConfig(fileName, game, this.getConfig(fileName, game))
 				}
@@ -36,10 +36,10 @@ export const Cfg = new (class Config {
 			this.getdefSet(fileName, game)
 		})
 
-		const ViewPath = `${defSetPath}/PluginConfigView.js`
+		const ViewPath = PATH.join(defSetPath, 'PluginConfigView.js')
 		if (fs.existsSync(ViewPath)) {
 			fs.writeFileSync(
-				`${defSetPath}/PluginConfigView.yaml`,
+				PATH.join(configPath,'PluginConfigView.yaml'),
 				Yaml.stringify(
 					(await Data.importModule('config/PluginConfigView.js', game, { defData: [] })).module
 				),
@@ -133,11 +133,6 @@ export const Cfg = new (class Config {
 			if (key.includes('config')) {
 				this.#config.delete(key)
 				logger.mark(`[${PluginName}修改配置文件][${key}]`)
-			} else {
-				const [type, game, name] = key.split('.')
-				const defSetPath = this.getConfigPath(type as CfgType, game as GamePathType, name)
-				fs.writeFileSync(defSetPath, (this.getdefSet(name as ConfigName, game as GamePathType, true)).toString(), 'utf8')
-				logger.error(`[${PluginName}]请勿对defSet内配置文件进行修改`)
 			}
 		})
 

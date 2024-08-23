@@ -37,20 +37,21 @@ export class MysUser extends Base {
 	constructor(ltuid: string) {
 		super(MysUser.COLUMNS_KEY)
 		this.ltuid = ltuid
-		this._get = (key: MysUserDBCOLUMNS) => {
-			if (key === MysUserDBCOLUMNS['stoken'] && this.db[MysUserDBCOLUMNS['stoken']]) {
-				return MysUtil.splicToken({
-					ltuid: this.ltuid,
-					stoken: this.db.stoken,
-					mid: this.db.mid,
-					ltoken: this.db.ltoken
-				})
-			}
-			return this.db[key]
+	}
+
+	_get(key: MysUserDBCOLUMNS) {
+		if (key === MysUserDBCOLUMNS['stoken'] && this.db[MysUserDBCOLUMNS['stoken']]) {
+			return MysUtil.splicToken({
+				ltuid: this.ltuid,
+				stoken: this.db.stoken,
+				mid: this.db.mid,
+				ltoken: this.db.ltoken
+			})
 		}
-		this._set = (key: MysUserDBCOLUMNS, value: any) => {
-			this.db[key] = value
-		}
+		return this.db[key]
+	}
+	_set(key: MysUserDBCOLUMNS, value: any) {
+		this.db[key] = value
 	}
 
 	static async create(ltuid: string, db?: MysUserDB) {
@@ -200,7 +201,7 @@ export class MysUser extends Base {
 		const g = MysUserDBCOLUMNS[game]
 		if ((game === GameList.Zzz ? /\d{8,10}/ : /\d{9,10}/).test(uid)) {
 			if (!this[g].includes(uid)) {
-				this[g].push(uid)
+				this.db[g].push(uid)
 			}
 		}
 		return true

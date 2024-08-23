@@ -19,23 +19,23 @@ const COLUMNS = {
 
 export class UserDB extends DbBaseModel {
 	/** 用户ID */
-	[UserDBCOLUMNS.user_id]!: string
+	declare [UserDBCOLUMNS.user_id]: string
 	/** 绑定的cookie ltuids */
-	[UserDBCOLUMNS.ltuids]!: string[]
+	declare [UserDBCOLUMNS.ltuids]: string[]
 	/** 绑定的stoken stuids */
-	[UserDBCOLUMNS.stuids]!: string[]
+	declare [UserDBCOLUMNS.stuids]: string[]
 	/** 当前使用的原神UID */
-	[UserDBCOLUMNS.gs_main]!: string
+	declare [UserDBCOLUMNS.gs_main]: string
 	/** 当前使用的崩坏；星穹铁道UID */
-	[UserDBCOLUMNS.sr_main]!: string
+	declare [UserDBCOLUMNS.sr_main]: string
 	/** 当前使用绝区零UID */
-	[UserDBCOLUMNS.zzz_main]!: string
+	declare [UserDBCOLUMNS.zzz_main]: string
 	/** 绑定的原神UID列表 */
-	[UserDBCOLUMNS.gs_uids]!: Record<string, BingUIDType>
+	declare [UserDBCOLUMNS.gs_uids]: Record<string, BingUIDType>
 	/** 绑定的崩坏；星穹铁道UID列表 */
-	[UserDBCOLUMNS.sr_uids]!: Record<string, BingUIDType>
+	declare [UserDBCOLUMNS.sr_uids]: Record<string, BingUIDType>
 	/** 绑定的绝区零UID列表 */
-	[UserDBCOLUMNS.zzz_uids]!: Record<string, BingUIDType>
+	declare [UserDBCOLUMNS.zzz_uids]: Record<string, BingUIDType>
 
 	static COLUMNS = COLUMNS
 

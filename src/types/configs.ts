@@ -13,7 +13,7 @@ export const enum ConfigName {
 	lables = 'lables'
 }
 
-export enum CfgType {
+export const enum CfgType {
 	config = 'config',
 	defSet = 'defSet'
 }

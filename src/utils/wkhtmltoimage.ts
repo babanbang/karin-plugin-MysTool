@@ -1,33 +1,36 @@
 import { ConfigName } from '@/types'
 import { exec } from 'child_process'
-import fs from 'fs'
 import { logger } from 'node-karin'
-import art_template from 'node-karin/art-template'
-import lodash from 'node-karin/lodash'
-import { Cfg } from './config'
+import { art_template, fs, lodash, path as PATH } from 'node-karin/modules.js'
 import { Data, GamePathType, karinPath } from './Data'
-import { PluginName, dirPath } from './dir'
+import { Cfg } from './config'
+import { PluginName, NpmPath } from './dir'
 
-let wk = true
-const config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
-if (config.wkhtmltoimage) {
-	exec('wkhtmltoimage -h', (error, stdout) => {
-		if (error) {
-			logger.error(error)
-			return
-		}
-		if (!/If\s+you\s+experience\s+bugs\s+or\s+want\s+to\s+request\s+new\s+features\s+please\s+visit/g.test(String(stdout))) {
-			logger.error(PluginName + '未安装wkhtmltoimage，请安装后重启再使用！')
-			wk = false
-		}
-	})
+let wk = false
+function initWK() {
+	if (wk) return wk
+	const config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
+	if (config.wkhtmltoimage) {
+		exec('wkhtmltoimage -h', (error, stdout) => {
+			if (error) {
+				logger.error(error)
+				return
+			}
+			if (!/If\s+you\s+experience\s+bugs\s+or\s+want\s+to\s+request\s+new\s+features\s+please\s+visit/g.test(String(stdout))) {
+				logger.error(PluginName + '未安装wkhtmltoimage，请安装后重启再使用！')
+			}
+			wk = true
+		})
+	}
+	return wk
 }
+
 /**
  * wkhtmltoimage截图
  * @returns {Promise<string>} base64编码的图片字符串
  */
 export async function wkhtmltoimage(data: any): Promise<string | false> {
-	if (!wk) {
+	if (!initWK()) {
 		logger.error(PluginName + '未安装wkhtmltoimage，请安装后重启再使用')
 		return false
 	}
@@ -65,16 +68,18 @@ export async function wkhtmltoimage(data: any): Promise<string | false> {
 function dealTpl(options: any) {
 	const { name, file, fileID = name, data } = options
 	data.useBrowser = '-wk'
-	const path = `wk-html/${name.replace(new RegExp(`${PluginName}/`, 'g'), '')}/${fileID}.html`
-	const savePath = Data.createDir(path, GamePathType.Core, karinPath.temp)
 
-	const paths = ('../../../../' + lodash.repeat('../', path.split('/').length - 3)) + `plugins/${PluginName}/`
+	const hPath = `wk-html/${fileID}.html`
+	const savePath = Data.createDir(hPath, options.game, karinPath.temp)
+
+	const parts = options.data.pluResPath.split(PATH.sep)
+	const paths = lodash.repeat('..' + PATH.sep, hPath.split('/').length + 2) + parts.slice(-2).join(PATH.sep)
 
 	try {
 		/** 读取html模板 */
 		const html = fs.readFileSync(file, 'utf8')
 		/** 替换模板 */
-		let tmpHtml = (art_template.render(html, data))?.replace?.(new RegExp(dirPath + '/', 'g'), paths)
+		const tmpHtml = art_template.render(html, data).replace(new RegExp(NpmPath, 'g'), paths)
 
 		/** 保存模板 */
 		fs.writeFileSync(savePath, tmpHtml)

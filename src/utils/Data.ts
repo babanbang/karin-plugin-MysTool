@@ -1,7 +1,6 @@
-import fs from "fs"
 import { logger } from "node-karin"
-import lodash from "node-karin/lodash"
-import { PluginName } from "./dir"
+import { fs, lodash, path as PATH } from 'node-karin/modules.js'
+import { KarinPath, NpmPath, PluginName } from "./dir"
 
 export const enum karinPath {
 	config = 'config/plugin',
@@ -21,22 +20,20 @@ export enum GamePathType {
 	gs = 'gs', sr = 'sr', zzz = 'zzz', Sign = 'sign', Core = 'core'
 }
 
-const KarinPath = process.cwd().replace(/\\/g, '/')
-
 export const Data = new (class Data {
-	#GamePath: Record<GamePathType, string> = {
-		[GamePathType.gs]: PluginName + '-Genshin/',
-		[GamePathType.sr]: PluginName + '-StarRail/',
-		[GamePathType.zzz]: PluginName + '-ZZZero/',
-		[GamePathType.Sign]: PluginName + '-MysSign/',
-		[GamePathType.Core]: PluginName + '/'
+	#GamePluginName: Record<GamePathType, string> = {
+		[GamePathType.gs]: PluginName + '-Genshin',
+		[GamePathType.sr]: PluginName + '-StarRail',
+		[GamePathType.zzz]: PluginName + '-ZZZero',
+		[GamePathType.Sign]: PluginName + '-MysSign',
+		[GamePathType.Core]: PluginName
 	}
-	#LowGamePath: Record<GamePathType, string> = {
-		[GamePathType.gs]: this.#GamePath[GamePathType.gs].toLowerCase(),
-		[GamePathType.sr]: this.#GamePath[GamePathType.sr].toLowerCase(),
-		[GamePathType.zzz]: this.#GamePath[GamePathType.zzz].toLowerCase(),
-		[GamePathType.Sign]: this.#GamePath[GamePathType.Sign].toLowerCase(),
-		[GamePathType.Core]: this.#GamePath[GamePathType.Core].toLowerCase()
+	#GameNpmPath: Record<GamePathType, string> = {
+		[GamePathType.gs]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
+		[GamePathType.sr]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
+		[GamePathType.zzz]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
+		[GamePathType.Sign]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
+		[GamePathType.Core]: NpmPath
 	}
 	/** 
 	 * 获取文件或文件夹路径
@@ -44,8 +41,13 @@ export const Data = new (class Data {
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck: true): string | false
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck?: false): string
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck = false) {
-		const filePath = KarinPath + `/${k_path}/${this.getGamePath(game, true)}` + file
-		if (ckeck) return fs.existsSync(filePath) ? filePath : false
+		if (k_path == karinPath.node) {
+			return PATH.join(this.getNpmPath(game), file)
+		}
+		const filePath = PATH.join(KarinPath, `${k_path}/${this.getPluginName(game, true)}`, file)
+		if (ckeck) {
+			return fs.existsSync(filePath) ? filePath : false
+		}
 		return filePath
 	}
 	/** 
@@ -53,7 +55,7 @@ export const Data = new (class Data {
 	 */
 	createDir(path: string, game: GamePathType, k_path: karinPath) {
 		let file = '/'
-		const createDirPath = KarinPath + `/${k_path}/${this.getGamePath(game, true)}`
+		const createDirPath = PATH.join(KarinPath, `/${k_path}/${this.getPluginName(game, true)}`)
 
 		if (/\.(yaml|json|js|html|db)$/.test(path)) {
 			const idx = path.lastIndexOf('/') + 1
@@ -62,19 +64,19 @@ export const Data = new (class Data {
 		}
 
 		path = path.replace(/^\/+|\/+$/g, '')
-		if (fs.existsSync(createDirPath + '/' + path)) {
-			return createDirPath + '/' + path + file
+		if (fs.existsSync(PATH.join(createDirPath, path))) {
+			return PATH.join(createDirPath, path, file)
 		}
 
-		let nowPath = createDirPath + '/'
+		let nowPath = createDirPath
 		path.split('/').forEach(name => {
-			nowPath += name + '/'
+			nowPath = PATH.join(nowPath, name)
 			if (!fs.existsSync(nowPath)) {
 				fs.mkdirSync(nowPath)
 			}
 		})
 
-		return nowPath + file
+		return PATH.join(nowPath, file)
 	}
 
 	copyFile(copyFile: string, target: string, game: GamePathType, k_path: karinPath) {
@@ -101,9 +103,17 @@ export const Data = new (class Data {
 		return path
 	}
 
-	getGamePath(game: GamePathType, LowerCase = false) {
-		if (LowerCase) return this.#LowGamePath[game]
-		return this.#GamePath[game]
+	setNpmPath(game: GamePathType, path: string) {
+		this.#GameNpmPath[game] = path
+	}
+
+	getNpmPath(game: GamePathType) {
+		return this.#GameNpmPath[game]
+	}
+
+	getPluginName(game: GamePathType, LowerCase = false) {
+		if (LowerCase) return this.#GamePluginName[game].toLowerCase()
+		return this.#GamePluginName[game]
 	}
 
 	async importModule(file: string, game: GamePathType, options: Options = {}) {

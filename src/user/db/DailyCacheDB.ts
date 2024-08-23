@@ -16,15 +16,15 @@ const COLUMNS = {
 
 export class DailyCacheDB extends DbBaseModel {
 	/** 米游社ID */
-	[DailyCacheDBCOLUMNS.ltuid]!: string
+	declare [DailyCacheDBCOLUMNS.ltuid]: string
 	/** 原神今日查询次数 */
-	[DailyCacheDBCOLUMNS.gs]!: number
+	declare [DailyCacheDBCOLUMNS.gs]: number
 	/**崩坏：星穹铁道今日查询次数 */
-	[DailyCacheDBCOLUMNS.sr]!: number
+	declare [DailyCacheDBCOLUMNS.sr]: number
 	/** 绝区零今日查询次数 */
-	[DailyCacheDBCOLUMNS.zzz]!: number
+	declare [DailyCacheDBCOLUMNS.zzz]: number
 	/** 过期时间 */
-	[DailyCacheDBCOLUMNS.expireTime]!: number
+	declare [DailyCacheDBCOLUMNS.expireTime]: number
 
 	static COLUMNS = COLUMNS
 

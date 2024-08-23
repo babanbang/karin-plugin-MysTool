@@ -5,7 +5,7 @@ import { Plugin, common, logger, redis } from 'node-karin'
 
 const game_uid = { [GameList.Gs]: '75276550', [GameList.Sr]: '80823548', [GameList.Zzz]: '152039148' }
 
-const reg = Object.values(MysUtil.reg).join('|')
+const reg = Object.values(MysUtil.reg).join('?|')
 export class exchange extends Plugin {
 	redisKey!: string
 	mysReq!: MysReq<GameList>
@@ -16,7 +16,7 @@ export class exchange extends Plugin {
 			priority: 0,
 			rule: [
 				{
-					reg: new RegExp(`^(${reg})?(直播|前瞻)?兑换码$`, 'i'),
+					reg: new RegExp(`^(${reg})(直播|前瞻)?兑换码$`, 'i'),
 					fnc: 'getCode'
 				}
 			]

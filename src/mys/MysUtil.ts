@@ -14,13 +14,16 @@ export const MysUtil = new (class Mysutil {
 	#allReg = {
 		[GameList.Sr]: '(\\*|#?(sr|星铁|星轨|穹轨|星穹|崩铁|星穹铁道|崩坏星穹铁道|铁道))',
 		[GameList.Zzz]: '(%|#?(zzz|绝区零))',
-		[GameList.Gs]: '#?(gs|原神)'
+		[GameList.Gs]: '#?(gs|原神)?'
 	}
 
 	get reg() {
 		return { ...this.#allReg }
 	}
 	get regs() {
+		if (this.games.length === 0) {
+			return this.AllGames.map(g => this.reg[g.key])
+		}
 		return this.games.map(g => this.reg[g.key])
 	}
 	get servs() {
@@ -50,14 +53,13 @@ export const MysUtil = new (class Mysutil {
 	}
 
 	getGameByMsg(msg: string) {
-		for (const i in this.reg) {
-			const game = i as GameList
-			if (new RegExp('^' + this.reg[game]).test(msg)) {
-				return this.games.find((g) => g.key === i)!
+		for (const i of this.AllGames) {
+			if (new RegExp('^' + this.reg[i.key], 'i').test(msg)) {
+				return i
 			}
 		}
 
-		return this.#allgames[2]
+		return this.#allgames[0]
 	}
 
 	getServ(uid: string, game: GameList) {

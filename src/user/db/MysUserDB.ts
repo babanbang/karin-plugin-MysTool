@@ -28,27 +28,27 @@ const COLUMNS = {
 
 export class MysUserDB extends DbBaseModel {
 	/** 米游社ID */
-	[MysUserDBCOLUMNS.ltuid]!: string
+	declare [MysUserDBCOLUMNS.ltuid]: string
 	/** 米游社类型 */
-	[MysUserDBCOLUMNS.type]!: MysType
+	declare [MysUserDBCOLUMNS.type]: MysType
 	/** 米游社cookie */
-	[MysUserDBCOLUMNS.cookie]!: string
+	declare [MysUserDBCOLUMNS.cookie]: string
 	/** 米游社stoken */
-	[MysUserDBCOLUMNS.stoken]!: string
+	declare [MysUserDBCOLUMNS.stoken]: string
 	/** 米游社ltoken */
-	[MysUserDBCOLUMNS.ltoken]!: string
+	declare [MysUserDBCOLUMNS.ltoken]: string
 	/** 米游社mid */
-	[MysUserDBCOLUMNS.mid]!: string
+	declare [MysUserDBCOLUMNS.mid]: string
 	/** 米游社login_ticket */
-	[MysUserDBCOLUMNS.login_ticket]!: string
+	declare [MysUserDBCOLUMNS.login_ticket]: string
 	/** 随机设备device */
-	[MysUserDBCOLUMNS.device]!: string
+	declare [MysUserDBCOLUMNS.device]: string
 	/** 原神UID */
-	[MysUserDBCOLUMNS.gs]!: string[]
+	declare [MysUserDBCOLUMNS.gs]: string[]
 	/** 崩铁UID */
-	[MysUserDBCOLUMNS.sr]!: string[]
+	declare [MysUserDBCOLUMNS.sr]: string[]
 	/** 绝区零UID */
-	[MysUserDBCOLUMNS.zzz]!: string[]
+	declare [MysUserDBCOLUMNS.zzz]: string[]
 
 	static COLUMNS = COLUMNS
 

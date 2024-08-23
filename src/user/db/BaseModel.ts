@@ -49,16 +49,16 @@ export class DbBaseModel extends Model {
 	static ArrayColumn(key: string, options: {
 		def?: string[],
 		fn?: (data: string[]) => string[]
-	} = {}) {
+	} = {}): any {
 		const { def = [], fn = false } = options
 		if (dbset.dialect === 'postgres') {
 			return {
 				type: DataTypes.JSONB,
 				defaultValue: def,
-				get: (): string[] => {
+				get(): string[] {
 					return this.getDataValue(key).filter(Boolean)
 				},
-				set: (data: string[] = def) => {
+				set(data: string[] = def) {
 					this.setDataValue(key, fn ? fn(data) : data)
 				}
 			}
@@ -66,17 +66,17 @@ export class DbBaseModel extends Model {
 			return {
 				type: DataTypes.STRING,
 				defaultValue: def.join(','),
-				get: (): string[] => {
+				get(): string[] {
 					return this.getDataValue(key).split(',').filter(Boolean)
 				},
-				set: (data: string[] = def) => {
+				set(data: string[] = def) {
 					this.setDataValue(key, (fn ? fn(data) : data).join(','))
 				}
 			}
 		}
 	}
 
-	static JsonColumn(key: string, def: Record<string, any> = {}) {
+	static JsonColumn(key: string, def: Record<string, any> = {}): any {
 		if (dbset.dialect === 'postgres') {
 			return {
 				type: DataTypes.JSONB,
@@ -86,7 +86,7 @@ export class DbBaseModel extends Model {
 			return {
 				type: DataTypes.STRING,
 				defaultValue: JSON.stringify(def),
-				get: (): Record<string, any> => {
+				get(): Record<string, any> {
 					let data = this.getDataValue(key)
 					try {
 						data = JSON.parse(data) || def
@@ -95,7 +95,7 @@ export class DbBaseModel extends Model {
 					}
 					return data
 				},
-				set: (data: Record<string, any>) => {
+				set(data: Record<string, any>) {
 					this.setDataValue(key, JSON.stringify(data))
 				}
 			}

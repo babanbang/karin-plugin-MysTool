@@ -20,14 +20,14 @@ const COLUMNS = {
 
 export class DeviceInfoDB extends DbBaseModel {
 	/** 用户ID */
-	[DeviceInfoDBCOLUMNS.user_id]!: string
-	[DeviceInfoDBCOLUMNS.deviceName]!: string
-	[DeviceInfoDBCOLUMNS.deviceModel]!: string
-	[DeviceInfoDBCOLUMNS.deviceBoard]!: string
-	[DeviceInfoDBCOLUMNS.deviceProduct]!: string
-	[DeviceInfoDBCOLUMNS.deviceFingerprint]!: string
-	[DeviceInfoDBCOLUMNS.androidVersion]!: string
-	[DeviceInfoDBCOLUMNS.oaid]!: string
+	declare [DeviceInfoDBCOLUMNS.user_id]: string
+	declare [DeviceInfoDBCOLUMNS.deviceName]: string
+	declare [DeviceInfoDBCOLUMNS.deviceModel]: string
+	declare [DeviceInfoDBCOLUMNS.deviceBoard]: string
+	declare [DeviceInfoDBCOLUMNS.deviceProduct]: string
+	declare [DeviceInfoDBCOLUMNS.deviceFingerprint]: string
+	declare [DeviceInfoDBCOLUMNS.androidVersion]: string
+	declare [DeviceInfoDBCOLUMNS.oaid]: string
 
 	static COLUMNS = COLUMNS
 
