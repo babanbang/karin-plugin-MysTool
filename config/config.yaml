@@ -1,0 +1,28 @@
+# 查询时是否只使用自己绑定的CK
+onlySelfCk: false
+
+# 米游社国际服代理
+proxy:
+  host: ''
+  port: 0
+
+# 使用wkhtmltoimage渲染图片
+wkhtmltoimage: false
+
+# 渲染精度(0-100)
+quality: 100
+
+# 使用自定义样式的二维码
+qrbtf: false
+
+# 数据库（可选sqlite、postgres）一般使用sqlite就足够满足需求
+dialect: sqlite
+
+# PostgreSQL 数据库默认配置
+postgres:
+  host: localhost
+  port: 5432
+  database: mystool
+  username: postgres
+  # 密码必须是字符串
+  password: a123456
