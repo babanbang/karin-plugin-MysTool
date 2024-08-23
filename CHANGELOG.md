@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.0.0...v1.1.0) (2024-08-23)
+
+
+### Features
+
+* 版本 ([dfd83d9](https://github.com/babanbang/karin-plugin-MysTool/commit/dfd83d9888ec77ad6012f019ccd0f9f24113caef))
+
 ## 1.0.0 (2024-08-23)
 
 
