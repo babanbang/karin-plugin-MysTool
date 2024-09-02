@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.0...v1.1.1) (2024-09-02)
+
+
+### Bug Fixes
+
+* 用户绑定、删除无用资源 ([479db14](https://github.com/babanbang/karin-plugin-MysTool/commit/479db14af479b55b05949987ed5c11f166ea4e16))
+
 ## [1.1.0](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.0.0...v1.1.0) (2024-08-23)
 
 
