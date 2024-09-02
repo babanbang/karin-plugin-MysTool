@@ -168,7 +168,7 @@ export class MysReq<g extends GameList>{
 
 	async cache(res: any, cacheKey: string, cd: number) {
 		if (!res || res.retcode !== 0) return
-		redis.setEx(cacheKey, cd, JSON.stringify(res))
+		redis.setEx(cacheKey, cd, JSON.stringify({ ...res, isCache: true }))
 	}
 
 	checkstatus(err: any, type: string) {

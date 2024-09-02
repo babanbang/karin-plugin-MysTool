@@ -4,12 +4,11 @@ import path from "path";
 import { Data, GamePathType, karinPath } from "./Data";
 import { Cfg } from "./config";
 import { NpmPath, PluginName, isNpm } from "./dir";
-import { wkhtmltoimage } from "./wkhtmltoimage";
+// import { wkhtmltoimage } from "./wkhtmltoimage";
 
-const res_Path = path.join(NpmPath, 'resources/')
-const fontsPath = path.join(NpmPath, 'resources/fonts/')
-const elemLayout = path.join(NpmPath, 'resources/template/layout/elem.html')
-const defaultLayout = path.join(NpmPath, 'resources/template/layout/default.html')
+const res_Path = path.join(NpmPath, 'resources/').replace(/\\/g, '/')
+const fontsPath = path.join(NpmPath, 'resources/fonts/').replace(/\\/g, '/')
+const defaultLayout = path.join(NpmPath, 'resources/template/layout/default.html').replace(/\\/g, '/')
 
 export class BaseModel {
 	/** 查询UID */
@@ -54,10 +53,11 @@ export class BaseModel {
 			file: path.join(this.NpmPath, `resources/template/${this.model}.html`),
 			data: {
 				uid: this.uid,
-				useBrowser: '-pu',
 				PluginName: this.PluginName,
-				fontsPath, res_Path, elemLayout, defaultLayout,
-				pluResPath: path.join(this.NpmPath, 'resources/'),
+				PluginVersion: Cfg.package(this.game).version,
+				MysToolVersion: this.game === GamePathType.Core ? false : Cfg.package(GamePathType.Core).version,
+				pluResPath: path.join(this.NpmPath, 'resources/').replace(/\\/g, '/'),
+				fontsPath, res_Path, defaultLayout,
 				...data
 			},
 			// setViewport: {
@@ -71,13 +71,15 @@ export class BaseModel {
 		}
 		// if (options.Scale) ImageData.quality = 40
 
-		let img
-		if (!options.nowk && this.config.wkhtmltoimage) {
-			img = await wkhtmltoimage(ImageData)
-		}
-		if (!img) {
-			img = await karin.render(ImageData)
-		}
+		// let img
+		// if (!options.nowk && this.config.wkhtmltoimage) {
+		// 	img = await wkhtmltoimage(ImageData)
+		// }
+		// if (!img) {
+		// 	img = await karin.render(ImageData)
+		// }
+
+		const img = await karin.render(ImageData)
 		return segment.image(img)
 	}
 }

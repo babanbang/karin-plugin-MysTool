@@ -1,4 +1,4 @@
-import { GameList, GsRegin, SrRegin, ZzzRegin, GameRegion } from "@/types"
+import { GameList, GsRegin, SrRegin, ZzzRegin, GameRegions } from "@/types"
 
 const app_version = { cn: '2.70.1', os: '1.5.0' }
 const app_id = 2 //崩三 1 未定 2 原神 4 崩二 7 崩铁 8 绝区零 12
@@ -53,7 +53,7 @@ const game_biz = {
 	zzz: ['nap_cn', 'nap_global']
 }
 
-function setRegion<g extends GameList>(regions: GameRegion<g>[]) {
+function setRegion<g extends GameList>(regions: GameRegions[g][]) {
 	const names = ['美服', '欧服', '亚服', '港澳台服']
 	return regions.map((region, idx) => {
 		return { region, name: names[idx], os: true }

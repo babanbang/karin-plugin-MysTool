@@ -1,57 +1,38 @@
 import { MysReq, MysUtil, getCookieBySToken, getUserGameRolesByCookie } from '@/mys'
 import { BasePlayer } from '@/panel'
-import { GameList, MysType, MysUserDBCOLUMNS } from '@/types'
+import { GameList, MysType, MysUserDBCOLUMNS, MysUserDBSaveData } from '@/types'
 import { logger } from 'node-karin'
-import Base from './Base'
 import { DailyCache } from './DailyCache'
 import { MysUserDB } from './db'
 
-export class MysUser extends Base {
+export class MysUser {
 	/** 米游社账号数据 */
 	db!: MysUserDB
 	/** 米游社ID */
-	[MysUserDBCOLUMNS.ltuid]!: string
+	declare [MysUserDBCOLUMNS.ltuid]: string
 	/** 米游社类型 */
-	[MysUserDBCOLUMNS.type]!: MysType
+	declare [MysUserDBCOLUMNS.type]: MysType
 	/** 米游社cookie */
-	[MysUserDBCOLUMNS.cookie]!: string
+	declare [MysUserDBCOLUMNS.cookie]: string
 	/** 米游社stoken */
-	[MysUserDBCOLUMNS.stoken]!: string
+	declare [MysUserDBCOLUMNS.stoken]: string
 	/** 米游社ltoken */
-	[MysUserDBCOLUMNS.ltoken]!: string
+	declare [MysUserDBCOLUMNS.ltoken]: string
 	/** 米游社mid */
-	[MysUserDBCOLUMNS.mid]!: string
+	declare [MysUserDBCOLUMNS.mid]: string
 	/** 米游社login_ticket */
-	[MysUserDBCOLUMNS.login_ticket]!: string
+	declare [MysUserDBCOLUMNS.login_ticket]: string
 	/** 随机设备device */
-	[MysUserDBCOLUMNS.device]!: string
+	declare [MysUserDBCOLUMNS.device]: string
 	/** 原神UID */
-	[MysUserDBCOLUMNS.gs]!: string[]
+	declare [MysUserDBCOLUMNS.gs]: string[]
 	/** 崩铁UID */
-	[MysUserDBCOLUMNS.sr]!: string[]
+	declare [MysUserDBCOLUMNS.sr]: string[]
 	/** 绝区零UID */
-	[MysUserDBCOLUMNS.zzz]!: string[]
-
-	static COLUMNS_KEY = Object.keys(MysUserDB.COLUMNS).filter(k => k !== MysUserDBCOLUMNS['ltuid']) as MysUserDBCOLUMNS[]
+	declare [MysUserDBCOLUMNS.zzz]: string[]
 
 	constructor(ltuid: string) {
-		super(MysUser.COLUMNS_KEY)
 		this.ltuid = ltuid
-	}
-
-	_get(key: MysUserDBCOLUMNS) {
-		if (key === MysUserDBCOLUMNS['stoken'] && this.db[MysUserDBCOLUMNS['stoken']]) {
-			return MysUtil.splicToken({
-				ltuid: this.ltuid,
-				stoken: this.db.stoken,
-				mid: this.db.mid,
-				ltoken: this.db.ltoken
-			})
-		}
-		return this.db[key]
-	}
-	_set(key: MysUserDBCOLUMNS, value: any) {
-		this.db[key] = value
 	}
 
 	static async create(ltuid: string, db?: MysUserDB) {
@@ -66,12 +47,24 @@ export class MysUser extends Base {
 		if (this.db && !db) return
 
 		this.db = db || await MysUserDB.find(this.ltuid)
+		for (const key of MysUserDB.COLUMNS_KEY) {
+			this[key] = this.db[key] as string & MysType & string[]
+		}
 	}
 
 	/** 保存数据 */
 	async save() {
 		if (!this.db) return false
-		await this.db.save()
+		await this.db.saveDB(this)
+	}
+
+	getStoken() {
+		return MysUtil.splicToken({
+			ltuid: this.ltuid,
+			stoken: this.stoken,
+			mid: this.mid,
+			ltoken: this.ltoken
+		})
 	}
 
 	/** 根据UID查询对应米游社账号 */
@@ -80,6 +73,16 @@ export class MysUser extends Base {
 		if (!mys) return false
 
 		return await MysUser.create(mys.ltuid)
+	}
+
+	getMysUserInfo() {
+		return {
+			type: this.type,
+			ltuid: this.ltuid,
+			cookie: this.cookie,
+			stoken: this.getStoken(),
+			device: this.device
+		}
 	}
 
 	/** 分配查询MysUser */
@@ -110,13 +113,14 @@ export class MysUser extends Base {
 	}
 
 	/** 修改数据 */
-	async setData(data: Partial<MysUserDB>) {
-		for (const i in data) {
-			const key = i as MysUserDBCOLUMNS
-			if (!data[key]) continue
+	async setData(data: MysUserDBSaveData) {
+		if (MysUserDBCOLUMNS.ltuid in data) {
+			delete data[MysUserDBCOLUMNS.ltuid]
+		}
 
-			if (MysUser.COLUMNS_KEY.includes(key)) {
-				this.db[key] = data[key] as string & MysType & string[]
+		for (const key of MysUserDB.COLUMNS_KEY) {
+			if (data[key] !== undefined) {
+				this[key] = data[key] as string & MysType & string[]
 			}
 		}
 	}
@@ -128,7 +132,7 @@ export class MysUser extends Base {
 		for (const serv of servs || MysUtil.servs) {
 			const res = await getCookieBySToken(
 				new MysReq(this.ltuid, GameList.Gs, {
-					stoken: this.stoken.replace(/;/g, '&').replace(/stuid/, 'uid'),
+					stoken: this.getStoken().replace(/;/g, '&').replace(/stuid/, 'uid'),
 					type: serv
 				}, { log: false }),
 				{ method: serv === MysType.cn ? 'GET' : 'POST' }
@@ -163,13 +167,14 @@ export class MysUser extends Base {
 			)
 			if (res?.retcode === 0) {
 				this.type = serv
+				break
 			} else if (res?.retcode === -100) {
 				msg = 'cookie失效，请重新登录获取'
 			} else {
 				msg = res?.message || '请求失败'
 			}
 		}
-		if (!res) return err(msg)
+		if (!res || res?.retcode !== 0) return err(msg)
 
 		const playerList = (res?.data?.list || []).filter((v: any) =>
 			MysUtil.AllGameBiz.includes(v.game_biz)
@@ -183,10 +188,9 @@ export class MysUser extends Base {
 			const uid = String(val.game_uid)
 			const game = MysUtil.getGameByGamebiz(val.game_biz)
 			this.addUid(uid, game.key)
-			const player = new BasePlayer(uid, game.key)
-			player.setBasicData({
 
-			}, true)
+			const player = new BasePlayer(uid, game.key)
+			player.setBasicData({ name: val.nickname }, true)
 		})
 		return { status: 0, msg: '' }
 	}
@@ -201,7 +205,7 @@ export class MysUser extends Base {
 		const g = MysUserDBCOLUMNS[game]
 		if ((game === GameList.Zzz ? /\d{8,10}/ : /\d{9,10}/).test(uid)) {
 			if (!this[g].includes(uid)) {
-				this.db[g].push(uid)
+				this[g].push(uid)
 			}
 		}
 		return true

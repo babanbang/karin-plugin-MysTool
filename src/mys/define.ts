@@ -8,6 +8,7 @@ type MysApi<ReturnType, ReqData> = (mysReq: MysReq<GameList>, reqData?: ReqData)
 export interface BaseMysResData {
 	retcode: number
 	message: string
+	isCache?: boolean
 }
 
 export type defineApi<ReqData> = {

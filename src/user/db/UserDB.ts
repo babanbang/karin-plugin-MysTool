@@ -1,4 +1,4 @@
-import { BingUIDType, UserDBCOLUMNS } from '@/types/user'
+import { BingUIDType, UserDBCOLUMNS, UserDBSaveData } from '@/types/user'
 import { DbBaseModel } from './BaseModel'
 const { Types, ArrayColumn, JsonColumn, Column } = DbBaseModel
 
@@ -37,10 +37,20 @@ export class UserDB extends DbBaseModel {
 	/** 绑定的绝区零UID列表 */
 	declare [UserDBCOLUMNS.zzz_uids]: Record<string, BingUIDType>
 
-	static COLUMNS = COLUMNS
+	static COLUMNS_KEY = Object.keys(COLUMNS).filter(k => k !== UserDBCOLUMNS['user_id']) as UserDBCOLUMNS[]
 
 	static async find(user_id: string) {
 		return await UserDB.findByPk(user_id) || UserDB.build({ user_id })
+	}
+
+	async saveDB(param: UserDBSaveData) {
+		for (const key of UserDB.COLUMNS_KEY) {
+			if (param[key] !== undefined) {
+				this[key] = param[key] as string & string[] & Record<string, BingUIDType>
+			}
+		}
+
+		await this.save()
 	}
 }
 

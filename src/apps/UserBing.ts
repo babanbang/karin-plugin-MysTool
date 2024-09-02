@@ -1,10 +1,10 @@
 import { MysReq, MysUtil, fetchQRcode, getTokenByGameToken, getUserFullInfo, queryQRcode } from "@/mys"
 import { BasePlayer } from "@/panel"
-import { BingUIDType, ConfigName, GameList, MysUserDBCOLUMNS, UidWithType } from "@/types"
+import { BingUIDType, GameList, MysUserDBCOLUMNS, UidWithType } from "@/types"
 import { MysUser, User } from "@/user"
-import { BaseModel, Cfg, GamePathType, getSimpleQrOption, SimpleQr, SimpleQrType } from "@/utils"
+import { BaseModel, GamePathType } from "@/utils"
 import { common, ImageElement, karin, KarinMessage, logger, segment } from "node-karin"
-import lodash from 'node-karin/lodash'
+import QR from 'qrcode'
 
 interface uidInfo {
 	key: GameList
@@ -13,7 +13,7 @@ interface uidInfo {
 		name?: string
 		level?: number
 		face?: string
-		banner?: string
+		region: string
 	})[]
 	banList: UidWithType[]
 }
@@ -28,7 +28,7 @@ const getLtuidInfo = (mysUser: MysUser, option: { ck?: boolean, sk?: boolean } =
 		return ''
 	}).join('\n')
 
-	return segment.text(msg + (option.ck ? `\n【CK】：${mysUser.cookie}` : '') + (option.sk ? `\n【SK】：${mysUser.stoken}` : ''))
+	return msg + (option.ck ? `\n【CK】：${mysUser.cookie}` : '') + (option.sk ? `\n【SK】：${mysUser.stoken}` : '')
 }
 
 const showUid = async (e: KarinMessage) => {
@@ -49,7 +49,8 @@ const showUid = async (e: KarinMessage) => {
 		uidList.list.forEach((v) => {
 			const player = BasePlayer.create(v.uid, game)
 			uidInfo.uidList.push({
-				...v, ...player.getData(['name', 'level', 'face', 'banner'])
+				region: MysUtil.getServerByUid(v.uid, game).name,
+				...v, ...player.getData(['name', 'level', 'Face'])
 			})
 		})
 		uids.push(uidInfo)
@@ -125,16 +126,16 @@ const bingCookie = async (e: KarinMessage, cookie?: string, mysUser?: MysUser, t
 			e.reply(`绑定Cookie失败：${userFullInfo?.message || 'Cookie错误'}`)
 			return false
 		}
-
-		const user = await User.create(e.user_id, GameList.Gs)
-		await user.addMysUser(mysUser, type)
-		await mysUser.save()
-
-		logger.mark(`${e.logFnc} 保存Cookie成功 [ltuid:${mysUser.ltuid}]`)
-
-		e.reply(['绑定Cookie成功', getLtuidInfo(mysUser)].join('\n'))
-		return true
 	}
+
+	const user = await User.create(e.user_id, GameList.Gs)
+	await user.addMysUser(mysUser, type)
+	await mysUser.save()
+
+	logger.mark(`${e.logFnc} 保存Cookie成功 [ltuid:${mysUser.ltuid}]`)
+
+	e.reply(['绑定Cookie成功', getLtuidInfo(mysUser)].join('\n'))
+	return true
 }
 
 /** 绑定米游社Stoken */
@@ -145,7 +146,7 @@ const bingStoken = async (e: KarinMessage, stoken?: string) => {
 	}
 
 	const stokenMap = MysUtil.getCookieMap(stoken)
-	if (!stokenMap.stoken || !stokenMap.stuid || !stokenMap.ltoken || !stokenMap.mid) {
+	if (!stokenMap.stoken || !stokenMap.stuid || !(stokenMap.ltoken || stokenMap.mid)) {
 		e.reply('发送Stoken不完整，请使用#扫码登录')
 		return false
 	}
@@ -163,6 +164,8 @@ const bingStoken = async (e: KarinMessage, stoken?: string) => {
 		e.reply('绑定Stoken失败，请#扫码登录')
 		return false
 	}
+
+	await mysUser.save()
 
 	const sendMsg = []
 	const _reply = e.reply
@@ -227,6 +230,32 @@ export const DelBingUid = karin.command(
 	{ name: 'MysTool-解绑UID', priority: 0 }
 )
 
+/** 切换UID */
+export const setMainUid = karin.command(
+	new RegExp(`^(${reg})(我的)?uid[0-9]{0,2}$`, 'i'),
+	async (e) => {
+		const game = MysUtil.getGameByMsg(e.msg)
+		const idx = e.msg.match(/[0-9]{1,2}/g)
+
+		if (idx && idx[0]) {
+			const user = await User.create(e.user_id, game.key)
+			const uidList = user.getUidList()
+
+			const _idx = Number(idx[0])
+			if (_idx <= uidList.length) {
+				await user.setMainUid({ uid: uidList[_idx - 1] })
+
+				await showUid(e)
+				return true
+			}
+		}
+
+		e.reply(`${game.name}uid序号输入错误`)
+		return true
+	},
+	{ name: 'MysTool-切换UID', priority: 0 }
+)
+
 /** 查询绑定的UID列表 */
 export const ShowBingUidList = karin.command(
 	new RegExp(`^(${reg})(我的)?uid$`, 'i'),
@@ -271,7 +300,7 @@ export const DelCookieOrStoken = karin.command(
 			const _idx = Number(idx[0])
 			const uidList = user.getUidList()
 			if (_idx > uidList.length) {
-				e.reply('序号输入错误')
+				e.reply('UID序号输入错误', { at: true })
 				return true
 			}
 			uid = uidList[_idx - 1]
@@ -282,12 +311,12 @@ export const DelCookieOrStoken = karin.command(
 			return true
 		}
 
-		const isCK = /c(oo)?k(ie)?/.test(e.msg)
+		const isCK = /c(oo)?k(ie)?/i.test(e.msg)
 		if (!user[isCK ? 'hasCk' : 'hasSk'](uid)) {
 			e.reply(`UID:${uid}暂未绑定${isCK ? 'Cookie' : 'Stoke'}`, { at: true })
 			return true
 		}
-		await user.setUidType({ uid, type: BingUIDType[isCK ? 'ck' : 'sk'] })
+		await user.setUidType({ uid, type: BingUIDType[isCK ? 'sk' : 'ck'] })
 
 		e.reply(`已删除UID:${uid}绑定的${isCK ? 'Cookie' : 'Stoke'}`, { at: true })
 		return true
@@ -312,7 +341,7 @@ export const ShowMyCookieAndStoken = karin.command(
 		}
 
 		const sendMsg = mysUsers.map(mysUser => {
-			return getLtuidInfo(mysUser, { ck: true, sk: true })
+			return segment.text(getLtuidInfo(mysUser, { ck: true, sk: true }))
 		})
 
 		const content = common.makeForward(sendMsg, e.self_id, e.bot.account.name)
@@ -347,25 +376,7 @@ export const MiHoYoLoginQRCode = karin.command(
 			return true
 		}
 
-		const base = new BaseModel(GamePathType.Core, e)
-		base.model = 'user/login-qrcode'
-
-		const config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
-		let qrbtf; let style: SimpleQrType = SimpleQrType.base
-		if (config?.qrbtf) {
-			const qr = Cfg.getConfig(ConfigName.qrbtf, GamePathType.Core)
-			const option = lodash.sample(qr.styles)
-			if (option?.style && SimpleQr[option.style]) {
-				style = option.style
-				qrbtf = getSimpleQrOption(option.style, QRcode.data.url, option)
-			}
-		}
-		if (!qrbtf) {
-			qrbtf = getSimpleQrOption(SimpleQrType.base, QRcode.data.url, { style: SimpleQrType.base })
-		}
-		const image = await base.renderImg({
-			QRSVGS: [SimpleQr[style](qrbtf)]
-		}, { nowk: true })
+		const image = segment.image((await QR.toDataURL(QRcode.data.url)).replace('data:image/png;base64,', 'base64://'))
 		if (!image) {
 			QRCodes.delete(e.user_id)
 			e.reply('生成二维码失败、请稍后再试', { at: true })
@@ -401,7 +412,7 @@ export const MiHoYoLoginQRCode = karin.command(
 				}
 
 				if (res.data.stat === 'Confirmed') {
-					data = JSON.parse(res.data.payload.raw) as { uid: number, token: string }
+					data = JSON.parse(res.data.payload.raw) as { uid: string, token: string }
 					break
 				}
 			} catch (err) {
@@ -414,7 +425,7 @@ export const MiHoYoLoginQRCode = karin.command(
 			return true
 		}
 
-		const res = await getTokenByGameToken(mysReq, { account_id: Number(data.uid), game_token: data.token })
+		const res = await getTokenByGameToken(mysReq, { account_id: parseInt(data.uid), game_token: data.token })
 		if (!res) {
 			e.reply('获取Token失败', { at: true })
 			QRCodes.delete(e.user_id)
@@ -436,7 +447,6 @@ export const UpdataCookie = karin.command(
 		const user = await User.create(e.user_id, GameList.Gs)
 
 		const sendMsg: any[] = []
-		const _reply = e.reply
 		e.reply = (msg) => sendMsg.push(msg) as any
 
 		for (const stuid of user.stuids) {

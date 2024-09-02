@@ -2,18 +2,19 @@ import { CfgType, ConfigName, ConfigsType } from '@/types'
 import { logger } from 'node-karin'
 import { yaml as Yaml, chokidar, fs, lodash, path as PATH } from 'node-karin/modules.js'
 import { Data, GamePathType, karinPath } from './Data'
-import { NpmPath, PluginName } from './dir'
+import { NpmPath, isNpm } from './dir'
 
 export const Cfg = new (class Config {
-	#config: Map<string, ConfigsType<ConfigName, GamePathType> | Yaml.Document<Yaml.ParsedNode, true>> = new Map()
-	#watcher: Map<string, any> = new Map()
+	#config: Map<string, any> = new Map()
+	#packages: Map<string, any> = new Map()
+	#watcher: Map<string, chokidar.FSWatcher> = new Map()
 	constructor() {
-		this.initCfg(GamePathType.Core, NpmPath)
+		this.initCfg(GamePathType.Core, NpmPath, isNpm)
 	}
 
 	/** 初始化配置 */
-	async initCfg(game: GamePathType, npmPath: string) {
-		await Data.setNpmPath(game, npmPath)
+	async initCfg(game: GamePathType, npmPath: string, isNpm: boolean) {
+		await Data.setNpmPath(game, npmPath, isNpm)
 
 		const defSetPath = Data.getFilePath(`config`, game, karinPath.node)
 		if (!fs.existsSync(defSetPath)) return false
@@ -35,21 +36,15 @@ export const Cfg = new (class Config {
 			}
 			this.getdefSet(fileName, game)
 		})
-
-		const ViewPath = PATH.join(defSetPath, 'PluginConfigView.js')
-		if (fs.existsSync(ViewPath)) {
-			fs.writeFileSync(
-				PATH.join(configPath,'PluginConfigView.yaml'),
-				Yaml.stringify(
-					(await Data.importModule('config/PluginConfigView.js', game, { defData: [] })).module
-				),
-				'utf8'
-			)
-		}
 	}
 
 	package(game: GamePathType) {
-		return Data.readJSON('package.json', game, karinPath.node)
+		if (this.#packages.has(game)) return this.#packages.get(game)
+
+		const pkg = Data.readJSON('package.json', game, karinPath.node)
+		this.#packages.set(game, pkg)
+
+		return pkg
 	}
 
 	/** 获取用户配置 */
@@ -70,12 +65,12 @@ export const Cfg = new (class Config {
 
 	/** 修改用户配置 */
 	setConfig(name: ConfigName, game: GamePathType, data: any) {
-		const ConfigPath = this.getConfigPath(CfgType.config, game as GamePathType, name)
-		const defSetPath = this.getConfigPath(CfgType.defSet, game as GamePathType, name)
+		const ConfigPath = this.getConfigPath(CfgType.config, game, name)
+		const defSetPath = this.getConfigPath(CfgType.defSet, game, name)
 
 		let config: string
 		if (fs.existsSync(defSetPath)) {
-			const defSet = this.getdefSet(name as ConfigName, game as GamePathType, true)
+			const defSet = this.getdefSet(name, game, true)
 			lodash.forEach(data, (value, key) => {
 				if (defSet.hasIn([key])) {
 					defSet.setIn([key], value)
@@ -91,28 +86,29 @@ export const Cfg = new (class Config {
 		fs.writeFileSync(ConfigPath, config, 'utf8')
 	}
 
-
 	/** 获取配置yaml */
 	#getYaml(type: CfgType, name: ConfigName, game: GamePathType, Document: true): Yaml.Document<Yaml.ParsedNode, true>
 	#getYaml<N extends ConfigName, G extends GamePathType>(type: CfgType, name: N, game: G): ConfigsType<N, G>
 	#getYaml(type: CfgType, name: ConfigName, game: GamePathType, Document = false) {
 		const file = this.getConfigPath(type, game, name)
-		const key = `${Document ? (type + '_Document') : type}.${game}.${name}`
+		const key = `${type}.${game}.${name}`
 
-		let cfg = this.#config.get(key)
-		if (cfg) return cfg
+		if (this.#config.has(key)) {
+			const cfg = this.#config.get(key)
+			return Document ? cfg : cfg.toJSON()
+		}
 
 		try {
-			const data = fs.readFileSync(file, 'utf8')
-			cfg = Document ? Yaml.parseDocument(data) : Yaml.parse(data)
+			const cfg = Yaml.parseDocument(fs.readFileSync(file, 'utf8'))
 			this.#config.set(key, cfg)
+
+			this.#watch(file, key)
+			return Document ? cfg : cfg.toJSON()
 		} catch (error) {
+			const PluginName = Data.getPluginName(game)
 			logger.error(`[${PluginName}][${key}] 格式错误 ${error}`)
 			throw error
 		}
-
-		if (!Document) this.#watch(file, key)
-		return cfg
 	}
 
 	/** 获取配置路径 */
@@ -132,6 +128,8 @@ export const Cfg = new (class Config {
 		watcher.on('change', () => {
 			if (key.includes('config')) {
 				this.#config.delete(key)
+				const [type, game, name] = key.split('.') as [CfgType, GamePathType, ConfigName]
+				const PluginName = Data.getPluginName(game)
 				logger.mark(`[${PluginName}修改配置文件][${key}]`)
 			}
 		})

@@ -12,9 +12,6 @@ wkhtmltoimage: false
 # 渲染精度(0-100)
 quality: 100
 
-# 使用自定义样式的二维码
-qrbtf: false
-
 # 数据库（可选sqlite、postgres）一般使用sqlite就足够满足需求
 dialect: sqlite
 

@@ -1,4 +1,4 @@
-import { GameList, GameRegion, MysType } from "@/types/mys"
+import { GameList, GameRegions, MysType } from "@/types/mys"
 import { BingUIDType } from "./db"
 
 export interface UidWithType {
@@ -19,6 +19,6 @@ export interface mysUserInfo<g extends GameList> {
 	cookie?: string
 	stoken?: string
 	device?: string
-	region?: GameRegion<g>
+	region?: GameRegions[g]
 	owner?: boolean
 }

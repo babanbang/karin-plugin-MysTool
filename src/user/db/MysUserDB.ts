@@ -1,5 +1,5 @@
 import { MysUtil } from '@/mys'
-import { GameList, MysType, MysUserDBCOLUMNS } from '@/types'
+import { GameList, MysType, MysUserDBCOLUMNS, MysUserDBSaveData } from '@/types'
 import { DbBaseModel } from './BaseModel'
 const { Types, Column, ArrayColumn, Op, DIALECT } = DbBaseModel
 
@@ -15,13 +15,13 @@ const COLUMNS = {
 	[MysUserDBCOLUMNS['mid']]: Column('STRING'),
 	[MysUserDBCOLUMNS['login_ticket']]: Column('STRING'),
 	[MysUserDBCOLUMNS['device']]: Column('STRING'),
-	[MysUserDBCOLUMNS['gs']]: ArrayColumn('gs_uids', {
+	[MysUserDBCOLUMNS['gs']]: ArrayColumn(MysUserDBCOLUMNS['gs'], {
 		fn: (data) => data.sort((a, b) => Number(a) - Number(b))
 	}),
-	[MysUserDBCOLUMNS['sr']]: ArrayColumn('sr_uids', {
+	[MysUserDBCOLUMNS['sr']]: ArrayColumn(MysUserDBCOLUMNS['sr'], {
 		fn: (data) => data.sort((a, b) => Number(a) - Number(b))
 	}),
-	[MysUserDBCOLUMNS['zzz']]: ArrayColumn('zzz_uids', {
+	[MysUserDBCOLUMNS['zzz']]: ArrayColumn(MysUserDBCOLUMNS['zzz'], {
 		fn: (data) => data.sort((a, b) => Number(a) - Number(b))
 	})
 }
@@ -50,7 +50,7 @@ export class MysUserDB extends DbBaseModel {
 	/** 绝区零UID */
 	declare [MysUserDBCOLUMNS.zzz]: string[]
 
-	static COLUMNS = COLUMNS
+	static COLUMNS_KEY = Object.keys(COLUMNS).filter(k => k !== MysUserDBCOLUMNS['ltuid']) as MysUserDBCOLUMNS[]
 
 	/** 根据ltuid查找MysUser */
 	static async find(ltuid: string) {
@@ -72,6 +72,16 @@ export class MysUserDB extends DbBaseModel {
 			}
 		})
 		return users?.[0]
+	}
+
+	async saveDB(param: MysUserDBSaveData) {
+		for (const key of MysUserDB.COLUMNS_KEY) {
+			if (param[key] !== undefined) {
+				this[key] = param[key] as string & MysType & string[]
+			}
+		}
+
+		await this.save()
 	}
 }
 

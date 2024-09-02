@@ -1,4 +1,5 @@
 import { app_version } from "./MysTool"
+import { MysUtil } from "./MysUtil"
 import { MysReq } from "./MysReq"
 import { GameList } from "@/types"
 
@@ -18,9 +19,9 @@ export const BaseOsHeaders = {
 	'x-rpc-language': 'zh-cn'
 }
 
-export const NoHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: unknown } = {}) => { return {} }
+export const NoHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: any } = {}) => { return {} }
 
-export const CookieHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: unknown } = {}) => {
+export const CookieHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: any } = {}) => {
 	return {
 		Cookie: mysReq.mysUserInfo!.cookie,
 		...(mysReq.hoyolab ? BaseOsHeaders : BaseHeaders(mysReq))
@@ -36,18 +37,19 @@ export const StokenHeader = (mysReq: MysReq<GameList>) => {
 	}
 }
 
-export const PassportHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: unknown } = {}) => {
+export const PassportHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: any } = {}) => {
 	const { q = '', b = '' } = options
 	return {
 		'x-rpc-app_version': app_version.cn,
 		'x-rpc-game_biz': 'bbs_cn',
 		'x-rpc-client_type': '2',
 		'User-Agent': 'okhttp/4.8.0',
+		'x-rpc-app_id': 'bll8iq97cem8',
 		DS: mysReq.getDS1({ q, b: JSON.stringify(b), saltKey: 'PROD' })
 	}
 }
 
-export const ActionHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: unknown } = {}) => {
+export const ActionHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: any } = {}) => {
 	const { q = '', b = '' } = options
 	return {
 		...StokenHeader(mysReq),

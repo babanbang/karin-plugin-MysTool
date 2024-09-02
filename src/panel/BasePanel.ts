@@ -1,5 +1,5 @@
 import { GameList } from "@/types";
-import { Data, GamePathType, PluginName } from "@/utils";
+import { Data } from "@/utils";
 
 const reFn: Partial<Record<string, any>> = {}
 const metaMap: Partial<Record<string, any>> = {}
@@ -46,19 +46,19 @@ export class BasePanel {
 	}
 
 	/** 获取缓存 */
-	_getCache(uuid = '', time = 10 * 60) {
+	_getCache<T>(uuid = '', time = 10 * 60) {
 		if (uuid && cacheMap[uuid]) {
-			return cacheMap[uuid]._expire(time)
+			return cacheMap[uuid]._expire(time) as T
 		}
 		this._uuid = uuid
 	}
 
 	/** 设置缓存 */
-	_cache(time = 10 * 60) {
+	_cache<T>(time = 10 * 60) {
 		if (this._uuid) {
 			this._expire(time)
 			cacheMap[this._uuid] = this
-			return cacheMap[this._uuid]
+			return cacheMap[this._uuid] as T
 		}
 		return this
 	}

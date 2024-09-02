@@ -30,9 +30,9 @@ export const Data = new (class Data {
 	}
 	#GameNpmPath: Record<GamePathType, string> = {
 		[GamePathType.gs]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
-		[GamePathType.sr]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
-		[GamePathType.zzz]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
-		[GamePathType.Sign]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-genshin'),
+		[GamePathType.sr]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-starrail'),
+		[GamePathType.zzz]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-zzzero'),
+		[GamePathType.Sign]: PATH.join(KarinPath, karinPath.node, 'karin-plugin-mystool-myssign'),
 		[GamePathType.Core]: NpmPath
 	}
 	/** 
@@ -41,14 +41,14 @@ export const Data = new (class Data {
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck: true): string | false
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck?: false): string
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck = false) {
-		if (k_path == karinPath.node) {
-			return PATH.join(this.getNpmPath(game), file)
+		if (k_path === karinPath.node) {
+			return PATH.join(this.getNpmPath(game), file).replace(/\\/g, '/')
 		}
 		const filePath = PATH.join(KarinPath, `${k_path}/${this.getPluginName(game, true)}`, file)
 		if (ckeck) {
-			return fs.existsSync(filePath) ? filePath : false
+			return fs.existsSync(filePath) ? filePath.replace(/\\/g, '/') : false
 		}
-		return filePath
+		return filePath.replace(/\\/g, '/')
 	}
 	/** 
 	 * 根据指定的path依次检查与创建目录
@@ -65,10 +65,13 @@ export const Data = new (class Data {
 
 		path = path.replace(/^\/+|\/+$/g, '')
 		if (fs.existsSync(PATH.join(createDirPath, path))) {
-			return PATH.join(createDirPath, path, file)
+			return PATH.join(createDirPath, path, file).replace(/\\/g, '/')
 		}
 
 		let nowPath = createDirPath
+		if (!fs.existsSync(nowPath)) {
+			fs.mkdirSync(nowPath);
+		}
 		path.split('/').forEach(name => {
 			nowPath = PATH.join(nowPath, name)
 			if (!fs.existsSync(nowPath)) {
@@ -76,7 +79,7 @@ export const Data = new (class Data {
 			}
 		})
 
-		return PATH.join(nowPath, file)
+		return PATH.join(nowPath, file).replace(/\\/g, '/')
 	}
 
 	copyFile(copyFile: string, target: string, game: GamePathType, k_path: karinPath) {
@@ -103,8 +106,13 @@ export const Data = new (class Data {
 		return path
 	}
 
-	setNpmPath(game: GamePathType, path: string) {
+	setNpmPath(game: GamePathType, path: string, isNpm: boolean) {
 		this.#GameNpmPath[game] = path
+		if (isNpm) {
+			this.#GamePluginName[game] = PATH.basename(path).replace(/(^|-)\w/g, (m) => m.toUpperCase())
+		} else {
+			this.#GamePluginName[game] = PATH.basename(path)
+		}
 	}
 
 	getNpmPath(game: GamePathType) {

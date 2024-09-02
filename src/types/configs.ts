@@ -1,5 +1,4 @@
-import { GamePathType, SimpleQrType } from "@/utils";
-import { BaseQrOptions, CircleQrOption, DSJQrOptions, FuncQrOptions, ImageFillQrOptions, ImageQrOptions, LineQrOptions, RandRectOptions, SolidQrOptions } from "@/utils/simple-qrbtf/component";
+import { GamePathType } from "@/utils";
 import { Dialect } from "sequelize";
 
 export const enum ConfigName {
@@ -7,8 +6,6 @@ export const enum ConfigName {
 	config = 'config',
 	/** 面板配置 */
 	panel = 'panel',
-	/** 自定义二维码配置 */
-	qrbtf = 'qrbtf',
 	/** 游戏基础数据配置 */
 	lables = 'lables'
 }
@@ -35,9 +32,6 @@ interface CoreConfig {
 	/** 渲染精度(0 - 100) */
 	quality: number
 
-	/** 使用自定义样式的二维码 */
-	qrbtf: boolean
-
 	/**  数据库（可选sqlite、postgres）一般使用sqlite就足够满足需求*/
 	dialect: ('sqlite' | 'postgres') & Dialect
 
@@ -54,28 +48,6 @@ interface CoreConfig {
 		/** 数据库密码 */
 		password?: string
 	}
-}
-
-interface QrOption {
-	size?: number
-	/** 数据点透明度 */
-	opacity?: number
-}
-
-export type CoreQrbtfStyles<T extends SimpleQrType> = {
-	[SimpleQrType.base]: BaseQrOptions & QrOption & { style: SimpleQrType.base }
-	[SimpleQrType.circle]: CircleQrOption & QrOption & { style: SimpleQrType.circle }
-	[SimpleQrType.dsj]: DSJQrOptions & QrOption & { style: SimpleQrType.dsj }
-	[SimpleQrType.randRect]: RandRectOptions & QrOption & { style: SimpleQrType.randRect }
-	[SimpleQrType.line]: LineQrOptions & QrOption & { style: SimpleQrType.line }
-	[SimpleQrType.solid]: SolidQrOptions & QrOption & { style: SimpleQrType.solid }
-	[SimpleQrType.image]: ImageQrOptions & QrOption & { style: SimpleQrType.image }
-	[SimpleQrType.func]: FuncQrOptions & QrOption & { style: SimpleQrType.func }
-	[SimpleQrType.imageFill]: ImageFillQrOptions & QrOption & { style: SimpleQrType.imageFill }
-}[T]
-
-interface CoreQrbtf {
-	styles: CoreQrbtfStyles<SimpleQrType>[]
 }
 
 interface Panel {
@@ -165,13 +137,6 @@ type Configs = {
 		[GamePathType.Sign]: undefined
 		[GamePathType.gs]: Panel
 		[GamePathType.sr]: SrPanel
-		[GamePathType.zzz]: undefined
-	}
-	[ConfigName.qrbtf]: {
-		[GamePathType.Core]: CoreQrbtf
-		[GamePathType.Sign]: undefined
-		[GamePathType.gs]: undefined
-		[GamePathType.sr]: undefined
 		[GamePathType.zzz]: undefined
 	}
 	[ConfigName.lables]: {

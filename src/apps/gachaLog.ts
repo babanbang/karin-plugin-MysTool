@@ -98,12 +98,16 @@ export const dealGachaUrl = karin.command(
 		}
 
 		const check = await checkUrl(e, res)
-		if (check) return e.reply(check)
+		if (check) {
+			e.reply(check)
+			return true
+		}
 
 		const key = `mys.${game}.gachaLog`
 		if (handler.has(key)) {
 			e.reply("链接发送成功，数据获取中……")
-			return await handler.call(key, { e, params })
+			await handler.call(key, { e, params })
+			return true
 		}
 		return false
 	},

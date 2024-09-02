@@ -1,16 +1,16 @@
-import { GameKeyAndName, GameList, GameNames, GameRegion, MysType } from '@/types/mys'
+import { GameKeyAndName, GameList, GameNames, GameRegions, MysType } from '@/types/mys'
 import lodash from 'node-karin/lodash'
 import moment from 'node-karin/moment'
 import { game_biz, game_servers } from './MysTool'
 
 export const MysUtil = new (class Mysutil {
-	#all_game_biz = Object.values(game_biz).flat()
-	#gamelist: GameKeyAndName[] = []
-	#allgames: GameKeyAndName[] = [
-		{ key: GameList.Gs, name: GameNames.gs },
-		{ key: GameList.Sr, name: GameNames.sr },
-		{ key: GameList.Zzz, name: GameNames.zzz }
-	]
+	AllGameBiz = Object.values(game_biz).flat()
+	#gamelist: Partial<Record<GameList, GameKeyAndName>> = {}
+	#allgames: Record<GameList, GameKeyAndName> = {
+		[GameList.Gs]: { key: GameList.Gs, name: GameNames.gs },
+		[GameList.Sr]: { key: GameList.Sr, name: GameNames.sr },
+		[GameList.Zzz]: { key: GameList.Zzz, name: GameNames.zzz }
+	}
 	#allReg = {
 		[GameList.Sr]: '(\\*|#?(sr|星铁|星轨|穹轨|星穹|崩铁|星穹铁道|崩坏星穹铁道|铁道))',
 		[GameList.Zzz]: '(%|#?(zzz|绝区零))',
@@ -30,22 +30,18 @@ export const MysUtil = new (class Mysutil {
 		return [MysType.cn, MysType.os]
 	}
 	get games() {
-		return [...this.#gamelist]
+		return Object.values(this.#gamelist)
 	}
 	get AllGames() {
-		return [...this.#allgames]
-	}
-	get AllGameBiz() {
-		return [...this.#all_game_biz]
+		return Object.values(this.#allgames)
 	}
 	get EndOfDay() {
 		return Number(moment().endOf('day').format('X')) - Number(moment().format('X'))
 	}
 
 	initGame(key: GameList) {
-		if (this.#gamelist.some((g) => g.key === key)) return
-		this.#gamelist.push({ key, name: GameNames[key] })
-		this.#gamelist = lodash.sortBy(this.#gamelist, 'key')
+		if (this.#gamelist[key]) return
+		this.#gamelist[key] = { key, name: GameNames[key] }
 	}
 
 	getGame(game: GameList) {
@@ -53,13 +49,13 @@ export const MysUtil = new (class Mysutil {
 	}
 
 	getGameByMsg(msg: string) {
-		for (const i of this.AllGames) {
-			if (new RegExp('^' + this.reg[i.key], 'i').test(msg)) {
-				return i
+		for (const game of this.AllGames) {
+			if (new RegExp('^' + this.reg[game.key], 'i').test(msg)) {
+				return game
 			}
 		}
 
-		return this.#allgames[0]
+		return this.#allgames[GameList.Gs]
 	}
 
 	getServ(uid: string, game: GameList) {
@@ -74,23 +70,23 @@ export const MysUtil = new (class Mysutil {
 		for (const i in game_biz) {
 			const game = i as GameList
 			if (game_biz[game].includes(biz)) {
-				return this.#allgames.find((g) => g.key === game)!
+				return this.#allgames[game]
 			}
 		}
-		return this.#allgames[2]
+		return this.#allgames[GameList.Gs]
 	}
 
 	getGameByRegion(region: string) {
 		for (const i in game_servers) {
 			const game = i as GameList
 			if (game_servers[game].some(r => r.region === region)) {
-				return this.#allgames.find((g) => g.key === game)!
+				return this.#allgames[game]
 			}
 		}
-		return this.#allgames[2]
+		return undefined
 	}
 
-	getServerByRegion<g extends GameList>(region: GameRegion<g>, game: g) {
+	getServerByRegion<g extends GameList>(region: GameRegions[g], game: g) {
 		return game_servers[game].find(r => r.region === region)!
 	}
 
@@ -159,7 +155,7 @@ export const MysUtil = new (class Mysutil {
 
 	/** 循环game */
 	async eachGame(fn: (game: GameList, ds: GameKeyAndName) => any, all = false) {
-		for (const ds of (all ? this.#allgames : this.games)) {
+		for (const ds of (all ? this.AllGames : this.games)) {
 			await fn(ds.key, ds)
 		}
 	}

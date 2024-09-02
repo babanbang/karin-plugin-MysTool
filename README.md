@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/babanbang/karin-plugin-MysTool/blob/main/resources/images/other/%E6%91%B8.png?raw=true" height="60">
+  <img src="https://github.com/babanbang/karin-plugin-MysTool/blob/main/resources/images/other/%E6%91%B8.webp?raw=true" height="60">
   <img src="https://github.com/babanbang/karin-plugin-MysTool/blob/main/resources/images/other/%E9%B1%BC.gif?raw=true" height="60">
 </p>
 
@@ -74,7 +74,6 @@ pnpm add karin-plugin-mystool@latest -w
 
 <details><summary><b>其他</b></summary>
 
-- [x] 使用[wkhtmltoimage](https://wkhtmltopdf.org/)截图(由于坤术原因部分图片不支持使用，暂时没有安装教程、windows直接下载exe即可、ubuntu使用apt安装)，建议优先使用[karin-puppeteer](https://github.com/KarinJS/karin-puppeteer)
 - [x] 1034、10035、签到(额外安装[插件](https://github.com/babanbang/MysSign)提供功能)
 </details>
 
@@ -86,6 +85,5 @@ pnpm add karin-plugin-mystool@latest -w
 |:------:|------------|
 |[Miao-Yunzai](https://gitee.com/yoimiya-kokomi/Miao-Yunzai)|喵喵！|
 |[miao-plugin](https://gitee.com/yoimiya-kokomi/miao-plugin)|喵喵！|
-|[simple-qrbtf](https://github.com/StringKe/simple-qrbtf)|二维码生成|
 
 ![Alt](https://repobeats.axiom.co/api/embed/a987d3b44ed2f3c8cac52fe11b3f24b075d5f58b.svg "Repobeats analytics image")

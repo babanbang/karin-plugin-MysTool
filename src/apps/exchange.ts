@@ -25,7 +25,6 @@ export class exchange extends Plugin {
 
 	async getCode() {
 		const game = MysUtil.getGameByMsg(this.e.msg)
-		if (!game) return false
 
 		let msg = []
 		this.redisKey = `${PluginName}:${game.key}:Exchange:`

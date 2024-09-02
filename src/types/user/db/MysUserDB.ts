@@ -1,3 +1,5 @@
+import { MysType } from "@/types"
+
 export enum MysUserDBCOLUMNS {
 	/** 米游社ID */
 	ltuid = 'ltuid',
@@ -21,4 +23,18 @@ export enum MysUserDBCOLUMNS {
 	sr = 'sr_uids',
 	/** 绝区零UID */
 	zzz = 'zzz_uids'
+}
+
+export interface MysUserDBSaveData {
+	[MysUserDBCOLUMNS.ltuid]?: string
+	[MysUserDBCOLUMNS.type]?: MysType
+	[MysUserDBCOLUMNS.cookie]?: string
+	[MysUserDBCOLUMNS.stoken]?: string
+	[MysUserDBCOLUMNS.ltoken]?: string
+	[MysUserDBCOLUMNS.mid]?: string
+	[MysUserDBCOLUMNS.login_ticket]?: string
+	[MysUserDBCOLUMNS.device]?: string
+	[MysUserDBCOLUMNS.gs]?: string[]
+	[MysUserDBCOLUMNS.sr]?: string[]
+	[MysUserDBCOLUMNS.zzz]?: string[]
 }

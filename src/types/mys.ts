@@ -15,7 +15,7 @@ export const enum MysType {
 }
 
 export interface gameServer {
-	region: GameRegion<GameList>
+	region: GameRegions[GameList]
 	name: string
 	os: boolean
 }
@@ -24,6 +24,7 @@ export type GameKeyAndName = {
 	key: GameList
 	name: GameNames
 }
+
 export const enum GsRegin {
 	gf = 'cn_gf01',
 	bili = 'cn_qd01',
@@ -50,10 +51,8 @@ export const enum ZzzRegin {
 	cht = 'prod_gf_sg'
 }
 
-type gameRegions = {
+export type GameRegions = {
 	[GameList.Gs]: GsRegin
 	[GameList.Sr]: SrRegin
 	[GameList.Zzz]: ZzzRegin
 }
-
-export type GameRegion<game extends GameList> = gameRegions[game]

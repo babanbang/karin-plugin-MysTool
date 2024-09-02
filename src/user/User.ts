@@ -1,44 +1,36 @@
 import { MysUtil } from '@/mys'
-import { BingUIDType, GameList, MysUserDBCOLUMNS, UidListWithType, UserDBCOLUMNS } from '@/types'
-import Base from './Base'
+import { BingUIDType, GameList, MysUserDBCOLUMNS, UidListWithType, UserDBCOLUMNS, mysUserInfo } from '@/types'
 import { MysUser } from './MysUser'
 import { UserDB } from './db'
 
-export class User extends Base {
+export class User {
 	/** 用户数据 */
 	db!: UserDB
 	game: GameList
 	/** 用户ID */
-	[UserDBCOLUMNS.user_id]: string
+	declare [UserDBCOLUMNS.user_id]: string
 	/** 绑定的cookie ltuids */
-	[UserDBCOLUMNS.ltuids]!: string[]
+	declare [UserDBCOLUMNS.ltuids]: string[]
 	/** 绑定的stoken stuids */
-	[UserDBCOLUMNS.stuids]!: string[]
+	declare [UserDBCOLUMNS.stuids]: string[]
 	/** 当前使用的原神UID */
-	[UserDBCOLUMNS.gs_main]!: string
+	declare [UserDBCOLUMNS.gs_main]: string
 	/** 当前使用的崩坏；星穹铁道UID */
-	[UserDBCOLUMNS.sr_main]!: string
+	declare [UserDBCOLUMNS.sr_main]: string
 	/** 当前使用绝区零UID */
-	[UserDBCOLUMNS.zzz_main]!: string
+	declare [UserDBCOLUMNS.zzz_main]: string
 	/** 绑定的原神UID列表 */
-	[UserDBCOLUMNS.gs_uids]!: Record<string, BingUIDType>
+	declare [UserDBCOLUMNS.gs_uids]: Record<string, BingUIDType>
 	/** 绑定的崩坏；星穹铁道UID列表 */
-	[UserDBCOLUMNS.sr_uids]!: Record<string, BingUIDType>
+	declare [UserDBCOLUMNS.sr_uids]: Record<string, BingUIDType>
 	/** 绑定的绝区零UID列表 */
-	[UserDBCOLUMNS.zzz_uids]!: Record<string, BingUIDType>
+	declare [UserDBCOLUMNS.zzz_uids]: Record<string, BingUIDType>
 	/** 绑定的米游社账号 */
 	#mysUsers: Record<string, MysUser> = {}
 
-	static COLUMNS_KEY = Object.keys(UserDB.COLUMNS).filter(k => k !== UserDBCOLUMNS['user_id']) as UserDBCOLUMNS[]
-
 	constructor(user_id: string, game: GameList = GameList.Gs) {
-		super(User.COLUMNS_KEY)
 		this.game = game
 		this.user_id = user_id
-	}
-	_get(key: UserDBCOLUMNS) { return this.db[key] }
-	_set(key: UserDBCOLUMNS, value: any) {
-		this.db[key] = value
 	}
 
 	get uid() {
@@ -83,12 +75,15 @@ export class User extends Base {
 		if (this.db && !db) return
 
 		this.db = db || await UserDB.find(this.user_id)
+		for (const key of UserDB.COLUMNS_KEY) {
+			this[key] = this.db[key] as string & string[] & Record<string, BingUIDType>
+		}
 	}
 
 	/** 保存数据 */
 	async save() {
 		if (!this.db) return false
-		await this.db.save()
+		await this.db.saveDB(this)
 	}
 
 	/** 初始化MysUser对象 */
@@ -129,9 +124,13 @@ export class User extends Base {
 		await MysUtil.eachGame(async (game) => {
 			const g = self.gameKey(game)
 			const uids = mysUser[g.u].filter(v => self[g.u][v] !== BingUIDType.ban)
-			await self.addRegUid({ uid: uids, game, type, save: false })
+			await self.addRegUid({
+				uid: uids, game, type, save: false
+			})
 			if (uids[0] && !self[g.m]) {
-				self.setMainUid({ uid: uids[0], game, save: false })
+				self.setMainUid({
+					uid: uids[0], game, save: false
+				})
 			}
 		}, true)
 		await this.save()
@@ -147,8 +146,13 @@ export class User extends Base {
 		return this.#mysUsers[ltuid]
 	}
 
-	getCkInfoByUid(params: { game?: GameList, uid?: string } = {}) {
+	getCkInfoByUid<g extends GameList>(params: { game?: g, uid?: string } = {}): mysUserInfo<g> {
+		const { game = this.game, uid = this.mainUid(game) } = params
 
+		const mysUser = this.getMysUserByUid({ game, uid })
+		const ckInfo = mysUser.getMysUserInfo()
+
+		return { ...ckInfo, user_id: this.user_id }
 	}
 
 	/** 添加绑定UID */
@@ -162,13 +166,13 @@ export class User extends Base {
 		const { uid, game = this.game, type = BingUIDType.reg, save = true } = options
 		if (Array.isArray(uid)) {
 			for (const u of uid) {
-				await this.addRegUid({ uid: u, game, save: false })
+				await this.addRegUid({ uid: u, game, type, save: false })
 			}
 
 			if (save) await this.save()
 			return true
 		}
-		this.db[this.gameKey(game).u][uid] = type
+		this[this.gameKey(game).u][uid] = type
 
 		await this.setMainUid({ uid, game, save: false })
 		if (save) await this.save()
@@ -180,9 +184,11 @@ export class User extends Base {
 		const g = this.gameKey(game || this.game)
 		if (!(uid in this[g.u])) return undefined
 
-		delete this.db[g.u][uid]
+		delete this[g.u][uid]
 		if (this[g.m] === uid || !this[g.m]) {
-			await this.setMainUid({ uid: Object.keys(this[g.u])[0], game, save: false })
+			await this.setMainUid({
+				uid: Object.keys(this[g.u])[0], game, save: false
+			})
 		}
 
 		await this.save()
@@ -190,10 +196,10 @@ export class User extends Base {
 
 	/** 切换UID */
 	async setMainUid(options: {
-		uid?: string,
-		game?: GameList,
-		/** 是否立即保存 */
-		save?: boolean,
+		uid?: string
+		game?: GameList
+		/** 是否立即保存，默认true */
+		save?: boolean
 	}) {
 		const { uid = '', game = this.game, save = true } = options
 		const uidList = this.getUidList({ game })
@@ -201,7 +207,7 @@ export class User extends Base {
 			return false
 		}
 
-		this.db[this.gameKey(game).m] = uid
+		this[this.gameKey(game).m] = uid
 
 		if (save) await this.save()
 	}
@@ -216,15 +222,15 @@ export class User extends Base {
 
 		const uid = options.uid || this[g.m]
 		if (options.type === BingUIDType.ban) {
-			this.db[g.u][uid] = BingUIDType.ban
+			this[g.u][uid] = BingUIDType.ban
 			const uidList = this.getUidList({ game })
 			await this.setMainUid({ uid: uidList[0], game })
 			return true
 		}
-		if (this.db[g.u][uid] === options.type) {
-			this.db[g.u][uid] = BingUIDType.reg
+		if (this[g.u][uid] === options.type) {
+			this[g.u][uid] = BingUIDType.reg
 		} else if (this[g.u][uid] === BingUIDType.all) {
-			this.db[g.u][uid] = options.type
+			this[g.u][uid] = options.type
 		} else {
 			return false
 		}

@@ -22,3 +22,15 @@ export const enum UserDBCOLUMNS {
 	/** 绑定的绝区零UID列表 */
 	zzz_uids = 'zzz_uids'
 }
+
+export interface UserDBSaveData {
+	[UserDBCOLUMNS.user_id]?: string
+	[UserDBCOLUMNS.ltuids]?: string[]
+	[UserDBCOLUMNS.stuids]?: string[]
+	[UserDBCOLUMNS.gs_main]?: string
+	[UserDBCOLUMNS.sr_main]?: string
+	[UserDBCOLUMNS.zzz_main]?: string
+	[UserDBCOLUMNS.gs_uids]?: Record<string, BingUIDType>
+	[UserDBCOLUMNS.sr_uids]?: Record<string, BingUIDType>
+	[UserDBCOLUMNS.zzz_uids]?: Record<string, BingUIDType>
+}

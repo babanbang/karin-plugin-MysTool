@@ -44,16 +44,6 @@ export class MysInfo<g extends GameList> {
 		}
 	}
 
-	setCkInfo(mysUser: MysUser, owner: boolean = false) {
-		this.ckInfo = {
-			type: mysUser.type,
-			cookie: mysUser.cookie,
-			stoken: mysUser.stoken,
-			device: mysUser.device,
-			owner: owner
-		}
-	}
-
 	/** 获取ck绑定的uid */
 	async getSelfUid(type: BingUIDType) {
 		const at = (this.e!.at || [])[0]
@@ -80,7 +70,7 @@ export class MysInfo<g extends GameList> {
 		}
 
 		this.mysUser = user.getMysUserByUid()
-		this.setCkInfo(this.mysUser, true)
+		this.ckInfo = { ...this.mysUser.getMysUserInfo(), owner: true }
 		return user.uid
 	}
 
@@ -106,7 +96,7 @@ export class MysInfo<g extends GameList> {
 		const mysUser = await MysUser.getByQueryUid(uid, this.game)
 		if (mysUser) {
 			this.mysUser = mysUser
-			this.setCkInfo(this.mysUser)
+			this.ckInfo = { ...mysUser.getMysUserInfo(), owner: false }
 		}
 		return undefined
 	}
