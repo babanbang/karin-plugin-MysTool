@@ -74,20 +74,20 @@ export const dealGachaUrl = karin.command(
 			}
 		}
 
-		let res = await getGachaLog(new MysReq(e.user_id, game, mys(game), { log: false }), data(game))
+		let res = await getGachaLog(new MysReq(e.user_id, game, mys(game)), data(game))
 		if (res?.retcode == -111) {
 			const games = lodash(MysUtil.games).map('key').pull(game).value()
 
 			for (const g of games) {
 				await common.sleep(200)
-				res = await getGachaLog(new MysReq(e.user_id, game, mys(g), { log: false }), data(g))
+				res = await getGachaLog(new MysReq(e.user_id, game, mys(g)), data(g))
 				if (res?.retcode == -111) continue
 				game = g
 				break
 			}
 		}
 		if (!res?.data?.region) {
-			res = await getGachaLog(new MysReq(e.user_id, game, mys(game, true), { log: false }), data(game))
+			res = await getGachaLog(new MysReq(e.user_id, game, mys(game, true)), data(game))
 		}
 
 		if (res?.data?.region) {

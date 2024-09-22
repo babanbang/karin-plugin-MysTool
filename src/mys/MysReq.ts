@@ -14,7 +14,7 @@ export class MysReq<g extends GameList>{
 	game: g
 	mysUserInfo?: mysUserInfo<g>
 
-	option: { log: boolean, cacheCd?: number }
+	option: { cacheCd?: number }
 	config: ConfigsType<ConfigName.config, GamePathType.Core>
 
 	#deviceName?: string
@@ -23,7 +23,6 @@ export class MysReq<g extends GameList>{
 
 	constructor(uid: string, game: g, mys: mysUserInfo<g> = {}, options: {
 		cacheCd?: number
-		log?: boolean
 	} = {}) {
 		this.uid = uid
 		this.game = game
@@ -31,10 +30,7 @@ export class MysReq<g extends GameList>{
 		this.mysUserInfo = mys
 
 		this.config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
-		this.option = {
-			log: true,
-			...options
-		}
+		this.option = options
 	}
 
 	get deviceName() {
@@ -83,40 +79,44 @@ export class MysReq<g extends GameList>{
 		Api: defineApi<ReqData>,
 		reqData: ReqData
 	): Promise<ReturnType> {
-		const { urlKey, url, query, body, header, noFp } = Api
+		const { urlKey, Method, url, query, body, header, noFp } = Api
 
 		const cacheKey = this.cacheKey(urlKey, reqData)
 		const cahce = await redis.get(cacheKey)
 		if (cahce) return JSON.parse(cahce)
 
+		const q = query?.(this, reqData)
 		const b = body?.(this, reqData)
-		const headers = new AxiosHeaders(
-			header(this, { q: query?.(this, reqData), b, reqData })
-		)
+		const headers = new AxiosHeaders(header(this, { q, b, reqData }))
 
 		if (!noFp) {
 			headers.set(await this.get_device_fp())
 		}
 
+		let _url = url(this, reqData)
+		if (q) _url += `?${q}`
+
 		const param: AxiosRequestConfig = {
-			url: url(this, reqData),
-			method: reqData?.method ?? 'get',
-			headers,
-			timeout: reqData?.timeout ?? 10000
+			url: _url, data: b, headers, method: typeof Method === 'function' ? Method(this) : Method
 		}
-		if (b) {
-			param.method = 'post'
-			param.data = b
-		}
+
 		if (this.hoyolab && this.config.proxy?.host && this.config.proxy?.port) {
 			param.proxy = this.config.proxy
 		}
 
 		logger.debug(`requst: [${urlKey}][${this.game}][${this.uid}] ${JSON.stringify(param)}`)
-		let response: any = undefined
+
 		const start = Date.now()
+		let response: any = undefined
 		try {
-			response = await axios(param)
+			if (param.method === 'GET') {
+				response = await axios.get(_url, { headers, proxy: param.proxy, timeout: 10000 })
+			} else if (param.method === 'POST') {
+				response = await axios.post(_url, b, { headers, proxy: param.proxy, timeout: 10000 })
+			} else {
+				logger.error(`[${urlKey}][${this.game}][${this.uid}] 不支持的请求方法！`)
+				return response
+			}
 		} catch (err) {
 			this.checkstatus(err, urlKey)
 			return response
@@ -142,20 +142,16 @@ export class MysReq<g extends GameList>{
 		return res
 	}
 
-	getDS1(options: { q?: string, b?: string, saltKey: keyof typeof salt, bq?: boolean }) {
-		const { q = '', b = '', saltKey, bq = true } = options
-
+	getDS1(q: string, b: string, saltKey: keyof typeof salt) {
 		const r = MysUtil.randomString(6)
 		const t = Math.floor(Date.now() / 1000)
 		let DS = `salt=${salt[saltKey]}&t=${t}&r=${r}`
-		if (bq || q || b) DS += `&b=${b}&q=${q}`
+		if (q || b) DS += `&b=${b}&q=${q}`
 
 		return `${t},${r},${md5(DS)}`
 	}
 
-	getDS2(options: { q?: string, b?: string, saltKey: keyof typeof salt }) {
-		const { q = '', b = '', saltKey } = options
-
+	getDS2(q: string, b: string, saltKey: keyof typeof salt) {
 		const r = lodash.random(100001, 200000)
 		const t = Math.floor(Date.now() / 1000)
 

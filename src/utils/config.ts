@@ -2,19 +2,19 @@ import { CfgType, ConfigName, ConfigsType } from '@/types'
 import { logger } from 'node-karin'
 import { yaml as Yaml, chokidar, fs, lodash, path as PATH } from 'node-karin/modules.js'
 import { Data, GamePathType, karinPath } from './Data'
-import { NpmPath, isNpm } from './dir'
+import { NpmPath } from './dir'
 
 export const Cfg = new (class Config {
 	#config: Map<string, any> = new Map()
 	#packages: Map<string, any> = new Map()
 	#watcher: Map<string, chokidar.FSWatcher> = new Map()
 	constructor() {
-		this.initCfg(GamePathType.Core, NpmPath, isNpm)
+		this.initCfg(GamePathType.Core, NpmPath)
 	}
 
 	/** 初始化配置 */
-	async initCfg(game: GamePathType, npmPath: string, isNpm: boolean) {
-		await Data.setNpmPath(game, npmPath, isNpm)
+	async initCfg(game: GamePathType, npmPath: string) {
+		Data.setNpmPath(game, npmPath)
 
 		const defSetPath = Data.getFilePath(`config`, game, karinPath.node)
 		if (!fs.existsSync(defSetPath)) return false
@@ -53,14 +53,14 @@ export const Cfg = new (class Config {
 	}
 
 	/** 获取默认配置 */
-	getdefSet(name: ConfigName, game: GamePathType, Document: true): Yaml.Document<Yaml.ParsedNode, true>
-	getdefSet(name: ConfigName, game: GamePathType): ConfigsType<ConfigName, GamePathType>
-	getdefSet(name: ConfigName, game: GamePathType, Document = false) {
+	getdefSet<N extends ConfigName, G extends GamePathType>(name: N, game: G, Document: true): Yaml.Document<Yaml.ParsedNode, true>
+	getdefSet<N extends ConfigName, G extends GamePathType>(name: N, game: G): ConfigsType<N, G>
+	getdefSet<N extends ConfigName, G extends GamePathType>(name: N, game: G, Document = false) {
 		if (Document) {
 			const defSet = this.#getYaml(CfgType.defSet, name, game, true)
-			return Yaml.parseDocument(defSet.toString()) as Yaml.Document<Yaml.ParsedNode, true>
+			return Yaml.parseDocument(defSet.toString())
 		}
-		return { ...this.#getYaml(CfgType.defSet, name, game) } as ConfigsType<ConfigName, GamePathType>
+		return { ...this.#getYaml(CfgType.defSet, name, game) }
 	}
 
 	/** 修改用户配置 */

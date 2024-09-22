@@ -1,10 +1,12 @@
 import { logger } from "node-karin"
 import { fs, lodash, path as PATH } from 'node-karin/modules.js'
+import util from 'util'
 import { KarinPath, NpmPath, PluginName } from "./dir"
 
 export const enum karinPath {
 	config = 'config/plugin',
 	node = 'node_modules',
+	fullPath = 'fullPath',
 	data = 'data',
 	temp = 'temp'
 }
@@ -41,6 +43,8 @@ export const Data = new (class Data {
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck: true): string | false
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck?: false): string
 	getFilePath(file: string, game: GamePathType, k_path: karinPath, ckeck = false) {
+		if (k_path === karinPath.fullPath) return file
+
 		if (k_path === karinPath.node) {
 			return PATH.join(this.getNpmPath(game), file).replace(/\\/g, '/')
 		}
@@ -106,13 +110,8 @@ export const Data = new (class Data {
 		return path
 	}
 
-	setNpmPath(game: GamePathType, path: string, isNpm: boolean) {
+	setNpmPath(game: GamePathType, path: string) {
 		this.#GameNpmPath[game] = path
-		if (isNpm) {
-			this.#GamePluginName[game] = PATH.basename(path).replace(/(^|-)\w/g, (m) => m.toUpperCase())
-		} else {
-			this.#GamePluginName[game] = PATH.basename(path)
-		}
 	}
 
 	getNpmPath(game: GamePathType) {
@@ -124,8 +123,8 @@ export const Data = new (class Data {
 		return this.#GamePluginName[game]
 	}
 
-	async importModule(file: string, game: GamePathType, options: Options = {}) {
-		const path = this.getFilePath(file, game, karinPath.node)
+	async importModule(file: string, game: GamePathType, k_path: karinPath, options: Options = {}) {
+		const path = this.getFilePath(file, game, k_path)
 		if (fs.existsSync(path)) {
 			try {
 				const module = await import(`file://${path}?t=${Date.now()}`) || {}
@@ -138,8 +137,8 @@ export const Data = new (class Data {
 		return { module: options.defData, path }
 	}
 
-	getData<T extends string>(target: any, keysArr: T[]) {
-		const ret: Partial<Record<T, any>> = {}
+	getData<T extends string>(target: any, keysArr: T[]): Record<T, any> {
+		const ret: any = {}
 
 		lodash.forEach(keysArr, (key) => {
 			const _key = key.split(':').map(k => k.trim())
@@ -147,5 +146,20 @@ export const Data = new (class Data {
 			ret[key1] = lodash.get(target, _key[1] || key1)
 		})
 		return ret
+	}
+
+	readDir(path: string, game: GamePathType, k_path: karinPath) {
+		const dirPath = this.getFilePath(path, game, k_path)
+		if (!fs.existsSync(dirPath)) return []
+		return fs.readdirSync(dirPath)
+	}
+
+	exists(path: string, game: GamePathType, k_path: karinPath) {
+		const FilePath = this.getFilePath(path, game, k_path)
+		return fs.existsSync(FilePath)
+	}
+
+	isPromise(data: any) {
+		return util.types.isPromise(data)
 	}
 })

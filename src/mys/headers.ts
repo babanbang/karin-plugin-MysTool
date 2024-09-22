@@ -1,5 +1,4 @@
 import { app_version } from "./MysTool"
-import { MysUtil } from "./MysUtil"
 import { MysReq } from "./MysReq"
 import { GameList } from "@/types"
 
@@ -37,6 +36,15 @@ export const StokenHeader = (mysReq: MysReq<GameList>) => {
 	}
 }
 
+export const NormalHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: any } = {}) => {
+	if (mysReq.hoyolab) {
+		return { ...CookieHeader(mysReq, options), DS: mysReq.getDS1('', '', 'os') }
+	} else {
+		const { q = '', b = '' } = options
+		return { ...CookieHeader(mysReq, options), DS: mysReq.getDS2(q, JSON.stringify(b), '4X') }
+	}
+}
+
 export const PassportHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?: any } = {}) => {
 	const { q = '', b = '' } = options
 	return {
@@ -45,7 +53,7 @@ export const PassportHeader = (mysReq: MysReq<GameList>, options: { q?: string, 
 		'x-rpc-client_type': '2',
 		'User-Agent': 'okhttp/4.8.0',
 		'x-rpc-app_id': 'bll8iq97cem8',
-		DS: mysReq.getDS1({ q, b: JSON.stringify(b), saltKey: 'PROD' })
+		DS: mysReq.getDS1(q, JSON.stringify(b), 'PROD')
 	}
 }
 
@@ -53,6 +61,6 @@ export const ActionHeader = (mysReq: MysReq<GameList>, options: { q?: string, b?
 	const { q = '', b = '' } = options
 	return {
 		...StokenHeader(mysReq),
-		DS: mysReq.getDS1({ q, b: JSON.stringify(b), saltKey: '6X' })
+		DS: mysReq.getDS1(q, JSON.stringify(b), '6X')
 	}
 }

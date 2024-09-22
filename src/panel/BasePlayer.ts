@@ -2,7 +2,7 @@ import { GameList } from "@/types";
 import { BasePanel } from "./BasePanel";
 import { Data, GamePathType, karinPath } from "@/utils";
 
-export class BasePlayer extends BasePanel {
+export class BasePlayer<g extends GameList> extends BasePanel<g> {
 	/** 查询UID */
 	uid: string
 	/** 昵称 */
@@ -10,14 +10,15 @@ export class BasePlayer extends BasePanel {
 	/** 等级 */
 	level: number = 0
 	/** 头像 */
-	face?: string = ''
+	face: string = ''
 	/** 背景图 */
-	background?: string = ''
+	background: string = ''
 	/** 基础信息卡片 */
 	recordCard: string = ''
 	_updateAvatar: string[] = []
 
-	constructor(uid: string, game: GameList) {
+	static BasicKeys = ['name', 'level', 'face', 'card', 'background', 'recordCard']
+	constructor(uid: string, game: g) {
 		super(game)
 		this.uid = uid
 	}
@@ -34,13 +35,13 @@ export class BasePlayer extends BasePanel {
 		return `PlayerData/${this.uid}.json`
 	}
 
-	static create(uid: string, game: GameList) {
+	static create<g extends GameList>(uid: string, game: g) {
 		const player = new BasePlayer(uid, game)
-		const cache = player._getCache<BasePlayer>(`player:${game}:${uid}`)
+		const cache = player._getCache<BasePlayer<g>>(`player:${game}:${uid}`)
 		if (cache) return cache
 
 		player.reload()
-		return player._cache<BasePlayer>(100)
+		return player._cache<BasePlayer<g>>(0)
 	}
 
 	/** 加载面板数据文件 */
@@ -69,6 +70,6 @@ export class BasePlayer extends BasePanel {
 		this.background = ds.background || this.background
 		this.recordCard = ds.recordCard || this.recordCard
 
-		save && this.save(this.getData(['name', 'level', '_face', 'card']))
+		save && this.save(this.getData(BasePlayer.BasicKeys))
 	}
 }

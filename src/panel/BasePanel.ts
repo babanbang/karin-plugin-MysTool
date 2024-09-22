@@ -4,41 +4,12 @@ import { Data } from "@/utils";
 const reFn: Partial<Record<string, any>> = {}
 const metaMap: Partial<Record<string, any>> = {}
 const cacheMap: Partial<Record<string, any>> = {}
-export class BasePanel {
-	game: GameList
-	_uuid!: string
-	_get?: (key: string) => any
-	meta: Record<string, any> = {}
-	_dataKey?: string[]
+export class BasePanel<g extends GameList>{
+	game: g
+	declare _uuid: string
 
-	constructor(game: GameList) {
+	constructor(game: g) {
 		this.game = game
-		return new Proxy(this, {
-			get(self, key, receiver) {
-				if (self._uuid && key === 'meta') {
-					return metaMap[self._uuid]
-				}
-				if (key in self || typeof key === 'symbol') {
-					return Reflect.get(self, key, receiver)
-				}
-				if (self._get) {
-					return self._get.call(receiver, key)
-				}
-				if (self._uuid) {
-					return (metaMap[self._uuid] || {})[key]
-				} else {
-					return self.meta[key]
-				}
-			},
-			set(target, key, newValue) {
-				if (target._uuid && key === 'meta') {
-					metaMap[target._uuid] = newValue
-					return true
-				} else {
-					return Reflect.set(target, key, newValue)
-				}
-			}
-		})
 	}
 
 	getData<T extends string>(arrList: T[]) {
@@ -55,7 +26,7 @@ export class BasePanel {
 
 	/** 设置缓存 */
 	_cache<T>(time = 10 * 60) {
-		if (this._uuid) {
+		if (this._uuid && time > 0) {
 			this._expire(time)
 			cacheMap[this._uuid] = this
 			return cacheMap[this._uuid] as T

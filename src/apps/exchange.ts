@@ -28,7 +28,7 @@ export class exchange extends Plugin {
 
 		let msg = []
 		this.redisKey = `${PluginName}:${game.key}:Exchange:`
-		this.mysReq = new MysReq(game_uid[game.key], game.key, { type: MysType.cn }, { log: false })
+		this.mysReq = new MysReq(game_uid[game.key], game.key, { type: MysType.cn })
 
 		const catchData = await redis.get(this.redisKey + 'codes')
 		if (catchData) {

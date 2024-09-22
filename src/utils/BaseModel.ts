@@ -10,16 +10,16 @@ const res_Path = path.join(NpmPath, 'resources/').replace(/\\/g, '/')
 const fontsPath = path.join(NpmPath, 'resources/fonts/').replace(/\\/g, '/')
 const defaultLayout = path.join(NpmPath, 'resources/template/layout/default.html').replace(/\\/g, '/')
 
-export class BaseModel {
+export class BaseModel<g extends GamePathType>{
 	/** 查询UID */
 	uid?: string
 	e?: KarinMessage
-	game: GamePathType
+	game: g
 	model: string
 	NpmPath: string
 	PluginName: string
 	config: ConfigsType<ConfigName.config, GamePathType.Core>
-	constructor(game: GamePathType, e?: KarinMessage) {
+	constructor(game: g, e?: KarinMessage) {
 		this.e = e
 		this.game = game
 

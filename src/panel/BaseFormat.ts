@@ -1,28 +1,29 @@
 import lodash from "node-karin/lodash";
+import { ElementType, GameList } from "@/types";
 
-export class BaseFormat {
+export class BaseFormat<g extends GameList> {
 	/** 默认元素 */
-	#defElem: string
+	#defElem: ElementType<g>
 	/** 元素属性映射, 名称=>elem */
-	#elemMap!: Record<string, string>
+	#elemMap: Map<string, ElementType<g>> = new Map()
 	/** 标准元素名 */
-	#elemTitleMap!: Record<string, string>
-	constructor(elemAlias: Record<string, string[]>) {
-		this.#defElem = Object.keys(elemAlias)[0]
+	#elemTitleMap: Map<ElementType<g>, string> = new Map()
+	constructor(elemAlias: { [key in ElementType<g>]: string[] }) {
+		this.#defElem = Object.keys(elemAlias)[0] as ElementType<g>
 		lodash.forEach(elemAlias, (txt, key) => {
-			this.#elemMap[key] = key
-			this.#elemTitleMap[key] = txt[0]
-			txt.forEach(t => this.#elemMap[t] = key)
+			this.#elemMap.set(key, key as ElementType<g>)
+			this.#elemTitleMap.set(key as ElementType<g>, txt[0])
+			txt.forEach(t => this.#elemMap.set(t, key as ElementType<g>))
 		})
 	}
 
 	/** 根据名称获取元素key */
 	elem(elem: string) {
-		return this.#elemMap[elem.toLowerCase()] || this.#defElem
+		return this.#elemMap.get(elem.toLowerCase()) || this.#defElem
 	}
 
 	/** 根据key获取元素名 */
 	elemName(elem: string) {
-		return this.#elemTitleMap[this.elem(elem)]
+		return this.#elemTitleMap.get(this.elem(elem))
 	}
 }

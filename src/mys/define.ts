@@ -3,7 +3,7 @@ import { KarinMessage, handler, logger } from "node-karin"
 import { MysReq } from "./MysReq"
 import { GameList } from "@/types"
 
-type MysApi<ReturnType, ReqData> = (mysReq: MysReq<GameList>, reqData?: ReqData) => Promise<ReturnType | undefined>
+export type MysApi<ReturnType, ReqData> = (mysReq: MysReq<GameList>, reqData?: ReqData) => Promise<ReturnType | undefined>
 
 export interface BaseMysResData {
 	retcode: number
@@ -13,6 +13,7 @@ export interface BaseMysResData {
 
 export type defineApi<ReqData> = {
 	urlKey: string,
+	Method: 'GET' | 'POST' | ((mysReq: MysReq<GameList>) => 'GET' | 'POST'),
 	url: (mysReq: MysReq<GameList>, reqData: ReqData) => string,
 	query?: (mysReq: MysReq<GameList>, reqData: ReqData) => string,
 	body?: (mysReq: MysReq<GameList>, reqData: ReqData) => any,

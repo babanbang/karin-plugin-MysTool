@@ -9,10 +9,11 @@ export class MysInfo<g extends GameList> {
 	e?: KarinMessage
 	game: g
 	uid?: string
+	UidType!: BingUIDType
 
-	ckInfo?: mysUserInfo<g>
-	mysUser?: MysUser
-	#mysReq!: MysReq<g>
+	ckInfo!: mysUserInfo<g>
+	mysUser!: MysUser
+	mysReq!: MysReq<g>
 
 	noTips: boolean = false
 	config: ConfigsType<ConfigName.config, GamePathType.Core>
@@ -24,16 +25,21 @@ export class MysInfo<g extends GameList> {
 		this.config = Cfg.getConfig(ConfigName.config, GamePathType.Core)
 	}
 
+	get owner() {
+		return this.ckInfo?.owner
+	}
+
 	get hoyolab() {
-		return this.#mysReq.hoyolab
+		return this.mysReq.hoyolab
 	}
 
 	get game_biz() {
 		return MysUtil.getGamebiz(this.game, this.hoyolab)
 	}
 
-	static async init(game: GameList, type: BingUIDType, e?: KarinMessage) {
+	static async init<g extends GameList>(game: g, type: BingUIDType, e?: KarinMessage) {
 		const mysInfo = new MysInfo(game, e)
+		mysInfo.UidType = type
 
 		if (type === BingUIDType.sk || mysInfo.config.onlySelfCk) {
 			/** 获取绑定uid */
@@ -42,6 +48,17 @@ export class MysInfo<g extends GameList> {
 			/** 获取uid */
 			mysInfo.uid = await mysInfo.getUid()
 		}
+
+		if (!mysInfo.uid) mysInfo.noTips = true
+
+		/** 判断回复 */
+		await mysInfo.checkReply()
+
+		if (mysInfo.uid && mysInfo.ckInfo) {
+			mysInfo.mysReq = new MysReq(mysInfo.uid, game, mysInfo.ckInfo)
+		}
+
+		return mysInfo
 	}
 
 	/** 获取ck绑定的uid */
@@ -99,5 +116,20 @@ export class MysInfo<g extends GameList> {
 			this.ckInfo = { ...mysUser.getMysUserInfo(), owner: false }
 		}
 		return undefined
+	}
+
+	async checkReply() {
+		if (this.noTips === true) return
+
+		if (!this.uid) {
+			this.e && this.e.reply('请先绑定UID', { at: true })
+			return
+		}
+
+		if (!this.ckInfo?.cookie && this.UidType === BingUIDType.ck) {
+			this.e && this.e.reply('暂无可用CK，请绑定cookie')
+		}
+
+		this.noTips = true
 	}
 }

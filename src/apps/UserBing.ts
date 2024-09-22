@@ -113,7 +113,7 @@ const bingCookie = async (e: KarinMessage, cookie?: string, mysUser?: MysUser, t
 	// 判断data.ltuid是否正确
 	if (flagV2 && isNaN(Number(mysUser.ltuid))) {
 		// 获取米游社通行证id
-		const mysReq = new MysReq(e.user_id, GameList.Gs, { cookie: mysUser.cookie, type: mysUser.type }, { log: false })
+		const mysReq = new MysReq(e.user_id, GameList.Gs, { cookie: mysUser.cookie, type: mysUser.type })
 		const userFullInfo = await getUserFullInfo(mysReq)
 
 		if (userFullInfo?.data?.user_info) {
@@ -367,7 +367,7 @@ export const MiHoYoLoginQRCode = karin.command(
 		QRCodes.set(e.user_id, true)
 
 		const device = MysUtil.randomString(64)
-		const mysReq = new MysReq(e.user_id, GameList.Gs, {}, { log: false })
+		const mysReq = new MysReq(e.user_id, GameList.Gs)
 
 		const QRcode = await fetchQRcode(mysReq, { device })
 		if (!QRcode?.data?.url) {

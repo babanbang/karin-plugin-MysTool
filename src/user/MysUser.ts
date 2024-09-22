@@ -134,7 +134,7 @@ export class MysUser {
 				new MysReq(this.ltuid, GameList.Gs, {
 					stoken: this.getStoken().replace(/;/g, '&').replace(/stuid/, 'uid'),
 					type: serv
-				}, { log: false }),
+				}),
 				{ method: serv === MysType.cn ? 'GET' : 'POST' }
 			)
 			if (res?.retcode == -100) {
@@ -163,7 +163,7 @@ export class MysUser {
 		let msg = ''
 		for (const serv of MysUtil.servs) {
 			res = await getUserGameRolesByCookie(
-				new MysReq(this.ltuid, GameList.Gs, { cookie: this.cookie, type: serv }, { log: false })
+				new MysReq(this.ltuid, GameList.Gs, { cookie: this.cookie, type: serv })
 			)
 			if (res?.retcode === 0) {
 				this.type = serv
