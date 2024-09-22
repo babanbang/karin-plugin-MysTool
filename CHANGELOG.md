@@ -2,6 +2,22 @@
 
 * 使用qrcode生成二维码 ([1c645f1](https://github.com/babanbang/karin-plugin-MysTool/commit/1c645f17882ab0fe71094907f0812049b2878df3))
 
+## [1.2.0](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.3...v1.2.0) (2024-09-22)
+
+
+### Features
+
+* 初版提交 ([dffc5e1](https://github.com/babanbang/karin-plugin-MysTool/commit/dffc5e1b7ded3d9f29439160953ccfae788cb7ac))
+* 版本 ([dfd83d9](https://github.com/babanbang/karin-plugin-MysTool/commit/dfd83d9888ec77ad6012f019ccd0f9f24113caef))
+
+
+### Bug Fixes
+
+* 使用qrcode生成二维码 ([1c645f1](https://github.com/babanbang/karin-plugin-MysTool/commit/1c645f17882ab0fe71094907f0812049b2878df3))
+* 用户绑定、删除无用资源 ([479db14](https://github.com/babanbang/karin-plugin-MysTool/commit/479db14af479b55b05949987ed5c11f166ea4e16))
+* 编译失败 ([d290d11](https://github.com/babanbang/karin-plugin-MysTool/commit/d290d11372cc7c28896663319bae2321c9d55fcb))
+* 编译失败 ([79f9198](https://github.com/babanbang/karin-plugin-MysTool/commit/79f91982b22cd290de480fd4535c0f1e01e029ac))
+
 ## [1.1.1](https://github.com/babanbang/karin-plugin-MysTool/compare/v1.1.0...v1.1.1) (2024-09-02)
 
 
